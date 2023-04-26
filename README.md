@@ -1,2 +1,2 @@
-# izzy
+# Ishiko
 Issue tracker web application
