@@ -1,6 +1,6 @@
 import type { ComponentProps } from "./types";
-import BaseLayout from "./BaseLayout";
 import Box from "./Box";
+import BrandLogo from "./BrandLogo";
 import Button from "./Button";
 import Caption from "./Caption";
 import Container from "./Container";
@@ -11,8 +11,8 @@ import TextField from "./TextField";
 
 export type { ComponentProps };
 export {
-  BaseLayout,
   Box,
+  BrandLogo,
   Button,
   Caption,
   Container,
