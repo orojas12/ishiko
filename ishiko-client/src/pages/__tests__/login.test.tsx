@@ -9,4 +9,5 @@ it("renders page", () => {
   expect(screen.getByRole("article")).toBeInTheDocument();
   expect(screen.getByRole("heading")).toBeInTheDocument();
   expect(screen.getByRole("form")).toBeInTheDocument();
+  expect(screen.getByRole("banner")).toBeInTheDocument();
 });
