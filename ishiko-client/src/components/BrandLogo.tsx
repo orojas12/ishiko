@@ -8,8 +8,6 @@ interface BrandLogoProps {
 export default function BrandLogo(props: BrandLogoProps) {
   return (
     <svg
-      width="300"
-      height="75"
       viewBox="0 0 300 75"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
