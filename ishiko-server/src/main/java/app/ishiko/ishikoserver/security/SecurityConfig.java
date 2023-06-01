@@ -12,14 +12,19 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.csrf.CsrfAuthenticationStrategy;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -48,6 +53,9 @@ public class SecurityConfig {
                     .deleteCookies("JSESSIONID")
                     .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
         });
+        http.exceptionHandling(exception -> {
+            exception.accessDeniedHandler(new AccessDeniedHandlerImpl());
+        });
         http.addFilterAt(authFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -56,8 +64,13 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(authProvider);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -69,10 +82,17 @@ public class SecurityConfig {
     public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
         return new CompositeSessionAuthenticationStrategy(
                 List.of(
-                        new ChangeSessionIdAuthenticationStrategy(),
                         new RegisterSessionAuthenticationStrategy(sessionRegistry()),
-                        new CsrfAuthenticationStrategy(csrfTokenRepository())
+                        new ChangeSessionIdAuthenticationStrategy()
                 )
+        );
+    }
+
+    @Bean
+    public SecurityContextRepository contextRepository() {
+        return new DelegatingSecurityContextRepository(
+                new RequestAttributeSecurityContextRepository(),
+                new HttpSessionSecurityContextRepository()
         );
     }
 

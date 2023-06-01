@@ -1,15 +1,21 @@
 package app.ishiko.ishikoserver.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -30,12 +36,18 @@ public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilt
     public JsonAuthenticationFilter(
             ObjectMapper objectMapper,
             AuthenticationManager authenticationManager,
-            SessionAuthenticationStrategy sessionAuthenticationStrategy
+            SessionAuthenticationStrategy sessionAuthenticationStrategy,
+            SecurityContextRepository contextRepository
     ) {
         super(authenticationManager);
         this.objectMapper = objectMapper;
         setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
+        setSecurityContextRepository(contextRepository);
         setFilterProcessesUrl("/login");
+        setAuthenticationFailureHandler(
+                new AuthenticationEntryPointFailureHandler(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+        );
+        setAuthenticationSuccessHandler(new HttpStatusSuccessHandler());
     }
 
     @Override
@@ -74,10 +86,10 @@ public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilt
         }
     }
 
-    private class UsernamePassword {
+    private static class UsernamePassword {
 
-        private final String username;
-        private final String password;
+        private String username;
+        private String password;
 
         public UsernamePassword(String username, String password) {
             this.username = username.trim();
@@ -88,8 +100,28 @@ public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilt
             return username;
         }
 
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
         public String getPassword() {
             return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
+
+    private static class HttpStatusSuccessHandler implements AuthenticationSuccessHandler {
+
+        @Override
+        public void onAuthenticationSuccess(
+                HttpServletRequest request,
+                HttpServletResponse response,
+                Authentication authentication
+        ) throws IOException, ServletException {
+            response.setStatus(200);
         }
     }
 }
