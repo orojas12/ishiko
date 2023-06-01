@@ -1,7 +1,7 @@
-package app.ishiko.ishikoserver.security;
+package app.ishiko.ishikoserver.security.csrf;
 
 import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/csrf")
 public class CsrfController {
 
-    @PostMapping
+    @GetMapping
     public CsrfToken getCsrf(CsrfToken csrfToken) {
         return csrfToken;
     }
