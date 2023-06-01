@@ -1,8 +1,8 @@
 import MuiTextField from "@mui/material/TextField";
 import type { ChangeEventHandler } from "react";
-import { ComponentProps } from "./types";
+import { InputProps } from "./types";
 
-interface TextFieldProps extends ComponentProps {
+interface TextFieldProps extends InputProps {
   id: string;
   label: string;
   name: string;
@@ -20,6 +20,7 @@ export default function TextField(props: TextFieldProps) {
       label={props.label}
       name={props.name}
       onChange={props.onChange}
+      inputRef={props.inputRef}
       required={props.required}
       style={props.style}
       type={props.type}
