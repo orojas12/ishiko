@@ -2,6 +2,12 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+
+jest.mock("@/services", () => ({
+  __esmodule: true,
+  useLoginMutation: jest.fn(() => [() => undefined]),
+}));
+
 import { LoginForm } from "../.";
 
 it("renders form", () => {
