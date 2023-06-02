@@ -1,8 +1,9 @@
-import Link from "next/link";
-import { Button, Heading, Paragraph, TextField } from "@/components";
-import styles from "./styles/login-form.module.css";
-import { useRef, FormEventHandler } from "react";
 import { useLoginMutation } from "@/services";
+import styles from "./styles/login-form.module.css";
+
+import { useRef, FormEventHandler } from "react";
+import { Box, Button, Typography, TextField } from "@mui/material";
+import Link from "next/link";
 
 interface LoginFormProps {
   onSubmit?: FormEventHandler<HTMLFormElement>;
@@ -15,9 +16,17 @@ export default function LoginForm(props: LoginFormProps) {
   const password = useRef<HTMLInputElement>();
 
   return (
-    <form
+    <Box
+      component="form"
       name="login-form"
-      className={styles.form}
+      sx={{
+        alignItems: "center",
+        display: "flex",
+        flexDirection: "column",
+        gap: "3em",
+        justifyContent: "center",
+        padding: "3.5em",
+      }}
       onSubmit={(e) => {
         e.preventDefault();
         if (props.onSubmit) {
@@ -30,10 +39,17 @@ export default function LoginForm(props: LoginFormProps) {
         login(usernamePassword);
       }}
     >
-      <Heading element="h1" variant="h5">
+      <Typography component="h1" variant="h5">
         Log In
-      </Heading>
-      <div className={styles.fields}>
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1.5em",
+          width: "100%",
+        }}
+      >
         <TextField
           id="login-username"
           inputRef={username}
@@ -49,19 +65,21 @@ export default function LoginForm(props: LoginFormProps) {
           type="password"
           required
         />
-      </div>
+      </Box>
       <Button
-        className={styles["btn-submit"]}
         size="large"
+        sx={{
+          width: "100%",
+        }}
         type="submit"
         variant="contained"
       >
         Log In
       </Button>
-      <Paragraph variant="body2">
+      <Typography variant="body2">
         Don't have an account?&nbsp;
         <Link href="">Sign up</Link>
-      </Paragraph>
-    </form>
+      </Typography>
+    </Box>
   );
 }
