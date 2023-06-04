@@ -1,8 +1,14 @@
 package app.ishiko.ishikoserver.security.user;
 
+import app.ishiko.ishikoserver.features.projects.Project;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
+
 
 @Entity
 @Table(name = "users")
@@ -10,9 +16,14 @@ public class User {
 
     @Id
     private String id;
+
+    @NotNull
     private String username;
+
+    @NotNull
     private String password;
-    private boolean enabled;
+    @OneToMany(mappedBy = "owner")
+    private List<Project> projects;
 
     public User() {
     }
@@ -21,7 +32,14 @@ public class User {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.enabled = true;
+    }
+
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
     }
 
     public String getId() {
@@ -46,13 +64,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 }
