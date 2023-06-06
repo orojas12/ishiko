@@ -20,6 +20,10 @@ module.exports = {
         source: "/api/user",
         destination: "http://localhost:8080/user",
       },
+      {
+        source: "/api/projects",
+        destination: "http://localhost:8080/projects",
+      },
     ];
   },
 };
