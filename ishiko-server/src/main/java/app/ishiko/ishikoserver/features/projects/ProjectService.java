@@ -38,7 +38,7 @@ public class ProjectService {
         Optional<User> user = userRepository.getByUsername(projectRequest.getOwner());
         if (user.isPresent()) {
             newProject = new Project(projectRequest.getTitle().trim(), user.get());
-            projectRepository.save(newProject);
+            newProject = projectRepository.save(newProject);
         } else {
             throw new ResourceNotFoundException("Username not found");
         }
