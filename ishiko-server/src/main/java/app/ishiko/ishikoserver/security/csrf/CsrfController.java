@@ -11,9 +11,9 @@ public class CsrfController {
 
     @GetMapping
     public CsrfTokenResponse getCsrf(CsrfToken csrfToken) {
-        return new CsrfTokenResponse(csrfToken.getToken());
+        return new CsrfTokenResponse(csrfToken.getHeaderName(), csrfToken.getToken());
     }
 
-    public record CsrfTokenResponse(String token) {
+    public record CsrfTokenResponse(String headerName, String token) {
     }
 }
