@@ -16,8 +16,7 @@ public class Project {
     private String title;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private User owner;
 
     public Project() {
@@ -50,5 +49,13 @@ public class Project {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
     }
 }
