@@ -1,10 +1,7 @@
 package app.ishiko.ishikoserver.security.user;
 
 import app.ishiko.ishikoserver.features.projects.Project;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
@@ -22,7 +19,7 @@ public class User {
 
     @NotNull
     private String password;
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Project> projects;
 
     public User() {
@@ -64,5 +61,15 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", projects=" + projects +
+                '}';
     }
 }
