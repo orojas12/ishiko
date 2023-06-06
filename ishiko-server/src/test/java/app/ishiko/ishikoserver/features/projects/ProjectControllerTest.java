@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProjectController.class)
 @Import(WebMvcTestConfiguration.class)
 class ProjectControllerTest {
-    
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -43,10 +44,10 @@ class ProjectControllerTest {
         mockMvc.perform(get("/projects").with(user("user")))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(projectResponse.id())))
-                .andExpect(jsonPath("$[0].title", is(projectResponse.title())))
-                .andExpect(jsonPath("$[0].owner", is(projectResponse.owner())));
+                .andExpect(jsonPath("$.projects", hasSize(1)))
+                .andExpect(jsonPath("$.projects[0].id", is(projectResponse.id())))
+                .andExpect(jsonPath("$.projects[0].title", is(projectResponse.title())))
+                .andExpect(jsonPath("$.projects[0].owner", is(projectResponse.owner())));
     }
 
     @Test
@@ -75,6 +76,7 @@ class ProjectControllerTest {
         mockMvc.perform(
                         post("/projects")
                                 .with(csrf()).with(user("user"))
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(project)))
                 .andDo(print())
                 .andExpect(status().isCreated())
