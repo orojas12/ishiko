@@ -4,3 +4,4 @@ import currentProjectReducer from "./stores/projects";
 
 export { CreateProject, ProjectControls, currentProjectReducer };
 export * from "./stores/projects";
+export type * from "./types";
