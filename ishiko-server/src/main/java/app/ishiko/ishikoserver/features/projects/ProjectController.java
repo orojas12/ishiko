@@ -18,9 +18,10 @@ public class ProjectController {
     }
 
     @GetMapping
-    public List<ProjectResponse> getProjects(Principal principal) {
+    public ProjectListResponse getProjects(Principal principal) {
         try {
-            return service.getUserProjects(principal.getName());
+            List<ProjectResponse> projects = service.getUserProjects(principal.getName());
+            return new ProjectListResponse(projects);
         } catch (ResourceNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -28,7 +29,7 @@ public class ProjectController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProjectResponse createProject(ProjectRequest project, Principal principal) {
+    public ProjectResponse createProject(@RequestBody ProjectRequest project, Principal principal) {
         ProjectRequest newProject = new ProjectRequest(project.getTitle(), principal.getName());
         try {
             return service.createProject(newProject);
