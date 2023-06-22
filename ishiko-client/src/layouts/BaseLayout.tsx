@@ -7,7 +7,15 @@ interface BaseLayoutProps {
 export default function BaseLayout(props: BaseLayoutProps) {
   return (
     <Box
-      sx={{ height: "100%", left: 0, position: "fixed", top: 0, width: "100%" }}
+      sx={(theme) => ({
+        backgroundColor: theme.palette.surface.dark,
+        color: theme.palette.surface.contrastText,
+        height: "100%",
+        left: 0,
+        position: "fixed",
+        top: 0,
+        width: "100%",
+      })}
     >
       {props.children}
     </Box>
