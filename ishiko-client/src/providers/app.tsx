@@ -1,10 +1,15 @@
 import { store } from "@/stores/app";
-import { Provider } from "react-redux";
+import { Provider as StoreProvider } from "react-redux";
+import ThemeProvider from "./theme";
 
 interface AppProviderProps {
   children?: React.ReactNode;
 }
 
 export default function AppProvider({ children }: AppProviderProps) {
-  return <Provider store={store}>{children}</Provider>;
+  return (
+    <ThemeProvider>
+      <StoreProvider store={store}>{children}</StoreProvider>;
+    </ThemeProvider>
+  );
 }
