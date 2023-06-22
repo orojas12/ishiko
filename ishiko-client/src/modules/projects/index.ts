@@ -1,7 +1,7 @@
 import CreateProject from "./components/CreateProject";
-import ProjectControls from "./components/ProjectControls";
+import Projects from "./components/Projects";
 import currentProjectReducer from "./stores/projects";
 
-export { CreateProject, ProjectControls, currentProjectReducer };
+export { CreateProject, Projects, currentProjectReducer };
 export * from "./stores/projects";
 export type * from "./types";
