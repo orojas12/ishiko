@@ -1,9 +1,23 @@
-import styles from "./styles/base-layout.module.css";
+import { Box } from "@mui/material";
 
 interface BaseLayoutProps {
   children?: React.ReactNode;
 }
 
 export default function BaseLayout(props: BaseLayoutProps) {
-  return <div className={styles["base-layout"]}>{props.children}</div>;
+  return (
+    <Box
+      sx={(theme) => ({
+        backgroundColor: theme.palette.surface.dark,
+        color: theme.palette.surface.contrastText,
+        height: "100%",
+        left: 0,
+        position: "fixed",
+        top: 0,
+        width: "100%",
+      })}
+    >
+      {props.children}
+    </Box>
+  );
 }

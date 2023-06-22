@@ -1,32 +1,58 @@
-import { ReactElement } from "react";
-import Toolbar from "@mui/material/Toolbar";
 import { LoginForm } from "@/modules/auth";
-import { Box, BrandLogo, Button, Container, Paper } from "@/components";
+import { BrandLogo } from "@/components";
 import { BaseLayout } from "@/layouts";
-
 import styles from "./styles/login.module.css";
-import Link from "next/link";
 
-export default function LoginPage() {
+import { ReactElement } from "react";
+import Link from "next/link";
+import { Box, Container, Paper, Toolbar } from "@mui/material";
+
+export default function Login() {
   return (
-    <Container size="lg" element="article" className={styles.container}>
-      <header className={styles.header}>
-        <Toolbar className={styles.toolbar}>
+    <Container
+      component="article"
+      sx={{
+        alignItems: "center",
+        display: "flex",
+        height: "100%",
+        justifyContent: "center",
+        position: "relative",
+      }}
+    >
+      <Box
+        component="header"
+        sx={{ position: "absolute", top: 0, width: "100%" }}
+      >
+        <Toolbar
+          sx={{
+            alignItems: "center",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Link href="/">
-            <BrandLogo className={styles.logo} />
+            <BrandLogo style={{ height: "1.5em" }} />
           </Link>
-          <Link className={styles.signup} href="/">
+          <Link
+            style={{
+              color: "#1976d2",
+              padding: "0.5em",
+              textDecoration: "none",
+              textTransform: "uppercase",
+            }}
+            href="/"
+          >
             Sign Up
           </Link>
         </Toolbar>
-      </header>
-      <Paper className={styles.wrapper}>
+      </Box>
+      <Paper sx={{ maxWidth: 400, padding: "1em", width: "100%" }}>
         <LoginForm />
       </Paper>
     </Container>
   );
 }
 
-LoginPage.getLayout = function getLayout(page: ReactElement) {
+Login.getLayout = function getLayout(page: ReactElement) {
   return <BaseLayout>{page}</BaseLayout>;
 };

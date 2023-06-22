@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { UsernamePassword, Csrf, User } from "@/modules/auth";
 import { RootState } from "@/stores/app";
+import { Project } from "@/modules/projects";
 
 export const ishikoApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -15,7 +16,7 @@ export const ishikoApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["User"],
+  tagTypes: ["User", "Projects"],
   endpoints: (builder) => ({
     getCsrfToken: builder.query<Csrf, void>({
       query: () => ({
@@ -36,8 +37,29 @@ export const ishikoApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    getProjects: builder.query<Project[], void>({
+      query: () => ({
+        url: "/projects",
+      }),
+      transformResponse: (response: { projects: Project[] }, meta, arg) =>
+        response.projects,
+      providesTags: ["Projects"],
+    }),
+    createProject: builder.mutation<Project, Omit<Project, "id" | "owner">>({
+      query: (project) => ({
+        url: "/projects",
+        method: "POST",
+        body: project,
+      }),
+      invalidatesTags: ["Projects"],
+    }),
   }),
 });
 
-export const { useGetCsrfTokenQuery, useGetUserQuery, useLoginMutation } =
-  ishikoApi;
+export const {
+  useGetCsrfTokenQuery,
+  useGetUserQuery,
+  useLoginMutation,
+  useGetProjectsQuery,
+  useCreateProjectMutation,
+} = ishikoApi;

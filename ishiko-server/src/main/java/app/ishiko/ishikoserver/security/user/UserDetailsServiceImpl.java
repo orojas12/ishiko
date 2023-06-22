@@ -15,8 +15,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public UserDetailsServiceImpl(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
-        User testUser = new User("user1", "oscar", encoder.encode("test"));
-        userRepository.save(testUser);
     }
 
     @Override
