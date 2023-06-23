@@ -15,11 +15,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public UserDetailsServiceImpl(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
+        // create user for testing purposes
+        UserEntity userEntity = new UserEntity("1", "user", encoder.encode("password"));
+        userRepository.save(userEntity);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.getByUsername(username);
+        Optional<UserEntity> user = userRepository.getByUsername(username);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         } else {

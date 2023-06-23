@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
 
     @Id
     private String id;
@@ -22,10 +22,10 @@ public class User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Project> projects;
 
-    public User() {
+    public UserEntity() {
     }
 
-    public User(String id, String username, String password) {
+    public UserEntity(String id, String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;

@@ -4,7 +4,7 @@ import app.ishiko.ishikoserver.config.IshikoServerApplicationITConfiguration;
 import app.ishiko.ishikoserver.config.IshikoServerApplicationITConfiguration.UsernamePassword;
 import app.ishiko.ishikoserver.features.projects.*;
 import app.ishiko.ishikoserver.security.csrf.CsrfController.CsrfTokenResponse;
-import app.ishiko.ishikoserver.security.user.User;
+import app.ishiko.ishikoserver.security.user.UserEntity;
 import app.ishiko.ishikoserver.security.user.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,10 +79,10 @@ class IshikoServerApplicationIT {
 
     @BeforeEach
     void setUpTestData() {
-        User user = new User("1", usernamePassword.username(), encoder.encode(usernamePassword.password()));
-        Project project = new Project("title", user);
-        user.setProjects(List.of(project));
-        userRepository.save(user);
+        UserEntity userEntity = new UserEntity("1", usernamePassword.username(), encoder.encode(usernamePassword.password()));
+        Project project = new Project("title", userEntity);
+        userEntity.setProjects(List.of(project));
+        userRepository.save(userEntity);
     }
 
     @AfterEach
@@ -119,7 +119,7 @@ class IshikoServerApplicationIT {
         Project createdProject = projectRepository.findById(projectResponse.id()).get();
         // merge into session
         createdProject = projectRepository.save(createdProject);
-        User owner = createdProject.getOwner();
+        UserEntity owner = createdProject.getOwner();
         assertThat(createdProject.getTitle()).isEqualTo("title");
         assertThat(owner.getUsername()).isEqualTo(usernamePassword.username());
     }

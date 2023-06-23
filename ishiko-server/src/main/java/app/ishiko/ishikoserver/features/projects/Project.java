@@ -1,6 +1,6 @@
 package app.ishiko.ishikoserver.features.projects;
 
-import app.ishiko.ishikoserver.security.user.User;
+import app.ishiko.ishikoserver.security.user.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,12 +17,12 @@ public class Project {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    private User owner;
+    private UserEntity owner;
 
     public Project() {
     }
 
-    public Project(String title, User owner) {
+    public Project(String title, UserEntity owner) {
         this.title = title;
         this.owner = owner;
     }
@@ -43,11 +43,11 @@ public class Project {
         this.title = title;
     }
 
-    public User getOwner() {
+    public UserEntity getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(UserEntity owner) {
         this.owner = owner;
     }
 

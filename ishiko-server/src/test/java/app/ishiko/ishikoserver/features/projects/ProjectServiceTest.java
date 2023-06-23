@@ -1,6 +1,6 @@
 package app.ishiko.ishikoserver.features.projects;
 
-import app.ishiko.ishikoserver.security.user.User;
+import app.ishiko.ishikoserver.security.user.UserEntity;
 import app.ishiko.ishikoserver.security.user.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ class ProjectServiceTest {
         ProjectRequest projectRequest = new ProjectRequest("title", "owner");
         when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
         when(userRepository.getByUsername(projectRequest.getOwner()))
-                .thenReturn(Optional.of(new User(null, projectRequest.getOwner(), null)));
+                .thenReturn(Optional.of(new UserEntity(null, projectRequest.getOwner(), null)));
         ProjectService service = new ProjectService(projectRepository, userRepository);
 
         ProjectResponse response = service.createProject(projectRequest);
@@ -59,18 +59,18 @@ class ProjectServiceTest {
         Project project = new Project();
         project.setId(1);
         project.setTitle("title");
-        User user = new User();
-        user.setUsername("username");
-        user.setProjects(List.of(project));
-        when(userRepository.getByUsername(any())).thenReturn(Optional.of(user));
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("username");
+        userEntity.setProjects(List.of(project));
+        when(userRepository.getByUsername(any())).thenReturn(Optional.of(userEntity));
         ProjectService service = new ProjectService(projectRepository, userRepository);
 
-        List<ProjectResponse> projects = service.getUserProjects(user.getUsername());
+        List<ProjectResponse> projects = service.getUserProjects(userEntity.getUsername());
         assertThat(projects.size()).isEqualTo(1);
         ProjectResponse projectResponse = projects.get(0);
         assertThat(projectResponse.id()).isEqualTo(1);
         assertThat(projectResponse.title()).isEqualTo(project.getTitle());
-        assertThat(projectResponse.owner()).isEqualTo(user.getUsername());
+        assertThat(projectResponse.owner()).isEqualTo(userEntity.getUsername());
     }
 
     @Test
