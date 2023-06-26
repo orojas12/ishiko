@@ -1,4 +1,4 @@
-package app.ishiko.ishikoserver.features.projects;
+package app.ishiko.ishikoserver.exceptions;
 
 public class ResourceNotFoundException extends Exception {
     public ResourceNotFoundException(String message) {

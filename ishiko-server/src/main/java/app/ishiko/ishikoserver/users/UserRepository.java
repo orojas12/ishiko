@@ -1,4 +1,4 @@
-package app.ishiko.ishikoserver.security.user;
+package app.ishiko.ishikoserver.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

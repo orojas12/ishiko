@@ -1,5 +1,6 @@
-package app.ishiko.ishikoserver.features.projects;
+package app.ishiko.ishikoserver.projects;
 
+import app.ishiko.ishikoserver.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;

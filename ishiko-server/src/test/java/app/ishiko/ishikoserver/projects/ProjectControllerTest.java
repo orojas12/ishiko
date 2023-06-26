@@ -1,6 +1,7 @@
-package app.ishiko.ishikoserver.features.projects;
+package app.ishiko.ishikoserver.projects;
 
 import app.ishiko.ishikoserver.config.WebMvcTestConfiguration;
+import app.ishiko.ishikoserver.exceptions.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

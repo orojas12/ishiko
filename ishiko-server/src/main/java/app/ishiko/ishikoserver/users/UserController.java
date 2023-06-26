@@ -1,4 +1,4 @@
-package app.ishiko.ishikoserver.security.user;
+package app.ishiko.ishikoserver.users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

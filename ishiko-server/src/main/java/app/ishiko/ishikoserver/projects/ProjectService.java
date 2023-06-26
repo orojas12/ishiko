@@ -1,7 +1,8 @@
-package app.ishiko.ishikoserver.features.projects;
+package app.ishiko.ishikoserver.projects;
 
-import app.ishiko.ishikoserver.security.user.UserEntity;
-import app.ishiko.ishikoserver.security.user.UserRepository;
+import app.ishiko.ishikoserver.exceptions.ResourceNotFoundException;
+import app.ishiko.ishikoserver.users.UserEntity;
+import app.ishiko.ishikoserver.users.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

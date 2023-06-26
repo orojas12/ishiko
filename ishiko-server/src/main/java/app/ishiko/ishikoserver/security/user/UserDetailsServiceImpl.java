@@ -1,5 +1,7 @@
 package app.ishiko.ishikoserver.security.user;
 
+import app.ishiko.ishikoserver.users.UserEntity;
+import app.ishiko.ishikoserver.users.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

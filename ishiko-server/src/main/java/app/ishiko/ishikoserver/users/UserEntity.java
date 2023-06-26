@@ -1,6 +1,6 @@
-package app.ishiko.ishikoserver.security.user;
+package app.ishiko.ishikoserver.users;
 
-import app.ishiko.ishikoserver.features.projects.Project;
+import app.ishiko.ishikoserver.projects.Project;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 

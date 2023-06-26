@@ -2,10 +2,10 @@ package app.ishiko.ishikoserver;
 
 import app.ishiko.ishikoserver.config.IshikoServerApplicationITConfiguration;
 import app.ishiko.ishikoserver.config.IshikoServerApplicationITConfiguration.UsernamePassword;
-import app.ishiko.ishikoserver.features.projects.*;
+import app.ishiko.ishikoserver.projects.*;
 import app.ishiko.ishikoserver.security.csrf.CsrfController.CsrfTokenResponse;
-import app.ishiko.ishikoserver.security.user.UserEntity;
-import app.ishiko.ishikoserver.security.user.UserRepository;
+import app.ishiko.ishikoserver.users.UserEntity;
+import app.ishiko.ishikoserver.users.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

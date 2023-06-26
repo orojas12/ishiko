@@ -1,4 +1,4 @@
-package app.ishiko.ishikoserver.features.projects;
+package app.ishiko.ishikoserver.projects;
 
 public class ProjectRequest {
 

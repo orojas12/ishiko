@@ -1,5 +1,6 @@
 package app.ishiko.ishikoserver.security.user;
 
+import app.ishiko.ishikoserver.users.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
