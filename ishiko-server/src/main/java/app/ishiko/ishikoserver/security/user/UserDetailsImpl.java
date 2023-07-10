@@ -1,6 +1,6 @@
 package app.ishiko.ishikoserver.security.user;
 
-import app.ishiko.ishikoserver.users.UserEntity;
+import app.ishiko.ishikoserver.users.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,10 +9,10 @@ import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private final UserEntity userEntity;
+    private final User user;
 
-    public UserDetailsImpl(UserEntity userEntity) {
-        this.userEntity = userEntity;
+    public UserDetailsImpl(User user) {
+        this.user = user;
     }
 
     @Override
@@ -23,12 +23,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return userEntity.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userEntity.getUsername();
+        return user.getUsername();
     }
 
     @Override

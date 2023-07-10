@@ -1,6 +1,6 @@
 package app.ishiko.ishikoserver.security.user;
 
-import app.ishiko.ishikoserver.users.UserEntity;
+import app.ishiko.ishikoserver.users.User;
 import app.ishiko.ishikoserver.users.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,13 +18,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetailsServiceImpl(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         // create user for testing purposes
-        UserEntity userEntity = new UserEntity("1", "user", encoder.encode("password"));
-        userRepository.save(userEntity);
+        User user = new User("1", "user", encoder.encode("password"));
+        userRepository.save(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> user = userRepository.getByUsername(username);
+        Optional<User> user = userRepository.getByUsername(username);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         } else {

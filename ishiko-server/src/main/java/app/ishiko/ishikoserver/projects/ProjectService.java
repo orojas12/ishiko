@@ -1,7 +1,7 @@
 package app.ishiko.ishikoserver.projects;
 
 import app.ishiko.ishikoserver.exceptions.ResourceNotFoundException;
-import app.ishiko.ishikoserver.users.UserEntity;
+import app.ishiko.ishikoserver.users.User;
 import app.ishiko.ishikoserver.users.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class ProjectService {
 
     public List<ProjectResponse> getUserProjects(String username) throws ResourceNotFoundException {
         List<Project> projects;
-        Optional<UserEntity> user = userRepository.getByUsername(username);
+        Optional<User> user = userRepository.getByUsername(username);
         if (user.isPresent()) {
             projects = user.get().getProjects();
         } else {
@@ -36,7 +36,7 @@ public class ProjectService {
 
     public ProjectResponse createProject(ProjectRequest projectRequest) throws ResourceNotFoundException {
         Project newProject;
-        Optional<UserEntity> user = userRepository.getByUsername(projectRequest.getOwner());
+        Optional<User> user = userRepository.getByUsername(projectRequest.getOwner());
         if (user.isPresent()) {
             newProject = new Project(projectRequest.getTitle().trim(), user.get());
             newProject = projectRepository.save(newProject);
