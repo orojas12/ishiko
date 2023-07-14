@@ -45,4 +45,8 @@ public class ProjectService {
         }
         return new ProjectResponse(newProject.getId(), newProject.getTitle(), newProject.getOwner().getUsername());
     }
+
+    public boolean projectExists(int projectId) {
+        return projectRepository.existsById(projectId);
+    }
 }
