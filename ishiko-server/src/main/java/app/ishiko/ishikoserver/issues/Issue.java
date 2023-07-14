@@ -1,9 +1,10 @@
 package app.ishiko.ishikoserver.issues;
 
+import app.ishiko.ishikoserver.projects.Project;
 import app.ishiko.ishikoserver.users.User;
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -14,18 +15,21 @@ public class Issue {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String subject;
-    private Date date;
+    private Instant datetime;
+    @ManyToOne
+    private Project project;
     @ManyToMany
-    private List<User> assignees;
+    private List<User> assignedTo;
 
     public Issue() {
     }
 
-    public Issue(int id, String subject, Date date, List<User> assignees) {
+    public Issue(int id, String subject, Instant datetime, List<User> assignedTo, Project project) {
         this.id = id;
         this.subject = subject;
-        this.date = date;
-        this.assignees = assignees;
+        this.datetime = datetime;
+        this.assignedTo = assignedTo;
+        this.project = project;
     }
 
     public int getId() {
@@ -44,19 +48,27 @@ public class Issue {
         this.subject = subject;
     }
 
-    public Date getDate() {
-        return date;
+    public Instant getDateTime() {
+        return datetime;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDateTime(Instant date) {
+        this.datetime = date;
     }
 
-    public List<User> getAssignees() {
-        return assignees;
+    public List<User> getAssignedTo() {
+        return assignedTo;
     }
 
-    public void setAssignees(List<User> assignees) {
-        this.assignees = assignees;
+    public void setAssignedTo(List<User> assignees) {
+        this.assignedTo = assignees;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

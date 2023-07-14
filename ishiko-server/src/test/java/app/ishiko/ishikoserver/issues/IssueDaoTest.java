@@ -25,7 +25,7 @@ public class IssueDaoTest {
         Issue issue1 = new Issue();
         when(issueRepository.findById(any())).thenReturn(Optional.of(issue1));
         IssueDao issueDao = new IssueDao(issueRepository);
-        Issue issue2 = issueDao.getIssue(0);
+        Issue issue2 = issueDao.getById(0);
         assertThat(issue2).isEqualTo(issue1);
     }
 
@@ -33,7 +33,7 @@ public class IssueDaoTest {
     void getIssue_IssueId_throwsResourceNotFoundExceptionIfNotExists() {
         when(issueRepository.findById(any())).thenReturn(Optional.empty());
         IssueDao issueDao = new IssueDao(issueRepository);
-        assertThatThrownBy(() -> issueDao.getIssue(0)).isInstanceOf(ResourceNotFoundException.class);
+        assertThatThrownBy(() -> issueDao.getById(0)).isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
@@ -52,5 +52,19 @@ public class IssueDaoTest {
         IssueDao issueDao = new IssueDao(issueRepository);
         Issue savedIssue = issueDao.save(issue);
         assertThat(savedIssue.getId()).isEqualTo(0);
+    }
+
+    @Test
+    void delete_IssueId_deletesIssue() {
+        IssueDao issueDao = new IssueDao(issueRepository);
+        issueDao.deleteById(0);
+        verify(issueRepository).deleteById(0);
+    }
+
+    @Test
+    void existsById_IssueId_checksIfIssueExists() {
+        IssueDao issueDao = new IssueDao(issueRepository);
+        issueDao.existsById(0);
+        verify(issueRepository).existsById(0);
     }
 }

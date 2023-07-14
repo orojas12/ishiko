@@ -6,23 +6,25 @@ public class IssueDto {
 
     private int id;
     private String subject;
-    private long unixTime;
-    private List<String> assignees;
+    private long datetime;
+    private List<String> assignedTo;
+    private int projectId;
 
     public IssueDto(String subject) {
         this.subject = subject;
     }
 
-    public IssueDto(String subject, List<String> assignees) {
+    public IssueDto(String subject, List<String> assignedTo) {
         this.subject = subject;
-        this.assignees = assignees;
+        this.assignedTo = assignedTo;
     }
 
-    public IssueDto(int id, String subject, long unixTime, List<String> assignees) {
+    public IssueDto(int id, String subject, long datetime, List<String> assignedTo, int projectId) {
         this.id = id;
         this.subject = subject;
-        this.unixTime = unixTime;
-        this.assignees = assignees;
+        this.datetime = datetime;
+        this.assignedTo = assignedTo;
+        this.projectId = projectId;
     }
 
     public int getId() {
@@ -41,19 +43,27 @@ public class IssueDto {
         this.subject = subject;
     }
 
-    public long getUnixTime() {
-        return unixTime;
+    public long getDateTime() {
+        return datetime;
     }
 
-    public void setUnixTime(long unixTime) {
-        this.unixTime = unixTime;
+    public void setDateTime(long datetime) {
+        this.datetime = datetime;
     }
 
-    public List<String> getAssignees() {
-        return assignees;
+    public List<String> getAssignedTo() {
+        return assignedTo;
     }
 
-    public void setAssignees(List<String> assignees) {
-        this.assignees = assignees;
+    public void setAssignedTo(List<String> assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 }
