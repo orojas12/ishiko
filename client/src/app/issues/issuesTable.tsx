@@ -1,3 +1,5 @@
+"use client";
+
 import {
   useReactTable,
   createColumnHelper,
@@ -37,7 +39,7 @@ const columns = [
   }),
   columnHelper.accessor("label", {
     header: "Label",
-    cell: (props) => props.getValue().name,
+    cell: (props) => props.getValue()?.name,
   }),
   columnHelper.accessor("dueDate", {
     header: "Due date",

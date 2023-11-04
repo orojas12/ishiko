@@ -7,15 +7,15 @@ const queryClient = new QueryClient();
 
 export default function IssuesLayout({
   children,
-  issueDialog,
+  issueDetail,
 }: {
   children: React.ReactNode;
-  issueDialog: React.ReactNode;
+  issueDetail: React.ReactNode;
 }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {issueDialog}
+      {issueDetail}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

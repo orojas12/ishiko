@@ -1,5 +1,3 @@
-"use client";
-
 import { CreateIssueDialog } from "./createIssueDialog";
 import { IssuesTable } from "./issuesTable";
 
