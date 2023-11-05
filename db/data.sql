@@ -13,7 +13,7 @@ INSERT INTO issue_label (id, name) VALUES
     (nextval('issue_label_id_seq'), 'Other')
 ;
 
-INSERT INTO issue (id, subject, description, submit_date, due_date, status, label)
+INSERT INTO issue (id, subject, description, created_date, due_date, status, label)
     SELECT 
         nextval('issue_id_seq'),
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',

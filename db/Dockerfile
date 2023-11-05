@@ -1,8 +1,5 @@
 FROM postgres:16-alpine
 
-ENV POSTGRES_USER="ishiko"
-ENV POSTGRES_PASSWORD="ishiko"
-
 WORKDIR /
 
 COPY ./schema.sql /ishiko/db/schema.sql
