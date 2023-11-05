@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { CreateOrUpdateIssue } from "@/types";
 import {
   Dialog,
   DialogClose,
@@ -29,21 +30,28 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { createIssue, getIssueStatuses } from "@/services/issue";
-import { CreateIssue } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+// TODO: fix 500 internal server error on form submit
+// TODO: fix form select value types (is it string or number???)
+
 const formSchema = z.object({
   subject: z.string({
     required_error: "Subject is required",
   }),
   description: z.string().optional(),
-  status: z.string(),
+  dueDate: z.date().optional(),
+  status: z.number(),
+  label: z.number().optional(),
 });
 
+/**
+ * Must match data type of {@link CreateOrUpdateIssue}
+ */
 export type CreateIssueFormSchema = z.infer<typeof formSchema>;
 
 export function CreateIssueDialog() {
@@ -53,6 +61,9 @@ export function CreateIssueDialog() {
     defaultValues: {
       subject: "",
       description: "",
+      dueDate: undefined,
+      status: 1,
+      label: undefined,
     },
   });
   const queryClient = useQueryClient();
@@ -67,16 +78,11 @@ export function CreateIssueDialog() {
       alert(error.message);
     },
   });
-  // const issueStatuses = useQuery({
-  //   queryKey: ["issueStatuses"],
-  //   queryFn: getIssueStatuses,
-  // });
-  const issueStatuses = {
-    data: [
-      { id: 1, name: "Ready" },
-      { id: 2, name: "In progress" },
-    ],
-  };
+
+  const issueStatuses = useQuery({
+    queryKey: ["issueStatuses"],
+    queryFn: getIssueStatuses,
+  });
 
   const onSubmit = (values: CreateIssueFormSchema) => {
     console.log(values);
@@ -111,7 +117,7 @@ export function CreateIssueDialog() {
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value.toString()}
                   >
                     <FormControl>
                       <SelectTrigger className="col-span-full sm:col-span-3">

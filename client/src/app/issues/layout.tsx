@@ -1,10 +1,3 @@
-"use client";
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-const queryClient = new QueryClient();
-
 export default function IssuesLayout({
   children,
   issueDetail,
@@ -13,10 +6,10 @@ export default function IssuesLayout({
   issueDetail: React.ReactNode;
 }) {
   return (
-    <QueryClientProvider client={queryClient}>
+    <main className="p-6 flex flex-col items-start gap-6">
+      <h1 className="text-lg text-gray-600">Issues</h1>
       {children}
       {issueDetail}
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    </main>
   );
 }

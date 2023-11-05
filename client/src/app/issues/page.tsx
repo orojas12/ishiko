@@ -1,12 +1,23 @@
-import { CreateIssueDialog } from "./createIssueDialog";
-import { IssuesTable } from "./issuesTable";
+import { IssuesTable } from "./issues-table";
+import { Link } from "@/components/ui/link";
+import { getIssues } from "@/services/issue";
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
 
-export default function Issues() {
+export default async function Issues() {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["issues"],
+    queryFn: getIssues,
+  });
+
   return (
-    <main className="p-6 flex flex-col items-start gap-6">
-      <h1 className="text-lg text-gray-600">Issues</h1>
-      <CreateIssueDialog />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Link href="/">Home</Link>
       <IssuesTable />
-    </main>
+    </HydrationBoundary>
   );
 }

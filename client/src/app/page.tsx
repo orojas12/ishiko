@@ -1,9 +1,10 @@
-import Image from 'next/image'
+import { Link } from "@/components/ui/link";
 
 export default function Home() {
   return (
     <main className="">
-      Ishiko
+      <h1>Ishiko</h1>
+      <Link href="/issues">Table</Link>
     </main>
-  )
+  );
 }

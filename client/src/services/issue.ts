@@ -6,12 +6,18 @@ import type {
   IssueStatus,
 } from "@/types";
 
-export async function getIssue(id: string) {
+// TODO: figure out a better way to handle fetch errors
+
+export async function getIssue(id: string): Promise<Issue> {
   try {
     const res = await fetch(`http://localhost:8080/issue/${id}`);
-    const data = (await res.json()) as Issue | HttpErrorResponseBody;
+    const data = await res.json();
     if (res.ok) {
-      return data;
+      return {
+        ...data,
+        dueDate: data?.dueDate ? new Date(data.dueDate) : null,
+        createdDate: new Date(data.createdDate),
+      };
     } else {
       throw new HttpError((data as HttpErrorResponseBody).message);
     }
@@ -36,11 +42,11 @@ export async function getIssues() {
 
 export async function getIssueStatuses() {
   const res = await fetch(`http://localhost:8080/issue_status`);
-  const data = (await res.json()) as IssueStatus | HttpErrorResponseBody;
+  const data = (await res.json()) as IssueStatus[];
   if (res.ok) {
     return data;
   } else {
-    throw new HttpError((data as HttpErrorResponseBody).message);
+    // throw new HttpError((data as HttpErrorResponseBody).message);
   }
 }
 
