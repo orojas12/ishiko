@@ -23,11 +23,13 @@ import { Issue } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
 
-export function IssueDetail({ issueId }: { issueId: number }) {
+export function IssueDetail({ issueId }: { issueId: number | undefined }) {
   const queryClient = useQueryClient();
   const issue = useQuery({
     queryKey: ["issue", issueId],
-    queryFn: () => getIssue(issueId.toString()),
+    queryFn: () =>
+      issueId !== undefined ? getIssue(issueId.toString()) : undefined,
+    enabled: issueId !== undefined,
   });
   const issueStatuses = useQuery({
     queryKey: ["issue_statuses"],
