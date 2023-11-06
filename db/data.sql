@@ -1,4 +1,5 @@
 INSERT INTO issue_status (id, name) VALUES
+    (nextval('issue_status_id_seq'), ''),
     (nextval('issue_status_id_seq'), 'Ready'),
     (nextval('issue_status_id_seq'), 'In progress'),
     (nextval('issue_status_id_seq'), 'In review'),
@@ -6,6 +7,7 @@ INSERT INTO issue_status (id, name) VALUES
 ;
 
 INSERT INTO issue_label (id, name) VALUES
+    (nextval('issue_label_id_seq'), ''),
     (nextval('issue_label_id_seq'), 'Feature'),
     (nextval('issue_label_id_seq'), 'Enhancement'),
     (nextval('issue_label_id_seq'), 'Documentation'),

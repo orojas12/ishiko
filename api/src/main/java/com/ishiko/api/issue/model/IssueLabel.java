@@ -8,10 +8,10 @@ public class IssueLabel {
     @Id
     @SequenceGenerator(name = "issue_label_id_seq", sequenceName = "issue_label_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "issue_label_id_seq")
-    private Integer id;
+    private Integer id = 1;
 
     @Column(nullable = false)
-    private String name;
+    private String name = "";
 
     public IssueLabel() {
     }

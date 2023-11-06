@@ -9,7 +9,7 @@ export default function IssuesLayout({
     <main className="p-6 flex flex-col items-start gap-6">
       <h1 className="text-lg text-gray-600">Issues</h1>
       {children}
-      {issueDetail}
+      {/* {issueDetail} */}
     </main>
   );
 }

@@ -7,4 +7,3 @@ services:
     environment:
       POSTGRES_USER: ishiko
       POSTGRES_PASSWORD: ishiko
-

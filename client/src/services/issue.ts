@@ -3,6 +3,7 @@ import type {
   CreateOrUpdateIssue,
   HttpErrorResponseBody,
   Issue,
+  IssueLabel,
   IssueStatus,
 } from "@/types";
 
@@ -15,7 +16,7 @@ export async function getIssue(id: string): Promise<Issue> {
     if (res.ok) {
       return {
         ...data,
-        dueDate: data?.dueDate ? new Date(data.dueDate) : null,
+        dueDate: data?.dueDate ? new Date(data.dueDate) : undefined,
         createdDate: new Date(data.createdDate),
       };
     } else {
@@ -30,11 +31,16 @@ export async function getIssue(id: string): Promise<Issue> {
   }
 }
 
-export async function getIssues() {
-  const res = await fetch("http://localhost:8080/issue");
-  const data = (await res.json()) as Issue[] | HttpErrorResponseBody;
+export async function getIssues(): Promise<Issue[]> {
+  console.log("Fetching issues...");
+  const res = await fetch("http://localhost:8080/issue", { cache: "no-store" });
+  const data = await res.json();
   if (res.ok) {
-    return data;
+    return data.map((issue: any) => ({
+      ...issue,
+      dueDate: issue.dueDate ? new Date(issue.dueDate) : undefined,
+      createdDate: new Date(issue.createdDate),
+    }));
   } else {
     throw new HttpError((data as HttpErrorResponseBody).message);
   }
@@ -47,6 +53,15 @@ export async function getIssueStatuses() {
     return data;
   } else {
     // throw new HttpError((data as HttpErrorResponseBody).message);
+  }
+}
+
+export async function getIssueLabels() {
+  const res = await fetch(`http://localhost:8080/issue_label`);
+  const data = (await res.json()) as IssueLabel[];
+  if (res.ok) {
+    return data;
+  } else {
   }
 }
 

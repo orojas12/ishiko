@@ -33,13 +33,16 @@ public class IssueService {
     }
 
     public List<IssueDto> getIssues() {
-        List<Issue> issues = issueRepository.findAll();
+        List<Issue> issues = issueRepository.findAllByOrderByCreatedDateDesc();
         return issues.stream().map(this::entityToDto).toList();
     }
 
     public List<IssueStatusDto> getIssueStatuses() {
-        List<IssueStatus> statuses = issueStatusRepository.findAll();
-        return statuses.stream().map(this::entityToDto).toList();
+        return issueStatusRepository.findAll().stream().map(this::entityToDto).toList();
+    }
+
+    public List<IssueLabelDto> getIssueLabels() {
+        return issueLabelRepository.findAll().stream().map(this::entityToDto).toList();
     }
 
     public IssueDto getIssue(Integer id) throws NotFoundException {

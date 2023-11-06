@@ -1,8 +1,10 @@
 package com.ishiko.api.issue.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Entity
 @Table(name = "issue")
@@ -12,23 +14,24 @@ public class Issue {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "issue_id_seq")
     private Integer id;
     @Column(nullable = false)
-    private String subject = "Untitled issue";
+    private String subject;
     @Column(nullable = false)
-    private String description = "No description";
+    private String description = "";
     @Column(nullable = false)
-    private Instant createdDate;
+    private Instant createdDate = Instant.now();
+    @Nullable
     private Instant dueDate;
     @ManyToOne
     @JoinColumn(name = "status")
-    private IssueStatus status;
+    private IssueStatus status = new IssueStatus();
     @ManyToOne
     @JoinColumn(name = "label")
-    private IssueLabel label;
+    private IssueLabel label = new IssueLabel();
 
     public Issue() {
     }
 
-    public Issue(Integer id, String subject, String description, Instant createdDate, Instant dueDate) {
+    public Issue(Integer id, String subject, String description, Instant createdDate, @Nullable Instant dueDate) {
         this.id = id;
         this.subject = subject;
         this.description = description;
@@ -36,7 +39,7 @@ public class Issue {
         this.dueDate = dueDate;
     }
 
-    public Issue(Integer id, String subject, String description, Instant createdDate, Instant dueDate,
+    public Issue(Integer id, String subject, String description, Instant createdDate, @Nullable Instant dueDate,
                  IssueStatus status, IssueLabel label) {
         this.id = id;
         this.subject = subject;
@@ -79,11 +82,11 @@ public class Issue {
         this.createdDate = createdDate;
     }
 
-    public Instant getDueDate() {
-        return dueDate;
+    public Optional<Instant> getDueDate() {
+        return Optional.ofNullable(dueDate);
     }
 
-    public void setDueDate(Instant dueDate) {
+    public void setDueDate(@Nullable Instant dueDate) {
         this.dueDate = dueDate;
     }
 

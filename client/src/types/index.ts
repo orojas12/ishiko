@@ -5,7 +5,7 @@ export type Issue = {
   createdDate: Date;
   dueDate?: Date;
   status: IssueStatus;
-  label?: IssueLabel;
+  label: IssueLabel;
 };
 
 export type IssueStatus = {
@@ -23,7 +23,7 @@ export type CreateOrUpdateIssue = {
   description?: string;
   dueDate?: Date;
   status: IssueStatus["id"];
-  label?: IssueLabel["id"];
+  label: IssueLabel["id"];
 };
 
 export type HttpErrorResponseBody = {

@@ -1,8 +1,10 @@
 package com.ishiko.api.issue.dto;
 
+import jakarta.annotation.Nullable;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Instant;
+import java.util.Optional;
 
 public class IssueDto {
 
@@ -20,7 +22,7 @@ public class IssueDto {
     }
 
     public IssueDto(Integer id, String subject, String description, Instant createdDate, Instant dueDate,
-                    IssueStatusDto status, IssueLabelDto label) {
+                    IssueStatusDto status, @Nullable IssueLabelDto label) {
         this.id = id;
         this.subject = subject;
         this.description = description;
@@ -78,8 +80,8 @@ public class IssueDto {
         this.status = status;
     }
 
-    public IssueLabelDto getLabel() {
-        return label;
+    public Optional<IssueLabelDto> getLabel() {
+        return Optional.ofNullable(label);
     }
 
     public void setLabel(IssueLabelDto label) {

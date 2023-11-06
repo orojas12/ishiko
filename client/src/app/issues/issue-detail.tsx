@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { Issue } from "@/types";
 
-export function IssueDetail({ data }: { data: Issue }) {
+export function IssueDetail({ data }: { data: Issue | undefined }) {
   return (
-    <DialogContent className="grid grid-cols-[1fr_1fr] auto-rows-auto gap-6 p-8 sm:w-3/4 lg:p-10 lg:gap-10 lg:w-1/2">
+    <DialogContent className="grid grid-cols-[1fr_1fr] grid-rows-[max-content_max-content_1fr] gap-6 p-8 lg:p-10 lg:gap-10 h-full md:h-3/4">
       <DialogHeader className="col-span-full pr-6">
         <DialogTitle className="text-left">
           {data?.subject}
@@ -23,10 +23,10 @@ export function IssueDetail({ data }: { data: Issue }) {
             {data?.label?.name}
           </IssueDetailProperty>
           <IssueDetailProperty label="Due">
-            {data?.dueDate?.toISOString()}
+            {data?.dueDate?.toLocaleString()}
           </IssueDetailProperty>
           <IssueDetailProperty label="Created">
-            {data?.createdDate.toISOString()}
+            {data?.createdDate.toLocaleString()}
           </IssueDetailProperty>
         </IssueDetailProperties>
         <div className="w-80 sm:w-96">
@@ -66,8 +66,10 @@ export function IssueDetailProperty({
 }) {
   return (
     <>
-      <div className="col-start-1 col-end-2">{label}</div>
-      <div className="col-start-2 col-end-3">{children}</div>
+      <div className="col-start-1 col-end-2 text-gray-500 text-sm font-medium">
+        {label}
+      </div>
+      <div className="col-start-2 col-end-3">{children || "-"}</div>
     </>
   );
 }

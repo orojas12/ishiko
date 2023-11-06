@@ -29,7 +29,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { createIssue, getIssueStatuses } from "@/services/issue";
+import {
+  createIssue,
+  getIssueLabels,
+  getIssueStatuses,
+} from "@/services/issue";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -40,13 +44,19 @@ import { z } from "zod";
 // TODO: fix form select value types (is it string or number???)
 
 const formSchema = z.object({
-  subject: z.string({
-    required_error: "Subject is required",
-  }),
-  description: z.string().optional(),
+  subject: z
+    .string({
+      required_error: "Subject is required",
+    })
+    .min(1, { message: "Must be between 1 and 255 characters long" })
+    .max(255, { message: "Must be between 1 and 255 characters long" }),
+  description: z
+    .string()
+    .max(1000, { message: "Must be a maximum of 1000 characters" })
+    .optional(),
   dueDate: z.date().optional(),
-  status: z.number(),
-  label: z.number().optional(),
+  status: z.coerce.number(),
+  label: z.coerce.number(),
 });
 
 /**
@@ -63,7 +73,7 @@ export function CreateIssueDialog() {
       description: "",
       dueDate: undefined,
       status: 1,
-      label: undefined,
+      label: 1,
     },
   });
   const queryClient = useQueryClient();
@@ -80,8 +90,13 @@ export function CreateIssueDialog() {
   });
 
   const issueStatuses = useQuery({
-    queryKey: ["issueStatuses"],
+    queryKey: ["issue_statuses"],
     queryFn: getIssueStatuses,
+  });
+
+  const issueLabels = useQuery({
+    queryKey: ["issue_labels"],
+    queryFn: getIssueLabels,
   });
 
   const onSubmit = (values: CreateIssueFormSchema) => {
@@ -94,7 +109,7 @@ export function CreateIssueDialog() {
       <DialogTrigger asChild>
         <Button>New Issue</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-md lg:max-w-md">
         <DialogHeader>
           <DialogTitle>New issue</DialogTitle>
           <DialogDescription>
@@ -121,7 +136,7 @@ export function CreateIssueDialog() {
                   >
                     <FormControl>
                       <SelectTrigger className="col-span-full sm:col-span-3">
-                        <SelectValue placeholder="Select status" />
+                        <SelectValue />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -130,7 +145,36 @@ export function CreateIssueDialog() {
                           key={status.id}
                           value={status.id.toString()}
                         >
-                          {status.name}
+                          {status.name || "None"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="label"
+              render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-2 sm:gap-x-4 sm:gap-y-1">
+                  <FormLabel className="sm:text-right col-span-full sm:col-span-1">
+                    Label
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="col-span-full sm:col-span-3">
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {issueLabels.data?.map((label) => (
+                        <SelectItem key={label.id} value={label.id.toString()}>
+                          {label.name || "None"}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -150,10 +194,7 @@ export function CreateIssueDialog() {
                   <FormControl className="col-span-full sm:col-span-3">
                     <Input {...field} />
                   </FormControl>
-                  <FormDescription className="text-gray-500 col-span-full sm:col-start-2 sm:col-span-3">
-                    This is the subject of your issue.
-                  </FormDescription>
-                  <FormMessage />
+                  <FormMessage className="col-span-full sm:col-start-2 sm:col-span-3" />
                 </FormItem>
               )}
             />
@@ -166,12 +207,9 @@ export function CreateIssueDialog() {
                     Description
                   </FormLabel>
                   <FormControl className="col-span-full sm:col-span-3">
-                    <Textarea {...field} />
+                    <Textarea className="h-40" {...field} />
                   </FormControl>
-                  <FormDescription className="text-gray-500 col-span-full sm:col-start-2 sm:col-span-3">
-                    This is the description of your issue.
-                  </FormDescription>
-                  <FormMessage />
+                  <FormMessage className="col-span-full sm:col-start-2 sm:col-span-3" />
                 </FormItem>
               )}
             />

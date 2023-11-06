@@ -1,5 +1,6 @@
 package com.ishiko.api.issue.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,11 +12,14 @@ public class CreateOrUpdateIssueDto {
     @Size(min = 1, max = 255, message = "Subject must be between 1 and 255 characters")
     private String subject;
     @Size(max = 1000, message = "Description must be a maximum of 1000 characters")
+    @Nullable
     private String description;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Nullable
     private Instant dueDate;
     @NotNull
     private Integer status;
+    @Nullable
     private Integer label;
 
     public CreateOrUpdateIssueDto() {

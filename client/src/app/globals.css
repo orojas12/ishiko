@@ -36,6 +36,17 @@
     --color-gray-700: 217 19% 27%;
     --color-gray-800: 215 28% 17%;
     --color-gray-900: 221 39% 11%;
+    --color-destructive-50: 0 86% 97%;
+    --color-destructive-100: 0 93% 94%;
+    --color-destructive-200: 0 96% 89%;
+    --color-destructive-300: 0 94% 82%;
+    --color-destructive-400: 0 91% 71%;
+    --color-destructive-500: 0 84% 60%;
+    --color-destructive-600: 0 72% 51%;
+    --color-destructive-700: 0 74% 42%;
+    --color-destructive-800: 0 70% 35%;
+    --color-destructive-900: 0 63% 31%;
+    --color-destructive-950: 0 75% 15%;
 
     /* shadcn/ui theme */
     --background: var(--color-gray-50);
@@ -50,8 +61,10 @@
     --input: var(--color-gray-300);
     --primary: var(--color-primary-600);
     --primary-foreground: var(--color-gray-50);
-    --secondary: var(--color-secondary-500);
+    --secondary: var(--color-secondary-600);
     --secondary-foreground: var(--color-gray-50);
+    --destructive: var(--color-destructive-500);
+    --destructive-foreground: var(--color-gray-50);
     --accent: var(--color-gray-200);
     --accent-foreground: var(--color-gray-900);
     --ring: var(--color-secondary-400);
