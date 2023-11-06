@@ -1,3 +1,14 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -7,6 +18,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -14,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  deleteIssue,
   getIssue,
   getIssueLabels,
   getIssueStatuses,
@@ -23,7 +41,13 @@ import { Issue } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
 
-export function IssueDetail({ issueId }: { issueId: number | undefined }) {
+export function IssueDetail({
+  issueId,
+  onClose,
+}: {
+  issueId: number | undefined;
+  onClose: () => void;
+}) {
   const queryClient = useQueryClient();
   const issue = useQuery({
     queryKey: ["issue", issueId],
@@ -39,10 +63,17 @@ export function IssueDetail({ issueId }: { issueId: number | undefined }) {
     queryKey: ["issue_labels"],
     queryFn: getIssueLabels,
   });
-  const mutation = useMutation({
+  const updateMutation = useMutation({
     mutationFn: updateIssue,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
       queryClient.invalidateQueries({ queryKey: ["issue", issueId] });
+    },
+  });
+  const deleteMutation = useMutation({
+    mutationFn: deleteIssue,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["issues"] });
     },
   });
 
@@ -50,7 +81,7 @@ export function IssueDetail({ issueId }: { issueId: number | undefined }) {
 
   const onStatusChange = (value: string) => {
     if (data !== undefined) {
-      mutation.mutate({
+      updateMutation.mutate({
         id: data.id,
         issue: {
           subject: data.subject,
@@ -60,6 +91,13 @@ export function IssueDetail({ issueId }: { issueId: number | undefined }) {
           label: data.label.id,
         },
       });
+    }
+  };
+
+  const onDelete = () => {
+    if (data !== undefined) {
+      deleteMutation.mutate(data.id);
+      onClose();
     }
   };
 
@@ -86,9 +124,38 @@ export function IssueDetail({ issueId }: { issueId: number | undefined }) {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" size="icon">
-            <MoreHorizontal />
-          </Button>
+          <AlertDialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem>Edit issue</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive focus:text-destructive">
+                  <AlertDialogTrigger>Delete issue</AlertDialogTrigger>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete this issue?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete this issue and cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-destructive hover:bg-destructive-600"
+                  onClick={onDelete}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </DialogHeader>
       <div className="col-span-full flex flex-col lg:flex-row-reverse lg:justify-end lg:items-start gap-6 lg:gap-16">

@@ -108,3 +108,14 @@ export async function updateIssue({
     throw new HttpError((data as HttpErrorResponseBody).message);
   }
 }
+
+export async function deleteIssue(id: number) {
+  const res = await fetch(`http://localhost:8080/issue/${id}`, {
+    method: "DELETE",
+  });
+  if (res.ok) {
+    return;
+  } else {
+    throw new HttpError("Failed to delete issue: " + id);
+  }
+}
