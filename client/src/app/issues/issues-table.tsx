@@ -72,9 +72,11 @@ export function IssuesTable() {
     <>
       <Dialog
         open={issueId !== undefined}
-        onOpenChange={() => setIssueId(undefined)}
+        onOpenChange={(open) => {
+          if (!open) setIssueId(undefined);
+        }}
       >
-        <IssueDetail issueId={issueId} />
+        <IssueDetail issueId={issueId} onClose={() => setIssueId(undefined)} />
       </Dialog>
       <CreateIssueDialog />
       <Table>
