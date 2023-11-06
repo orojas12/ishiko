@@ -40,9 +40,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-// TODO: fix 500 internal server error on form submit
-// TODO: fix form select value types (is it string or number???)
-
+/**
+ * Must match data type of {@link CreateOrUpdateIssue}
+ */
 const formSchema = z.object({
   subject: z
     .string({
@@ -59,9 +59,6 @@ const formSchema = z.object({
   label: z.coerce.number(),
 });
 
-/**
- * Must match data type of {@link CreateOrUpdateIssue}
- */
 export type CreateIssueFormSchema = z.infer<typeof formSchema>;
 
 export function CreateIssueDialog() {
