@@ -28,7 +28,7 @@ const columnHelper = createColumnHelper<Issue>();
 
 export function IssuesTable() {
   const issues = useQuery({ queryKey: ["issues"], queryFn: getIssues });
-  const [issueDetail, setIssueDetail] = useState<Issue | undefined>(undefined);
+  const [issueId, setIssueId] = useState<number | undefined>(undefined);
   const columns = [
     columnHelper.accessor("id", {
       header: "Id",
@@ -39,13 +39,7 @@ export function IssuesTable() {
       cell: (props) => (
         <Button
           variant="secondary-link"
-          onClick={() =>
-            setIssueDetail(
-              issues.data?.find(
-                (issue) => issue.id === props.row.getValue("id")
-              )
-            )
-          }
+          onClick={() => setIssueId(props.row.getValue("id"))}
         >
           {props.getValue()}
         </Button>
@@ -77,10 +71,10 @@ export function IssuesTable() {
   return (
     <>
       <Dialog
-        open={issueDetail !== undefined}
-        onOpenChange={() => setIssueDetail(undefined)}
+        open={issueId !== undefined}
+        onOpenChange={() => setIssueId(undefined)}
       >
-        <IssueDetail data={issueDetail} />
+        <IssueDetail issueId={issueId} />
       </Dialog>
       <CreateIssueDialog />
       <Table>

@@ -84,7 +84,13 @@ export async function createIssue(issue: CreateOrUpdateIssue) {
   }
 }
 
-export async function updateIssue(id: number, issue: CreateOrUpdateIssue) {
+export async function updateIssue({
+  id,
+  issue,
+}: {
+  id: number;
+  issue: CreateOrUpdateIssue;
+}) {
   const res = await fetch(`http://localhost:8080/issue/${id}`, {
     method: "PUT",
     headers: {
