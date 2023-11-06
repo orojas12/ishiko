@@ -6,26 +6,26 @@ import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Instant;
+import java.util.Optional;
 
 public class CreateOrUpdateIssueDto {
     @NotNull(message = "Subject cannot be null")
     @Size(min = 1, max = 255, message = "Subject must be between 1 and 255 characters")
     private String subject;
     @Size(max = 1000, message = "Description must be a maximum of 1000 characters")
-    @Nullable
-    private String description;
+    private String description = "";
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Nullable
     private Instant dueDate;
     @NotNull
-    private Integer status;
-    @Nullable
-    private Integer label;
+    private Integer status = 1;
+    @NotNull
+    private Integer label = 1;
 
     public CreateOrUpdateIssueDto() {
     }
 
-    public CreateOrUpdateIssueDto(String subject, String description, Instant dueDate, Integer status, Integer label) {
+    public CreateOrUpdateIssueDto(String subject, String description, @Nullable Instant dueDate, Integer status, Integer label) {
         this.subject = subject;
         this.description = description;
         this.dueDate = dueDate;
@@ -49,11 +49,11 @@ public class CreateOrUpdateIssueDto {
         this.description = description;
     }
 
-    public Instant getDueDate() {
-        return dueDate;
+    public Optional<Instant> getDueDate() {
+        return Optional.ofNullable(dueDate);
     }
 
-    public void setDueDate(Instant dueDate) {
+    public void setDueDate(@Nullable Instant dueDate) {
         this.dueDate = dueDate;
     }
 

@@ -1,8 +1,8 @@
 package com.ishiko.api.issue.dto;
 
 public class IssueStatusDto {
-    private Integer id;
-    private String name;
+    private Integer id = 1;
+    private String name = "";
 
     public IssueStatusDto() {
     }

@@ -49,11 +49,11 @@ public class IssueServiceTest {
         var label = new IssueLabel();
         issue.setStatus(status);
         issue.setLabel(label);
-        when(issueRepository.findAll()).thenReturn(
+        when(issueRepository.findAllByOrderByCreatedDateDesc()).thenReturn(
                 List.of(issue));
         IssueService service = getIssueService();
         List<IssueDto> issueDtoList = service.getIssues();
-        verify(issueRepository, times(1)).findAll();
+        verify(issueRepository, times(1)).findAllByOrderByCreatedDateDesc();
         assertThat(issueDtoList.size()).isEqualTo(1);
     }
 

@@ -51,7 +51,7 @@ class IssueControllerTest {
                 jsonPath("$[0].subject", is(dto.getSubject())),
                 jsonPath("$[0].description", is(dto.getDescription())),
                 jsonPath("$[0].createdDate", is(dto.getCreatedDate().toString())),
-                jsonPath("$[0].dueDate", is(dto.getDueDate().toString())),
+                jsonPath("$[0].dueDate", is(dto.getDueDate().orElseThrow().toString())),
                 jsonPath("$[0].status.id", is(dto.getStatus().getId())),
                 jsonPath("$[0].status.name", is(dto.getStatus().getName())),
                 jsonPath("$[0].label.id", is(dto.getLabel().getId())),
@@ -70,7 +70,7 @@ class IssueControllerTest {
                 jsonPath("$.subject", is(dto.getSubject())),
                 jsonPath("$.description", is(dto.getDescription())),
                 jsonPath("$.createdDate", is(dto.getCreatedDate().toString())),
-                jsonPath("$.dueDate", is(dto.getDueDate().toString())),
+                jsonPath("$.dueDate", is(dto.getDueDate().orElseThrow().toString())),
                 jsonPath("$.status.id", is(dto.getStatus().getId())),
                 jsonPath("$.status.name", is(dto.getStatus().getName())),
                 jsonPath("$.label.id", is(dto.getLabel().getId())),
@@ -94,7 +94,7 @@ class IssueControllerTest {
         var createDto = new CreateOrUpdateIssueDto("subject", "desc", Instant.now(),
                 2, 3);
         var issueDto = new IssueDto(1, createDto.getSubject(), createDto.getDescription(), Instant.now(),
-                createDto.getDueDate(), new IssueStatusDto(createDto.getStatus(), "status"),
+                createDto.getDueDate().orElse(null), new IssueStatusDto(createDto.getStatus(), "status"),
                 new IssueLabelDto(createDto.getLabel(), "label"));
         String json = objectMapper.writeValueAsString(createDto);
         when(issueService.createIssue(any())).thenReturn(issueDto);
@@ -105,7 +105,7 @@ class IssueControllerTest {
                         jsonPath("$.subject", is(issueDto.getSubject())),
                         jsonPath("$.description", is(issueDto.getDescription())),
                         jsonPath("$.createdDate", is(issueDto.getCreatedDate().toString())),
-                        jsonPath("$.dueDate", is(issueDto.getDueDate().toString())),
+                        jsonPath("$.dueDate", is(issueDto.getDueDate().orElseThrow().toString())),
                         jsonPath("$.status.id", is(issueDto.getStatus().getId())),
                         jsonPath("$.status.name", is(issueDto.getStatus().getName())),
                         jsonPath("$.label.id", is(issueDto.getLabel().getId())),
@@ -145,7 +145,7 @@ class IssueControllerTest {
         var updateDto = new CreateOrUpdateIssueDto("subject", "desc", Instant.now(),
                 2, 3);
         var issueDto = new IssueDto(id, updateDto.getSubject(), updateDto.getDescription(), Instant.now(),
-                updateDto.getDueDate(), new IssueStatusDto(updateDto.getStatus(), "status"),
+                updateDto.getDueDate().orElse(null), new IssueStatusDto(updateDto.getStatus(), "status"),
                 new IssueLabelDto(updateDto.getLabel(), "label"));
         String json = objectMapper.writeValueAsString(updateDto);
         when(issueService.updateIssue(eq(issueDto.getId()), any())).thenReturn(issueDto);
@@ -157,7 +157,7 @@ class IssueControllerTest {
                         jsonPath("$.subject", is(issueDto.getSubject())),
                         jsonPath("$.description", is(issueDto.getDescription())),
                         jsonPath("$.createdDate", is(issueDto.getCreatedDate().toString())),
-                        jsonPath("$.dueDate", is(issueDto.getDueDate().toString())),
+                        jsonPath("$.dueDate", is(issueDto.getDueDate().orElseThrow().toString())),
                         jsonPath("$.status.id", is(issueDto.getStatus().getId())),
                         jsonPath("$.status.name", is(issueDto.getStatus().getName())),
                         jsonPath("$.label.id", is(issueDto.getLabel().getId())),

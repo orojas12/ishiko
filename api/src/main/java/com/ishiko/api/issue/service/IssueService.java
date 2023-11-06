@@ -59,7 +59,7 @@ public class IssueService {
         Issue issue = new Issue();
         issue.setSubject(dto.getSubject());
         issue.setDescription(dto.getDescription());
-        issue.setDueDate(dto.getDueDate());
+        issue.setDueDate(dto.getDueDate().orElse(null));
         issue.setCreatedDate(Instant.now());
         Optional<IssueStatus> statusOptional = issueStatusRepository.findById(dto.getStatus());
         if (statusOptional.isPresent()) {
@@ -81,6 +81,7 @@ public class IssueService {
             Issue issue = optionalIssue.get();
             issue.setSubject(dto.getSubject());
             issue.setDescription(dto.getDescription());
+            issue.setDueDate(dto.getDueDate().orElse(null));
             Optional<IssueStatus> statusOptional = issueStatusRepository.findById(dto.getStatus());
             if (statusOptional.isPresent()) {
                 issue.setStatus(statusOptional.get());
@@ -117,6 +118,7 @@ public class IssueService {
         issueDto.setSubject(issue.getSubject());
         issueDto.setDescription(issue.getDescription());
         issueDto.setCreatedDate(issue.getCreatedDate());
+        issueDto.setDueDate(issue.getDueDate().orElse(null));
         issueDto.setStatus(entityToDto(issue.getStatus()));
         issueDto.setLabel(entityToDto(issue.getLabel()));
         return issueDto;

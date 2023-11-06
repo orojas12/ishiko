@@ -22,10 +22,10 @@ public class Issue {
     @Nullable
     private Instant dueDate;
     @ManyToOne
-    @JoinColumn(name = "status")
+    @JoinColumn(name = "status", nullable = false)
     private IssueStatus status = new IssueStatus();
     @ManyToOne
-    @JoinColumn(name = "label")
+    @JoinColumn(name = "label", nullable = false)
     private IssueLabel label = new IssueLabel();
 
     public Issue() {

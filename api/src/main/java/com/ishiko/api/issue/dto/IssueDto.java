@@ -14,15 +14,16 @@ public class IssueDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Instant createdDate;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Nullable
     private Instant dueDate;
-    private IssueStatusDto status;
-    private IssueLabelDto label;
+    private IssueStatusDto status = new IssueStatusDto();
+    private IssueLabelDto label = new IssueLabelDto();
 
     public IssueDto() {
     }
 
-    public IssueDto(Integer id, String subject, String description, Instant createdDate, Instant dueDate,
-                    IssueStatusDto status, @Nullable IssueLabelDto label) {
+    public IssueDto(Integer id, String subject, String description, Instant createdDate, @Nullable Instant dueDate,
+                    IssueStatusDto status, IssueLabelDto label) {
         this.id = id;
         this.subject = subject;
         this.description = description;
@@ -64,11 +65,11 @@ public class IssueDto {
         this.createdDate = createdDate;
     }
 
-    public Instant getDueDate() {
-        return dueDate;
+    public Optional<Instant> getDueDate() {
+        return Optional.ofNullable(dueDate);
     }
 
-    public void setDueDate(Instant dueDate) {
+    public void setDueDate(@Nullable Instant dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -80,8 +81,8 @@ public class IssueDto {
         this.status = status;
     }
 
-    public Optional<IssueLabelDto> getLabel() {
-        return Optional.ofNullable(label);
+    public IssueLabelDto getLabel() {
+        return label;
     }
 
     public void setLabel(IssueLabelDto label) {
