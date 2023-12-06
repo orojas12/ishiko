@@ -14,7 +14,7 @@ export type OAuth2TokenSetSchema = {
     oauth2_key_id: string;
     access_token: string;
     refresh_token?: string;
-    id_token?: string;
+    id_token: string;
 };
 
 export type OAuth2TokenSet = {
@@ -48,5 +48,5 @@ export type OAuth2TokenResponse = {
     expires_in: number;
     scope?: string;
     refresh_token?: string;
-    id_token?: string;
+    id_token: string;
 };
