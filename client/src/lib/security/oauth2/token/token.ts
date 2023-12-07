@@ -5,12 +5,18 @@ import { decodeJwt } from "../utils";
 
 export type OAuth2TokenSetDao = {
     getTokenSet: (
-        providerId: string,
-        providerUserId: string,
-    ) => OAuth2TokenSet | Promise<OAuth2TokenSet>;
+        tokenSetId: string,
+    ) => OAuth2TokenSet | undefined | Promise<OAuth2TokenSet | undefined>;
     createTokenSet: (
-        tokens: Omit<OAuth2TokenSetSchema, "id">,
+        accessToken: string,
+        refreshToken: string | null,
     ) => OAuth2TokenSet | Promise<OAuth2TokenSet>;
+    updateTokenSet: (
+        tokenSetId: string,
+        accessToken: string,
+        refreshToken?: string,
+    ) => OAuth2TokenSet | Promise<OAuth2TokenSet>;
+    tokenSetExists: (oauth2KeyId: string) => boolean | Promise<boolean>;
 };
 
 export class OAuth2TokenManager {
