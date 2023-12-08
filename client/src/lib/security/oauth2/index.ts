@@ -3,18 +3,17 @@ export type OAuth2KeySchema = {
     user_id: string;
     provider_id: string;
     provider_user_id: string;
-    token_set_id?: string;
 };
 
 export type OAuth2Key = {
     userId: string;
     providerId: string;
     providerUserId: string;
-    tokenSetId?: string;
 };
 
 export type OAuth2TokenSetSchema = {
     id: string;
+    oauth2_key_id: string;
     access_token: string;
     access_token_expires: string;
     refresh_token?: string;
@@ -22,14 +21,13 @@ export type OAuth2TokenSetSchema = {
 };
 
 export type OAuth2TokenSet = {
+    id: string;
     accessToken: {
         value: string;
-        claims: AccessTokenClaims;
         expires: Date;
     };
     refreshToken?: {
         value: string;
-        claims: JWTClaims;
         expires: Date;
     };
 };
@@ -43,16 +41,11 @@ export type JWTClaims = Record<string, any> & {
     jti: string;
 };
 
-export type AccessTokenClaims = JWTClaims & {
-    client_id: string;
-    scope?: string;
-};
-
 export type OAuth2TokenResponse = {
     token_type: string;
     access_token: string;
     expires_in: number;
     scope?: string;
     refresh_token?: string;
-    id_token?: string;
+    id_token: string;
 };

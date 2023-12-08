@@ -1,8 +1,6 @@
 import type { Database } from "better-sqlite3";
 import type { OAuth2TokenSetDao } from "./token";
-import { AccessTokenClaims, OAuth2TokenSet, OAuth2TokenSetSchema } from "..";
-import { nanoid } from "nanoid";
-import { decodeJwt } from "../utils";
+import { OAuth2TokenSet, OAuth2TokenSetSchema } from "..";
 
 export class DuplicateTokenSetError extends Error {
     constructor() {
@@ -18,33 +16,28 @@ export class SQLiteTokenDao implements OAuth2TokenSetDao {
     }
 
     createTokenSet = (
-        accessToken: string,
-        refreshToken: string | null,
+        oauth2KeyId: string,
+        tokenSet: OAuth2TokenSet,
     ): OAuth2TokenSet => {
-        const tokenSetId = nanoid();
-        const decodedAccessToken = decodeJwt(accessToken);
-        const decodedRefreshToken = refreshToken
-            ? decodeJwt(refreshToken)
-            : null;
-
         this.db
             .prepare(
                 `
                 INSERT INTO oauth2_token_set
                 (
-                    id, access_token, access_token_expires, refresh_token,
-                    refresh_token_expires
+                    id, oauth2_key_id, access_token, access_token_expires, refresh_token,
+                    refresh_token_expires 
                 )
-                VALUES (?, ?, ?, ?, ?);
+                VALUES (?, ?, ?, ?, ?, ?);
                 `,
             )
             .run(
-                tokenSetId,
-                accessToken,
-                new Date(decodedAccessToken.exp).toISOString(),
-                refreshToken,
-                decodedRefreshToken
-                    ? new Date(decodedRefreshToken.exp).toISOString()
+                tokenSet.id,
+                oauth2KeyId,
+                tokenSet.accessToken.value,
+                tokenSet.accessToken.expires.toISOString(),
+                tokenSet.refreshToken?.value || null,
+                tokenSet.refreshToken?.value
+                    ? tokenSet.refreshToken.expires.toISOString()
                     : null,
             );
         const result = this.db
@@ -57,11 +50,44 @@ export class SQLiteTokenDao implements OAuth2TokenSetDao {
                 WHERE id = ?;
                 `,
             )
-            .get(tokenSetId) as OAuth2TokenSetSchema;
+            .get(tokenSet.id) as OAuth2TokenSetSchema;
         return this.generateTokenSet(result);
     };
 
-    getTokenSet = (tokenSetId: string): OAuth2TokenSet | undefined => {
+    updateTokenSet = (tokens: OAuth2TokenSet): OAuth2TokenSet => {
+        this.db
+            .prepare(
+                `
+                UPDATE oauth2_key_set
+                SET 
+                    access_token = ?,
+                    access_token_expires = ?,
+                    refresh_token = ?,
+                    refresh_token_expires = ?,
+                WHERE oauth2_key_id = ?;
+                `,
+            )
+            .run(
+                tokens.accessToken.value,
+                tokens.accessToken.expires,
+                tokens.refreshToken?.value || null,
+                tokens.refreshToken?.value ? tokens.refreshToken.expires : null,
+            );
+        const result = this.db
+            .prepare(
+                `
+            SELECT
+                id, oauth2_key_id, access_token, access_token_expires,
+                refresh_token, refresh_token_expires
+            FROM oauth2_token_set
+            WHERE id = ?;
+            `,
+            )
+            .get(tokens.id) as OAuth2TokenSetSchema | undefined;
+        return this.generateTokenSet(result);
+    };
+
+    getTokenSetById = (tokenSetId: string): OAuth2TokenSet | undefined => {
         const result = this.db
             .prepare(
                 `
@@ -69,35 +95,49 @@ export class SQLiteTokenDao implements OAuth2TokenSetDao {
                     id, access_token, access_token_expires, 
                     refresh_token, refresh_token_expires
                 FROM oauth2_token_set
-                WHERE id = ?
+                WHERE id = ?;
                 `,
             )
-            .get(tokenSetId) as OAuth2TokenSetSchema;
+            .get(tokenSetId) as OAuth2TokenSetSchema | undefined;
         return this.generateTokenSet(result);
     };
 
-    tokenSetExists = (oauth2KeyId: string): boolean => {
+    getTokenSetsByKeyId = (
+        oauth2KeyId: string,
+    ): OAuth2TokenSet[] | undefined => {
+        const results = this.db
+            .prepare(
+                `
+                SELECT
+                    id, oauth2_key_id, access_token, access_token_expires,
+                    refresh_token, refresh_token_expires
+                FROM oauth2_token_set
+                WHERE oauth2_key_id = ?;
+                `,
+            )
+            .all(oauth2KeyId) as OAuth2TokenSetSchema[];
+        return results.map(this.generateTokenSet);
+    };
+
+    tokenSetExists = (tokenSetId: string): boolean => {
         return Boolean(
             this.db
-                .prepare(
-                    "SELECT 1 FROM oauth2_token WHERE oauth2_key_id = ? LIMIT 1;",
-                )
-                .get(oauth2KeyId) as any,
+                .prepare("SELECT 1 FROM oauth2_token_set WHERE id = ? LIMIT 1;")
+                .get(tokenSetId) as any,
         );
     };
 
     generateTokenSet = (tokens: OAuth2TokenSetSchema) => {
         return {
+            id: tokens.id,
             accessToken: {
                 value: tokens.access_token,
-                claims: decodeJwt(tokens.access_token) as AccessTokenClaims,
                 expires: new Date(tokens.access_token_expires),
             },
             refreshToken:
                 tokens.refresh_token && tokens.refresh_token_expires
                     ? {
                           value: tokens.refresh_token,
-                          claims: decodeJwt(tokens.refresh_token),
                           expires: new Date(tokens.refresh_token_expires),
                       }
                     : undefined,
