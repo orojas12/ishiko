@@ -14,7 +14,7 @@ import { nanoid } from "nanoid";
 export type OAuth2TokenSetDao = {
     getTokenSetById: (
         tokenSetId: string,
-    ) => OAuth2TokenSet | undefined | Promise<OAuth2TokenSet | undefined>;
+    ) => OAuth2TokenSet | null | Promise<OAuth2TokenSet | null>;
     getTokenSetsByKeyId: (
         oauth2KeyId: string,
     ) => OAuth2TokenSet[] | undefined | Promise<OAuth2TokenSet[] | undefined>;

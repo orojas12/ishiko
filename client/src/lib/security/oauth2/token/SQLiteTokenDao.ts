@@ -1,6 +1,7 @@
 import type { Database } from "better-sqlite3";
 import type { OAuth2TokenSetDao } from "./token";
 import { OAuth2TokenSet, OAuth2TokenSetSchema } from "..";
+import { RowNotFoundError } from "../error";
 
 export class DuplicateTokenSetError extends Error {
     constructor() {
@@ -55,39 +56,45 @@ export class SQLiteTokenDao implements OAuth2TokenSetDao {
     };
 
     updateTokenSet = (tokens: OAuth2TokenSet): OAuth2TokenSet => {
-        this.db
+        const info = this.db
             .prepare(
                 `
-                UPDATE oauth2_key_set
+                UPDATE oauth2_token_set
                 SET 
                     access_token = ?,
                     access_token_expires = ?,
                     refresh_token = ?,
-                    refresh_token_expires = ?,
-                WHERE oauth2_key_id = ?;
+                    refresh_token_expires = ?
+                WHERE id = ?;
                 `,
             )
             .run(
                 tokens.accessToken.value,
-                tokens.accessToken.expires,
+                tokens.accessToken.expires.toISOString(),
                 tokens.refreshToken?.value || null,
-                tokens.refreshToken?.value ? tokens.refreshToken.expires : null,
+                tokens.refreshToken?.value
+                    ? tokens.refreshToken.expires.toISOString()
+                    : null,
+                tokens.id,
             );
+        if (info.changes === 0) {
+            throw new RowNotFoundError();
+        }
         const result = this.db
             .prepare(
                 `
-            SELECT
-                id, oauth2_key_id, access_token, access_token_expires,
-                refresh_token, refresh_token_expires
-            FROM oauth2_token_set
-            WHERE id = ?;
-            `,
+                SELECT
+                    id, oauth2_key_id, access_token, access_token_expires,
+                    refresh_token, refresh_token_expires
+                FROM oauth2_token_set
+                WHERE id = ?;
+                `,
             )
-            .get(tokens.id) as OAuth2TokenSetSchema | undefined;
+            .get(tokens.id) as OAuth2TokenSetSchema;
         return this.generateTokenSet(result);
     };
 
-    getTokenSetById = (tokenSetId: string): OAuth2TokenSet | undefined => {
+    getTokenSetById = (tokenSetId: string): OAuth2TokenSet | null => {
         const result = this.db
             .prepare(
                 `
@@ -99,6 +106,9 @@ export class SQLiteTokenDao implements OAuth2TokenSetDao {
                 `,
             )
             .get(tokenSetId) as OAuth2TokenSetSchema | undefined;
+        if (!result) {
+            return null;
+        }
         return this.generateTokenSet(result);
     };
 
