@@ -112,9 +112,7 @@ export class SQLiteTokenDao implements OAuth2TokenSetDao {
         return this.generateTokenSet(result);
     };
 
-    getTokenSetsByKeyId = (
-        oauth2KeyId: string,
-    ): OAuth2TokenSet[] | undefined => {
+    getAllTokenSetsByKeyId = (oauth2KeyId: string): OAuth2TokenSet[] => {
         const results = this.db
             .prepare(
                 `
