@@ -4,14 +4,14 @@ import { pathToRegexp, match, parse, compile } from "path-to-regexp";
 export function setUpMiddleware(middleware: RequestMiddleware[]) {
     const _middleware: _RequestMiddleware[] = setUpWithPathMatchers(middleware);
 
-    return function (request: NextRequest) {
+    return async function (request: NextRequest) {
         let response: NextResponse | void;
         for (let i = 0; i < _middleware.length; i++) {
             if (
                 _middleware[i].matches?.(request) ??
                 _middleware[i].pathMatches(request.nextUrl.pathname)
             ) {
-                response = _middleware[i].handleRequest(request);
+                response = await _middleware[i].handleRequest(request);
                 if (response) {
                     return response;
                 }
@@ -41,7 +41,7 @@ export function setUpWithPathMatchers(
 }
 
 export type RequestMiddleware = {
-    handleRequest: (request: NextRequest) => NextResponse | void;
+    handleRequest: (request: NextRequest) => Promise<NextResponse | void>;
     matches?: (request: NextRequest) => boolean;
     path?: string[];
 };
