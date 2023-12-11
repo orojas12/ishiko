@@ -17,7 +17,7 @@ export type OAuth2TokenSetDao = {
     ) => OAuth2TokenSet | null | Promise<OAuth2TokenSet | null>;
     getAllTokenSetsByKeyId: (
         oauth2KeyId: string,
-    ) => OAuth2TokenSet[] | undefined | Promise<OAuth2TokenSet[] | undefined>;
+    ) => OAuth2TokenSet[] | Promise<OAuth2TokenSet[]>;
     createTokenSet: (
         oauth2KeyId: string,
         tokenSet: OAuth2TokenSet,
