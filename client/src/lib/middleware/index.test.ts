@@ -6,7 +6,7 @@ import { setUpMiddleware, setUpWithPathMatchers } from ".";
 it("correctly sets up regexp matchers", () => {
     const middleware = [
         {
-            handleRequest: (_: any) => undefined,
+            handleRequest: async (_: any) => {},
             undefined,
             path: ["/users", "/posts/(.*)", "/messages", "/comments/(.*)/test"],
         },
@@ -24,7 +24,7 @@ it("correctly sets up regexp matchers", () => {
     });
 });
 
-it("calls middleware if matched with matches property", () => {
+it("calls middleware if matched with matches property", async () => {
     const mockFn1 = jest.fn();
     const mockFn2 = jest.fn();
     const mockFn3 = jest.fn();
@@ -44,13 +44,13 @@ it("calls middleware if matched with matches property", () => {
     ];
     const run = setUpMiddleware(middleware);
     const request = new NextRequest("http://example.com/test");
-    run(request);
+    await run(request);
     expect(mockFn1).toHaveBeenCalledTimes(1);
     expect(mockFn2).toHaveBeenCalledTimes(1);
     expect(mockFn3).toHaveBeenCalledTimes(1);
 });
 
-it("calls middleware if matched with path property", () => {
+it("calls middleware if matched with path property", async () => {
     const mockFn1 = jest.fn();
     const mockFn2 = jest.fn();
     const mockFn3 = jest.fn();
@@ -70,13 +70,13 @@ it("calls middleware if matched with path property", () => {
     ];
     const run = setUpMiddleware(middleware);
     const request = new NextRequest("http://example.com/test/1");
-    run(request);
+    await run(request);
     expect(mockFn1).toHaveBeenCalledTimes(1);
     expect(mockFn2).not.toHaveBeenCalled();
     expect(mockFn3).toHaveBeenCalledTimes(1);
 });
 
-it("prioritizes mathes property over path property", () => {
+it("prioritizes matches property over path property", async () => {
     const mockFn1 = jest.fn();
     const mockFn2 = jest.fn();
     const middleware = [
@@ -93,7 +93,7 @@ it("prioritizes mathes property over path property", () => {
     ];
     const run = setUpMiddleware(middleware);
     const request = new NextRequest("http://example.com/test/1");
-    run(request);
+    await run(request);
     expect(mockFn1).not.toHaveBeenCalled();
     expect(mockFn2).toHaveBeenCalledTimes(1);
 });
