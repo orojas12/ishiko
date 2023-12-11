@@ -7,7 +7,7 @@ export type UserDao = {
     getUserByOAuth2Key: (
         providerId: string,
         providerUserId: string,
-    ) => User | undefined | Promise<User | undefined>;
+    ) => User | null | Promise<User | null>;
     createUserWithOAuth2Key: (
         username: string,
         providerId: string,
