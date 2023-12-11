@@ -7,7 +7,7 @@ import {
 } from "..";
 import { ProviderConfig } from "../providers/config";
 import { validateOAuth2AuthorizationCode } from "@lucia-auth/oauth";
-import { decodeJwt } from "../utils";
+import { decodeJwt } from "../util";
 import { UserDao } from "../user/user";
 import { nanoid } from "nanoid";
 
