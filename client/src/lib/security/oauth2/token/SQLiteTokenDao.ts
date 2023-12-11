@@ -1,5 +1,5 @@
 import type { Database } from "better-sqlite3";
-import type { OAuth2TokenSetDao } from "./token";
+import type { OAuth2TokenSetDao } from ".";
 import { OAuth2TokenSet, OAuth2TokenSetSchema } from "..";
 import { RowNotFoundError } from "../error";
 

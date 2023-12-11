@@ -1,3 +1,5 @@
+import type { User } from "../../user";
+
 export type ProviderConfig = {
     providerId: string;
     authorizationEndpoint: string;
@@ -10,6 +12,9 @@ export type ProviderConfig = {
     };
     scope: string[];
     checks: "pkce" | "state" | "none";
+    getUserDetailsFromIdToken: (
+        idToken: Record<string, unknown>,
+    ) => Omit<User, "id">;
 };
 
 export enum AuthenticationMethod {

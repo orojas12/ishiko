@@ -17,7 +17,7 @@ describe("createTokenSet()", () => {
         db.exec(schema);
         db.exec(
             `
-            INSERT INTO user (id, name)
+            INSERT INTO user (id, username)
             VALUES ('user1', 'name');
             INSERT INTO oauth2_key (id, user_id, provider_id, provider_user_id)
             VALUES ('key1', 'user1', 'provider1', 'provideruser1');
@@ -103,7 +103,7 @@ describe("updateTokenSet()", () => {
     db.exec(schema);
     db.exec(
         `
-        INSERT INTO user (id, name)
+        INSERT INTO user (id, username)
         VALUES ('user1', 'name');
         INSERT INTO oauth2_key (id, user_id, provider_id, provider_user_id)
         VALUES ('key1', 'user1', 'provider1', 'provideruser1');
@@ -208,7 +208,7 @@ describe("getTokenSetById()", () => {
         db.exec(schema);
         db.exec(
             `
-            INSERT INTO user (id, name)
+            INSERT INTO user (id, username)
             VALUES ('user1', 'name');
             INSERT INTO oauth2_key (id, user_id, provider_id, provider_user_id)
             VALUES ('key1', 'user1', 'provider1', 'provideruser1');
@@ -276,7 +276,7 @@ describe("getAllTokenSetsByKeyId()", () => {
         db.exec(schema);
         db.exec(
             `
-            INSERT INTO user (id, name)
+            INSERT INTO user (id, username)
             VALUES ('user1', 'name');
             INSERT INTO oauth2_key (id, user_id, provider_id, provider_user_id)
             VALUES ('key1', 'user1', 'provider1', 'provideruser1');
@@ -379,7 +379,7 @@ describe("tokenSetExists()", () => {
         db.exec(schema);
         db.exec(
             `
-            INSERT INTO user (id, name)
+            INSERT INTO user (id, username)
             VALUES ('user1', 'name');
             INSERT INTO oauth2_key (id, user_id, provider_id, provider_user_id)
             VALUES ('key1', 'user1', 'provider1', 'provideruser1');

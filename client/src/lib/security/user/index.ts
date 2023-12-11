@@ -1,6 +1,11 @@
 export type User = {
     id: string;
-    name: string;
+    username: string;
+};
+
+export type UserSchema = {
+    id: string;
+    username: string;
 };
 
 export type UserDao = {
@@ -9,8 +14,8 @@ export type UserDao = {
         providerUserId: string,
     ) => User | null | Promise<User | null>;
     createUserWithOAuth2Key: (
-        username: string,
         providerId: string,
         providerUserId: string,
+        user: Omit<User, "id">,
     ) => User | Promise<User>;
 };

@@ -1,6 +1,6 @@
 CREATE TABLE user (
     id text PRIMARY KEY NOT NULL,
-    name text
+    username text
 );
 
 CREATE TABLE oauth2_key (

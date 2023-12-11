@@ -1,10 +1,11 @@
 import { validateOAuth2AuthorizationCode } from "@lucia-auth/oauth";
 import { JWTClaims, OAuth2TokenResponse, OAuth2TokenSet } from "..";
-import { OAuth2KeyDao, OAuth2TokenSetDao } from "../token/token";
-import { UserDao } from "../user/user";
+import { OAuth2TokenSetDao } from "../token";
+import { User, UserDao } from "../../user";
 import { ProviderConfig } from "./config";
 import { decodeJwt } from "../util";
 import { nanoid } from "nanoid";
+import { OAuth2KeyDao } from "../key";
 
 export class OAuth2Provider {
     readonly config: ProviderConfig;
@@ -75,5 +76,24 @@ export class OAuth2Provider {
         } else {
             return this.tokenDao.createTokenSet(oauth2KeyId, tokens);
         }
+    };
+
+    getUserByOAuth2Key = async (
+        providerId: string,
+        providerUserId: string,
+    ): Promise<User | null> => {
+        return this.userDao.getUserByOAuth2Key(providerId, providerUserId);
+    };
+
+    createUserWithOAuth2Key = async (
+        providerId: string,
+        providerUserId: string,
+        user: Omit<User, "id">,
+    ) => {
+        return this.userDao.createUserWithOAuth2Key(
+            user.username,
+            providerId,
+            providerUserId,
+        );
     };
 }
