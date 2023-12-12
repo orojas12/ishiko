@@ -6,6 +6,7 @@ export type OAuth2KeySchema = {
 };
 
 export type OAuth2Key = {
+    id: string;
     userId: string;
     providerId: string;
     providerUserId: string;

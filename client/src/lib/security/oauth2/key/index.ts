@@ -1,10 +1,10 @@
 import { OAuth2Key } from "..";
 
 export type OAuth2KeyDao = {
-    getKeyByProviderAndProviderUser: (
+    getKey: (
         providerId: string,
         providerUserId: string,
-    ) => OAuth2Key | undefined | Promise<OAuth2Key | undefined>;
+    ) => OAuth2Key | null | Promise<OAuth2Key | null>;
     createKey: (
         providerId: string,
         providerUserId: string,
