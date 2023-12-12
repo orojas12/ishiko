@@ -6,6 +6,7 @@ import { ProviderConfig } from "./config";
 import { decodeJwt } from "../util";
 import { nanoid } from "nanoid";
 import { OAuth2KeyDao } from "../key";
+import { RowNotFoundError } from "../error";
 
 export class OAuth2Provider {
     readonly config: ProviderConfig;
@@ -67,14 +68,29 @@ export class OAuth2Provider {
         };
     };
 
-    saveTokenSet = async (
+    createTokenSet = async (
         tokens: OAuth2TokenSet,
-        oauth2KeyId: string,
+        providerId: string,
+        providerUserId: string,
     ): Promise<OAuth2TokenSet> => {
-        if (this.tokenDao.tokenSetExists(tokens.id)) {
+        const key = await this.keyDao.getKey(providerId, providerUserId);
+        if (!key) {
+            throw new RowNotFoundError(
+                `No oauth2 key found for ${providerId}:${providerUserId}`,
+            );
+        }
+        return this.tokenDao.createTokenSet(key.id, tokens);
+    };
+
+    updateTokenSet = async (
+        tokens: OAuth2TokenSet,
+    ): Promise<OAuth2TokenSet> => {
+        if (await this.tokenDao.tokenSetExists(tokens.id)) {
             return this.tokenDao.updateTokenSet(tokens);
         } else {
-            return this.tokenDao.createTokenSet(oauth2KeyId, tokens);
+            throw new RowNotFoundError(
+                `No token set found for id: ${tokens.id}`,
+            );
         }
     };
 
@@ -91,9 +107,9 @@ export class OAuth2Provider {
         user: Omit<User, "id">,
     ) => {
         return this.userDao.createUserWithOAuth2Key(
-            user.username,
             providerId,
             providerUserId,
+            user,
         );
     };
 }
