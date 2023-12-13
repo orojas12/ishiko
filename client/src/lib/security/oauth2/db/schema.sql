@@ -25,11 +25,10 @@ CREATE TABLE oauth2_token_set (
         ON DELETE CASCADE ON UPDATE RESTRICT
 );
 
-CREATE TABLE user_session (
+CREATE TABLE session (
     id text PRIMARY KEY NOT NULL,
     user_id text NOT NULL,
-    active_expires text NOT NULL,
-    idle_expires text NOT NULL,
+    expires text NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user (id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
