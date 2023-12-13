@@ -5,3 +5,9 @@ export type Session = {
     user: User;
     expires: Date;
 };
+
+export type SessionSchema = {
+    id: string;
+    user_id: string;
+    expires: string;
+};
