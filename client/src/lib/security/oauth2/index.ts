@@ -33,6 +33,13 @@ export type OAuth2TokenSet = {
     };
 };
 
+export type OidcTokenSet = OAuth2TokenSet & {
+    idToken: {
+        value: string;
+        claims: JWTClaims;
+    };
+};
+
 export type JWTClaims = Record<string, any> & {
     iss: string;
     sub: string;
