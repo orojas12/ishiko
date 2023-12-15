@@ -1,9 +1,9 @@
-import type { Database } from "better-sqlite3";
-import type { OAuth2KeyDao } from ".";
-import type { OAuth2Key, OAuth2KeySchema } from "..";
+import { DuplicateRowError } from "../error";
 import { SqliteError } from "better-sqlite3";
 import { nanoid } from "nanoid";
-import { DuplicateRowError } from "../error";
+
+import type { Database } from "better-sqlite3";
+import type { OAuth2Key, OAuth2KeySchema, OAuth2KeyDao } from "./";
 
 export class SQLiteKeyDao implements OAuth2KeyDao {
     db: Database;

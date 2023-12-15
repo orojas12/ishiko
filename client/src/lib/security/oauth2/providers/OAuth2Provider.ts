@@ -1,12 +1,14 @@
-import { validateOAuth2AuthorizationCode } from "@lucia-auth/oauth";
-import { JWTClaims, OAuth2TokenResponse, OAuth2TokenSet } from "..";
 import { OAuth2TokenSetDao } from "../token";
-import { User, UserDao } from "../../user";
-import { ProviderConfig } from "./config";
-import { decodeJwt } from "../util";
-import { nanoid } from "nanoid";
 import { OAuth2KeyDao } from "../key";
 import { RowNotFoundError } from "../error";
+import { UserDao } from "../../user";
+import { decodeJwt } from "../util";
+import { validateOAuth2AuthorizationCode } from "@lucia-auth/oauth";
+import { nanoid } from "nanoid";
+
+import type { ProviderConfig } from "./";
+import type { JWTClaims, OAuth2TokenResponse, OAuth2TokenSet } from "../token";
+import type { User } from "../../user";
 
 export class OAuth2Provider {
     readonly config: ProviderConfig;
