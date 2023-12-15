@@ -3,7 +3,10 @@ import { OAuth2KeyDao } from "../key";
 import { RowNotFoundError } from "../error";
 import { UserDao } from "../../user";
 import { decodeJwt } from "../util";
-import { validateOAuth2AuthorizationCode } from "@lucia-auth/oauth";
+import {
+    createOAuth2AuthorizationUrlWithPKCE,
+    validateOAuth2AuthorizationCode,
+} from "@lucia-auth/oauth";
 import { nanoid } from "nanoid";
 
 import type { ProviderConfig } from "./";
@@ -68,6 +71,20 @@ export class OAuth2Provider {
                 claims: decodedIdToken,
             },
         };
+    };
+
+    getAuthorizationUrl = async (): Promise<
+        readonly [url: URL, codeVerifier: string, state: string]
+    > => {
+        return createOAuth2AuthorizationUrlWithPKCE(
+            this.config.authorizationEndpoint,
+            {
+                clientId: this.config.client.id,
+                scope: this.config.scope,
+                codeChallengeMethod: "S256",
+                redirectUri: this.config.redirectUri,
+            },
+        );
     };
 
     createTokenSet = async (
