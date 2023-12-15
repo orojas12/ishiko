@@ -34,9 +34,7 @@ export class DatabaseSessionManager implements SessionManager {
         const sessionId = nanoid();
         const session = {
             id: sessionId,
-            user: {
-                id: userId,
-            },
+            userId: userId,
             expires: new Date(Date.now() + sevenDays),
         };
         await this.sessionDao.createSession(session as Session);

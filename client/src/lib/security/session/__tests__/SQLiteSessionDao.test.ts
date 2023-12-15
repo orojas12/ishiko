@@ -32,7 +32,7 @@ describe("getSession()", () => {
         );
         const result = (await sessionDao.getSession("session1")) as Session;
         expect(result.id).toEqual("session1");
-        expect(result.user.id).toEqual("user1");
+        expect(result.userId).toEqual("user1");
         expect(result.expires.toISOString()).toEqual(expires);
     });
 
@@ -62,10 +62,7 @@ describe("createSession()", () => {
     test("creates session", async () => {
         const session = {
             id: "session1",
-            user: {
-                id: "user1",
-                username: "john",
-            },
+            userId: "user1",
             expires: new Date(),
         };
         await sessionDao.createSession(session);
@@ -78,17 +75,14 @@ describe("createSession()", () => {
             )
             .get(session.id) as SessionSchema;
         expect(result.id).toEqual(session.id);
-        expect(result.user_id).toEqual(session.user.id);
+        expect(result.user_id).toEqual(session.userId);
         expect(result.expires).toEqual(session.expires.toISOString());
     });
 
     test("throws RowNotFoundError if user id not found", async () => {
         const session = {
             id: "session2",
-            user: {
-                id: "user2",
-                username: "sarah",
-            },
+            userId: "user2",
             expires: new Date(),
         };
         expect(sessionDao.createSession(session)).rejects.toThrow(
@@ -120,10 +114,7 @@ describe("updateSession()", () => {
     test("updates session", async () => {
         const session = {
             id: "session1",
-            user: {
-                id: "user2",
-                username: "john",
-            },
+            userId: "user2",
             expires: new Date(),
         };
         await sessionDao.updateSession(session);
@@ -136,17 +127,14 @@ describe("updateSession()", () => {
             )
             .get(session.id) as SessionSchema;
         expect(result.id).toEqual(session.id);
-        expect(result.user_id).toEqual(session.user.id);
+        expect(result.user_id).toEqual(session.userId);
         expect(result.expires).toEqual(session.expires.toISOString());
     });
 
     test("throws RowNotFoundError if session id not found", async () => {
         const session = {
             id: "session0",
-            user: {
-                id: "user1",
-                username: "john",
-            },
+            userId: "user1",
             expires: new Date(),
         };
         await expect(sessionDao.updateSession(session)).rejects.toThrow(
@@ -157,10 +145,7 @@ describe("updateSession()", () => {
     test("throws RowNowFoundError if user id not found", async () => {
         const session = {
             id: "session1",
-            user: {
-                id: "user0",
-                username: "john",
-            },
+            userId: "user0",
             expires: new Date(),
         };
         await expect(sessionDao.updateSession(session)).rejects.toThrow(

@@ -27,10 +27,7 @@ export class SQLiteSessionDao implements SessionDao {
         if (!result) return null;
         return {
             id: result.id,
-            user: {
-                id: result.user_id,
-                username: result.username,
-            },
+            userId: result.user_id,
             expires: new Date(result.expires),
         };
     };
@@ -44,18 +41,14 @@ export class SQLiteSessionDao implements SessionDao {
                 VALUES (?, ?, ?);
                 `,
                 )
-                .run(
-                    session.id,
-                    session.user.id,
-                    session.expires.toISOString(),
-                );
+                .run(session.id, session.userId, session.expires.toISOString());
         } catch (error) {
             if (
                 error instanceof SqliteError &&
                 error.code === "SQLITE_CONSTRAINT_FOREIGNKEY"
             ) {
                 throw new RowNotFoundError(
-                    `User id: ${session.user.id} not found`,
+                    `User id: ${session.userId} not found`,
                 );
             }
         }
@@ -77,7 +70,7 @@ export class SQLiteSessionDao implements SessionDao {
                 )
                 .run(
                     session.id,
-                    session.user.id,
+                    session.userId,
                     session.expires.toISOString(),
                     session.id,
                 );
@@ -87,7 +80,7 @@ export class SQLiteSessionDao implements SessionDao {
                 error.code === "SQLITE_CONSTRAINT_FOREIGNKEY"
             ) {
                 throw new RowNotFoundError(
-                    `user id: ${session.user.id} not found`,
+                    `user id: ${session.userId} not found`,
                 );
             } else {
                 throw error;
