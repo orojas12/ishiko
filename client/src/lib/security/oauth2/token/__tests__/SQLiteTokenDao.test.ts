@@ -1,10 +1,10 @@
 /** @jest-environment node */
-import { SQLiteTokenDao } from "../";
+import { SQLiteTokenDao } from "..";
 import { RowNotFoundError } from "../../error";
 import { readFileSync } from "fs";
 import Database from "better-sqlite3";
 
-import type { OAuth2TokenSet, OAuth2TokenSetSchema } from "../.";
+import type { OAuth2TokenSet, OAuth2TokenSetSchema } from "..";
 
 describe("createTokenSet()", () => {
     const db = new Database(":memory:");

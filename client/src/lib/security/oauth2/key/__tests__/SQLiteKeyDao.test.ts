@@ -1,10 +1,10 @@
 /** @jest-environment node */
-import { SQLiteKeyDao } from "../";
+import { SQLiteKeyDao } from "..";
 import { DuplicateRowError } from "../../error";
 import { readFileSync } from "fs";
 import Database from "better-sqlite3";
 
-import type { OAuth2Key, OAuth2KeySchema } from "../";
+import type { OAuth2Key, OAuth2KeySchema } from "..";
 
 describe("getKey()", () => {
     const db = new Database(":memory:");

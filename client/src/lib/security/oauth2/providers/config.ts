@@ -11,7 +11,7 @@ export type ProviderConfig = {
         authenticationMethod: AuthenticationMethod;
     };
     scope: string[];
-    checks: "pkce" | "state" | "none";
+    usePKCE: boolean;
     getUserDetailsFromIdToken: (
         idToken: Record<string, unknown>,
     ) => Omit<User, "id">;

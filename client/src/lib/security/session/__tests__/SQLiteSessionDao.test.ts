@@ -1,9 +1,10 @@
 /** @jest-environment node */
+import { SQLiteSessionDao } from "..";
+import { RowNotFoundError } from "../../oauth2/error";
 import Database from "better-sqlite3";
 import { readFileSync } from "fs";
-import { SQLiteSessionDao } from "../SQLiteSessionDao";
-import { Session, SessionSchema } from "../types";
-import { RowNotFoundError } from "../../oauth2/error";
+
+import type { Session, SessionSchema } from "..";
 
 describe("getSession()", () => {
     const db = new Database(":memory:");

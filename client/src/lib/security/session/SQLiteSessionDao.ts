@@ -1,8 +1,8 @@
-import type { Database, RunResult } from "better-sqlite3";
-import type { SessionDao } from "./SessionDao";
-import { SqliteError } from "better-sqlite3";
-import { Session, SessionSchema } from "./types";
 import { RowNotFoundError } from "../oauth2/error";
+import { SqliteError } from "better-sqlite3";
+
+import type { Database, RunResult } from "better-sqlite3";
+import type { Session, SessionSchema, SessionDao } from ".";
 
 export class SQLiteSessionDao implements SessionDao {
     db: Database;

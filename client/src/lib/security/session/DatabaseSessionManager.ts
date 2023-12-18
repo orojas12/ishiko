@@ -1,8 +1,7 @@
-import type { NextRequest, NextResponse } from "next/server";
-import type { SessionDao } from "./SessionDao";
-import type { SessionManager } from "./SessionManager";
-import type { Session } from "./types";
+import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
+
+import type { Session, SessionDao, SessionManager } from ".";
 
 export class DatabaseSessionManager implements SessionManager {
     sessionDao: SessionDao;
@@ -11,13 +10,13 @@ export class DatabaseSessionManager implements SessionManager {
         this.sessionDao = sessionDao;
     }
 
-    getSession = async (request: NextRequest): Promise<Session | null> => {
-        const sessionId = this.getSessionCookie(request);
+    getSession = async (): Promise<Session | null> => {
+        const sessionId = cookies().get("session")?.value;
         return sessionId ? this.sessionDao.getSession(sessionId) : null;
     };
 
-    validateSession = async (request: NextRequest): Promise<Session | null> => {
-        const session = await this.getSession(request);
+    validateSession = async (): Promise<Session | null> => {
+        const session = await this.getSession();
         if (!session) {
             return null;
         }
@@ -41,18 +40,21 @@ export class DatabaseSessionManager implements SessionManager {
         return this.sessionDao.getSession(sessionId) as Promise<Session>;
     };
 
-    getSessionCookie = (request: NextRequest): string | null => {
-        return request.cookies.get("session")?.value || null;
-    };
-
-    setSessionCookie = (response: NextResponse, session: Session): void => {
-        response.cookies.set("session", session.id);
-    };
-
-    invalidateSession = async (request: NextRequest): Promise<void> => {
-        const session = await this.getSession(request);
+    /**
+     * Invalidates the current session by deleting it from the
+     * database and removing the session cookie.
+     *
+     * NOTE:
+     * Due to the way NextJS handles cookies, removing the cookie
+     * will only work inside of a server action or route handler.
+     *
+     * {@link https://nextjs.org/docs/app/api-reference/functions/cookies#deleting-cookies}
+     */
+    invalidateSession = async (): Promise<void> => {
+        const session = await this.getSession();
         if (!session) return;
         await this.sessionDao.deleteSession(session.id);
+        cookies().delete("session");
     };
 
     invalidateAllUserSessions = async (userId: string): Promise<void> => {

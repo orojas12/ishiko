@@ -1,9 +1,0 @@
-services:
-  db:
-    image: ishiko-db:dev
-    build: .
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: ishiko
-      POSTGRES_PASSWORD: ishiko

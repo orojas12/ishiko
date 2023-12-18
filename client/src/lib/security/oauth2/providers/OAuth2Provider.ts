@@ -4,6 +4,7 @@ import { RowNotFoundError } from "../error";
 import { UserDao } from "../../user";
 import { decodeJwt } from "../util";
 import {
+    createOAuth2AuthorizationUrl,
     createOAuth2AuthorizationUrlWithPKCE,
     validateOAuth2AuthorizationCode,
 } from "@lucia-auth/oauth";
@@ -12,6 +13,7 @@ import { nanoid } from "nanoid";
 import type { ProviderConfig } from "./";
 import type { JWTClaims, OAuth2TokenResponse, OAuth2TokenSet } from "../token";
 import type { User } from "../../user";
+import { warn } from "console";
 
 export class OAuth2Provider {
     readonly config: ProviderConfig;
@@ -33,6 +35,7 @@ export class OAuth2Provider {
 
     exchangeCode = async (
         code: string,
+        codeVerifier?: string,
     ): Promise<
         OAuth2TokenSet & {
             idToken: { value: string; claims: JWTClaims };
@@ -44,7 +47,7 @@ export class OAuth2Provider {
             {
                 clientId: this.config.client.id,
                 redirectUri: this.config.redirectUri,
-                codeVerifier: "",
+                codeVerifier: codeVerifier,
                 clientPassword: {
                     clientSecret: this.config.client.secret,
                     authenticateWith: this.config.client.authenticationMethod,
@@ -73,18 +76,42 @@ export class OAuth2Provider {
         };
     };
 
-    getAuthorizationUrl = async (): Promise<
-        readonly [url: URL, codeVerifier: string, state: string]
-    > => {
-        return createOAuth2AuthorizationUrlWithPKCE(
-            this.config.authorizationEndpoint,
-            {
-                clientId: this.config.client.id,
-                scope: this.config.scope,
-                codeChallengeMethod: "S256",
-                redirectUri: this.config.redirectUri,
-            },
-        );
+    getAuthorizationUrl = async (): Promise<{
+        url: URL;
+        state: string;
+        codeVerifier?: string;
+    }> => {
+        let authUrl: readonly [URL, string, string] | readonly [URL, string];
+
+        if (this.config.usePKCE) {
+            authUrl = await createOAuth2AuthorizationUrlWithPKCE(
+                this.config.authorizationEndpoint,
+                {
+                    clientId: this.config.client.id,
+                    scope: this.config.scope,
+                    codeChallengeMethod: "S256",
+                    redirectUri: this.config.redirectUri,
+                },
+            );
+            return {
+                url: authUrl[0],
+                codeVerifier: authUrl[1],
+                state: authUrl[2],
+            };
+        } else {
+            authUrl = await createOAuth2AuthorizationUrl(
+                this.config.authorizationEndpoint,
+                {
+                    clientId: this.config.client.id,
+                    scope: this.config.scope,
+                    redirectUri: this.config.redirectUri,
+                },
+            );
+            return {
+                url: authUrl[0],
+                state: authUrl[1],
+            };
+        }
     };
 
     createTokenSet = async (
