@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
 
 import type { Session, SessionDao, SessionManager } from ".";
+import type { OidcTokenSet } from "..";
 
 export class DatabaseSessionManager implements SessionManager {
     sessionDao: SessionDao;
@@ -28,15 +29,24 @@ export class DatabaseSessionManager implements SessionManager {
         }
     };
 
-    createSession = async (userId: string, data: {}): Promise<Session> => {
+    createSession = async (tokens: OidcTokenSet): Promise<Session> => {
         const sevenDays = 604800 * 1000;
         const sessionId = nanoid();
         const session = {
             id: sessionId,
-            userId: userId,
             expires: new Date(Date.now() + sevenDays),
+            tokens: {
+                accessToken: tokens.accessToken,
+                refreshToken: tokens.refreshToken,
+            },
+            profile: {
+                id: tokens.idToken.claims.sub,
+                name: tokens.idToken.claims.name,
+                firstName: tokens.idToken.claims.given_name,
+                lastName: tokens.idToken.claims.family_name,
+            },
         };
-        await this.sessionDao.createSession(session as Session);
+        await this.sessionDao.createSession(session);
         return this.sessionDao.getSession(sessionId) as Promise<Session>;
     };
 
@@ -55,9 +65,5 @@ export class DatabaseSessionManager implements SessionManager {
         if (!session) return;
         await this.sessionDao.deleteSession(session.id);
         cookies().delete("session");
-    };
-
-    invalidateAllUserSessions = async (userId: string): Promise<void> => {
-        await this.sessionDao.deleteAllUserSessions(userId);
     };
 }

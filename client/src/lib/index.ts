@@ -1,14 +1,9 @@
-import {
-    AuthenticationMethod,
-    OAuth2Provider,
-} from "./security/oauth2/providers";
-import { DatabaseSessionManager, SQLiteSessionDao } from "./security/session";
-import { SQLiteTokenDao } from "./security/oauth2/token";
-import { SQLiteKeyDao } from "./security/oauth2/key";
-import { SQLiteUserDao } from "./security/user";
+import { AuthenticationMethod } from "./oauth2/providers";
+import { DatabaseSessionManager, SQLiteSessionDao } from "@/lib/oauth2/session";
 import Database from "better-sqlite3";
 
-import type { ProviderConfig } from "./security/oauth2/providers";
+import type { ProviderConfig } from "./oauth2/providers";
+import { OidcProvider } from "./oauth2/providers/OidcProvider";
 
 const db = new Database(":memory:");
 
@@ -33,9 +28,4 @@ export const sessionManager = new DatabaseSessionManager(
     new SQLiteSessionDao(db),
 );
 
-export const oauth2 = new OAuth2Provider(
-    config,
-    new SQLiteTokenDao(db),
-    new SQLiteKeyDao(db),
-    new SQLiteUserDao(db),
-);
+export const oidc = new OidcProvider(config);

@@ -4,6 +4,7 @@ export type ProviderConfig = {
     providerId: string;
     authorizationEndpoint: string;
     tokenEndpoint: string;
+    userInfoEndpoint?: string;
     redirectUri: string;
     client: {
         id: string;
