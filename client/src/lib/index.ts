@@ -9,7 +9,7 @@ const db = new Database(":memory:");
 
 const config: ProviderConfig = {
     providerId: "ishiko",
-    redirectUri: "http://localhost:3000/auth/code",
+    redirectUri: "http://localhost:3000/oidc/code",
     authorizationEndpoint: "http://localhost:8080/oauth2/authorize",
     tokenEndpoint: "http://localhost:8080/oauth2/token",
     client: {
@@ -19,9 +19,6 @@ const config: ProviderConfig = {
     },
     scope: [],
     usePKCE: true,
-    getUserDetailsFromIdToken: (idToken: Record<string, any>) => {
-        return { username: "user1" };
-    },
 };
 
 export const sessionManager = new DatabaseSessionManager(

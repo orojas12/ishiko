@@ -27,6 +27,7 @@ export class OidcProvider extends OAuth2Provider {
                 },
             },
         );
+        // TODO: id_token is undefined
         const idToken = decodeJwt(data.id_token);
         return {
             accessToken: {

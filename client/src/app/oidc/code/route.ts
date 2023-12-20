@@ -47,17 +47,9 @@ export async function GET(request: NextRequest) {
 
     // TODO: investigate cause of /auth/error redirect
 
-    try {
-        tokenSet = await oidc.exchangeCode(code, codeVerifier);
-    } catch (e) {
-        return errorResponse;
-    }
+    tokenSet = await oidc.exchangeCode(code, codeVerifier);
 
-    try {
-        session = await sessionManager.createSession(tokenSet);
-    } catch (e) {
-        return errorResponse;
-    }
+    session = await sessionManager.createSession(tokenSet);
 
     const response = NextResponse.redirect("http://localhost:3000/");
     response.cookies.set("session", session.id);
