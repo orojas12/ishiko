@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.security: trace
+
+spring:
+  datasource:
+    url: jdbc:postgresql:dev
+    username: ishiko
+    password: ishiko
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+oauth2:
+  authorization-server:
+    keyid: 216d75d6-1971-4ce7-9e90-89ed9080705c
