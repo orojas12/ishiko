@@ -2,8 +2,9 @@ services:
   dev:
     image: postgres:alpine
     environment:
-      POSTGRES_USER: auth
-      POSTGRES_PASSWORD: auth
+      POSTGRES_USER: ishiko
+      POSTGRES_PASSWORD: ishiko
+      POSTGRES_DB: dev
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
