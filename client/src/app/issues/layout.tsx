@@ -9,7 +9,7 @@ export default async function IssuesLayout({
 }) {
     const session = await sessionManager.validateSession();
     if (!session) {
-        redirect("/login", "replace");
+        redirect("/login");
     }
     return (
         <main className="p-6 flex flex-col items-start gap-6">

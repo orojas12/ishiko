@@ -1,14 +1,3 @@
-export type OAuth2TokenSet = {
-    accessToken: {
-        value: string;
-        expires: Date;
-    };
-    refreshToken?: {
-        value: string;
-        expires: Date;
-    };
-};
-
 export type JWTClaims = Record<string, any> & {
     iss: string;
     sub: string;
@@ -18,31 +7,36 @@ export type JWTClaims = Record<string, any> & {
     jti: string;
 };
 
-export type OidcTokenSet = OAuth2TokenSet & {
-    idToken: {
+export type OAuth2TokenSet = {
+    accessToken: {
         value: string;
-        claims: JWTClaims;
+        expires: Date;
     };
+    refreshToken?: string;
 };
 
-export type OAuth2TokenSetSchema = {
+export type OidcTokenSet = OAuth2TokenSet & {
+    idToken: string;
+};
+
+export type TokenSetSchema = {
     token_set_id: string;
     session_id: string;
     access_token: string;
     access_token_expires: string;
     refresh_token?: string;
-    refresh_token_expires?: string;
+    id_token?: string;
 };
 
-export type UserProfileSchema = {
-    user_id: string;
+export type ProfileSchema = {
+    profile_id: string;
     session_id: string;
     name: string;
     first_name: string;
     last_name: string;
 };
 
-export type UserProfile = {
+export type Profile = {
     id: string;
     name: string;
     firstName: string;

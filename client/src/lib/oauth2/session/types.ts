@@ -1,11 +1,11 @@
 import type { NextRequest } from "next/server";
-import type { OAuth2TokenSet, OidcTokenSet, UserProfile } from "../";
+import type { OAuth2TokenSet, OidcTokenSet, Profile, TokenSet } from "../";
 
 export type Session = {
     id: string;
     expires: Date;
-    tokens: OAuth2TokenSet;
-    profile: UserProfile;
+    tokens: TokenSet;
+    profile: Profile;
 };
 
 export type SessionSchema = {
@@ -16,7 +16,7 @@ export type SessionSchema = {
 export type SessionManager = {
     getSession: () => Promise<Session | null>;
     validateSession: () => Promise<Session | null>;
-    createSession: (tokens: OidcTokenSet) => Promise<Session>;
+    createSession: (tokens: TokenSet, profile: Profile) => Promise<Session>;
     invalidateSession: (request: NextRequest) => Promise<void>;
 };
 

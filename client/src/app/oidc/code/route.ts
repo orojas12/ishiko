@@ -1,8 +1,7 @@
 import { oidc, sessionManager } from "@/lib";
 import { NextRequest, NextResponse } from "next/server";
 
-import type { OidcTokenSet } from "@/lib/oauth2";
-import type { Session } from "@/lib/oauth2/session";
+import { decodeJwt } from "@/lib/oauth2/util";
 
 export const dynamic = "force-dynamic";
 
@@ -16,8 +15,6 @@ export async function GET(request: NextRequest) {
     const errorResponse = NextResponse.redirect(
         "http://localhost:3000/auth/error",
     );
-    let tokenSet: OidcTokenSet;
-    let session: Session;
 
     if (!storedState) {
         console.error("State cookie is missing");
@@ -45,11 +42,14 @@ export async function GET(request: NextRequest) {
         );
     }
 
-    // TODO: investigate cause of /auth/error redirect
-
-    tokenSet = await oidc.exchangeCode(code, codeVerifier);
-
-    session = await sessionManager.createSession(tokenSet);
+    const tokenSet = await oidc.exchangeCode(code, codeVerifier);
+    const idToken = decodeJwt(tokenSet.idToken);
+    const session = await sessionManager.createSession(tokenSet, {
+        id: idToken.sub,
+        name: idToken.name,
+        firstName: idToken.given_name,
+        lastName: idToken.family_name,
+    });
 
     const response = NextResponse.redirect("http://localhost:3000/");
     response.cookies.set("session", session.id);

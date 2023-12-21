@@ -2,7 +2,7 @@ import { RowNotFoundError } from "../error";
 
 import type { Database } from "better-sqlite3";
 import type { Session, SessionSchema, SessionDao } from ".";
-import { OAuth2TokenSetSchema, UserProfileSchema } from "..";
+import { TokenSetSchema, ProfileSchema } from "..";
 import { nanoid } from "nanoid";
 
 export class SQLiteSessionDao implements SessionDao {
@@ -17,16 +17,16 @@ export class SQLiteSessionDao implements SessionDao {
             .prepare(
                 `
                 SELECT s.session_id, expires, access_token, access_token_expires,
-                    refresh_token, refresh_token_expires, user_id, name,
+                    refresh_token, id_token, profile_id, name,
                     first_name, last_name
                 FROM session s
                     INNER JOIN token_set t ON s.session_id = t.session_id
-                    INNER JOIN user_profile u ON s.session_id = u.session_id
+                    INNER JOIN profile u ON s.session_id = u.session_id
                 WHERE s.session_id = ?;
                 `,
             )
             .get(sessionId) as
-            | (SessionSchema & OAuth2TokenSetSchema & UserProfileSchema)
+            | (SessionSchema & TokenSetSchema & ProfileSchema)
             | undefined;
         if (!result) return null;
         return {
@@ -37,16 +37,11 @@ export class SQLiteSessionDao implements SessionDao {
                     value: result.access_token,
                     expires: new Date(result.access_token_expires),
                 },
-                refreshToken:
-                    result.refresh_token && result.refresh_token_expires
-                        ? {
-                              value: result.refresh_token,
-                              expires: new Date(result.refresh_token_expires),
-                          }
-                        : undefined,
+                refreshToken: result.refresh_token,
+                idToken: result.id_token,
             },
             profile: {
-                id: result.user_id,
+                id: result.profile_id,
                 name: result.name,
                 firstName: result.first_name,
                 lastName: result.last_name,
@@ -55,7 +50,7 @@ export class SQLiteSessionDao implements SessionDao {
     };
 
     createSession = async (session: Session): Promise<void> => {
-        const insertData = this.db.transaction(() => {
+        const insertNewSession = this.db.transaction(() => {
             this.db
                 .prepare(
                     `
@@ -69,7 +64,7 @@ export class SQLiteSessionDao implements SessionDao {
                     `
                     INSERT INTO token_set (token_set_id, session_id,
                         access_token, access_token_expires,
-                        refresh_token, refresh_token_expires)
+                        refresh_token, id_token)
                     VALUES (?, ?, ?, ?, ?, ?);
                     `,
                 )
@@ -78,13 +73,13 @@ export class SQLiteSessionDao implements SessionDao {
                     session.id,
                     session.tokens.accessToken.value,
                     session.tokens.accessToken.expires.toISOString(),
-                    session.tokens.refreshToken?.value || null,
-                    session.tokens.refreshToken?.expires.toISOString() || null,
+                    session.tokens.refreshToken || null,
+                    session.tokens.idToken || null,
                 );
             this.db
                 .prepare(
                     `
-                    INSERT INTO user_profile (user_id, session_id,
+                    INSERT INTO profile (profile_id, session_id,
                         name, first_name, last_name)
                     VALUES (?, ?, ?, ?, ?);
                     `,
@@ -98,11 +93,11 @@ export class SQLiteSessionDao implements SessionDao {
                 );
         });
 
-        insertData();
+        insertNewSession();
     };
 
     updateSession = async (session: Session): Promise<void> => {
-        const updateData = this.db.transaction(() => {
+        const updateSessionData = this.db.transaction(() => {
             let info = this.db
                 .prepare(
                     `
@@ -127,15 +122,15 @@ export class SQLiteSessionDao implements SessionDao {
                         access_token = ?,
                         access_token_expires = ?,
                         refresh_token = ?,
-                        refresh_token_expires = ?
+                        id_token = ?
                     WHERE session_id = ?;
                     `,
                 )
                 .run(
                     session.tokens.accessToken.value,
                     session.tokens.accessToken.expires.toISOString(),
-                    session.tokens.refreshToken?.value || null,
-                    session.tokens.refreshToken?.expires.toISOString() || null,
+                    session.tokens.refreshToken || null,
+                    session.tokens.idToken || null,
                     session.id,
                 );
             if (info.changes === 0) {
@@ -147,7 +142,7 @@ export class SQLiteSessionDao implements SessionDao {
             info = this.db
                 .prepare(
                     `
-                    UPDATE user_profile
+                    UPDATE profile
                     SET
                         name = ?,
                         first_name = ?,
@@ -167,7 +162,7 @@ export class SQLiteSessionDao implements SessionDao {
             }
         });
 
-        updateData();
+        updateSessionData();
     };
 
     deleteSession = async (sessionId: string): Promise<void> => {
