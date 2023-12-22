@@ -21,8 +21,13 @@ export const config: ProviderConfig = {
     usePKCE: true,
 };
 
+export const sessionConfig = {
+    maxAge: 10,
+};
+
 export const sessionManager = new DatabaseSessionManager(
     new SQLiteSessionDao(db),
+    sessionConfig,
 );
 
 export const oidc = new OidcProvider(config);

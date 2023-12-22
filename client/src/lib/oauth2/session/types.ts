@@ -1,10 +1,10 @@
 import type { NextRequest } from "next/server";
-import type { OAuth2TokenSet, OidcTokenSet, Profile, TokenSet } from "../";
+import type { OidcTokenSet, Profile } from "../";
 
 export type Session = {
     id: string;
     expires: Date;
-    tokens: TokenSet;
+    tokens: OidcTokenSet;
     profile: Profile;
 };
 
@@ -16,7 +16,7 @@ export type SessionSchema = {
 export type SessionManager = {
     getSession: () => Promise<Session | null>;
     validateSession: () => Promise<Session | null>;
-    createSession: (tokens: TokenSet, profile: Profile) => Promise<Session>;
+    createSession: (tokens: OidcTokenSet, profile: Profile) => Promise<Session>;
     invalidateSession: (request: NextRequest) => Promise<void>;
 };
 
@@ -25,4 +25,8 @@ export type SessionDao = {
     createSession: (session: Session) => Promise<void>;
     updateSession: (session: Session) => Promise<void>;
     deleteSession: (sessionId: string) => Promise<void>;
+};
+
+export type SessionConfig = {
+    maxAge: number;
 };

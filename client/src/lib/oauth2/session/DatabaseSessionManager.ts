@@ -1,14 +1,16 @@
 import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
 
-import type { Session, SessionDao, SessionManager } from ".";
+import type { Session, SessionConfig, SessionDao, SessionManager } from ".";
 import type { Profile, OidcTokenSet } from "..";
 
 export class DatabaseSessionManager implements SessionManager {
+    config: SessionConfig;
     sessionDao: SessionDao;
 
-    constructor(sessionDao: SessionDao) {
+    constructor(sessionDao: SessionDao, config: SessionConfig) {
         this.sessionDao = sessionDao;
+        this.config = config;
     }
 
     getSession = async (): Promise<Session | null> => {
@@ -33,14 +35,14 @@ export class DatabaseSessionManager implements SessionManager {
         tokens: OidcTokenSet,
         profile: Profile,
     ): Promise<Session> => {
-        const sevenDays = 604800 * 1000;
         const sessionId = nanoid();
         const session = {
             id: sessionId,
-            expires: new Date(Date.now() + sevenDays),
+            expires: new Date(Date.now() + this.config.maxAge * 1000),
             tokens,
             profile,
         };
+        // TODO: handle error if profile id already exists (eg. a user starts multiple sessions)
         await this.sessionDao.createSession(session);
         return this.sessionDao.getSession(sessionId) as Promise<Session>;
     };
