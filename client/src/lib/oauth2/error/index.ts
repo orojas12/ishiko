@@ -9,3 +9,21 @@ export class DuplicateRowError extends Error {
         super(message);
     }
 }
+
+export class InvalidStateError extends Error {
+    constructor(message?: string) {
+        super(message);
+    }
+}
+
+export class InvalidCodeVerifierError extends Error {
+    constructor(message?: string) {
+        super(message);
+    }
+}
+
+export class InvalidCodeError extends Error {
+    constructor(message?: string) {
+        super(message);
+    }
+}

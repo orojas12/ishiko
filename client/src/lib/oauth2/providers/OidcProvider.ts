@@ -3,6 +3,7 @@ import { validateOAuth2AuthorizationCode } from "@lucia-auth/oauth";
 import { OAuth2Provider, type ProviderConfig } from "./";
 import type { OidcTokenResponse } from "./";
 import type { OidcTokenSet } from "../";
+import type { NextRequest } from "next/server";
 
 export class OidcProvider extends OAuth2Provider {
     constructor(config: ProviderConfig) {
@@ -14,10 +15,12 @@ export class OidcProvider extends OAuth2Provider {
         super(config);
     }
 
-    exchangeCode = async (
-        code: string,
-        codeVerifier?: string,
+    handleAuthorizationCodeRedirect = async (
+        request: NextRequest,
     ): Promise<OidcTokenSet> => {
+        const [code, codeVerifier] =
+            this.validateAuthorizationCodeRedirect(request);
+
         const data: OidcTokenResponse = await validateOAuth2AuthorizationCode(
             code,
             this.config.tokenEndpoint,

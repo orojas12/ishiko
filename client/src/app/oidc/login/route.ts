@@ -11,29 +11,5 @@ export async function GET(request: NextRequest) {
         redirect("/");
     }
 
-    const { url, state, codeVerifier } = await oidc.getAuthorizationUrl();
-    const response = new NextResponse(null, {
-        status: 302,
-        headers: {
-            Location: url.toString(),
-        },
-    });
-
-    response.cookies.set(`${oidc.config.providerId}-state`, state, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        maxAge: 60 * 60 * 1000,
-    });
-
-    if (codeVerifier) {
-        response.cookies.set("codeVerifier", codeVerifier, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            path: "/",
-            maxAge: 60 * 60 * 1000,
-        });
-    }
-
-    return response;
+    return oidc.authorizeEndpointRedirect();
 }
