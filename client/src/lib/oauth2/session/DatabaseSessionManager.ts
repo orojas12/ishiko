@@ -40,7 +40,12 @@ export class DatabaseSessionManager implements SessionManager {
             id: sessionId,
             expires: new Date(Date.now() + this.config.maxAge * 1000),
             tokens,
-            profile,
+            profile: {
+                id: nanoid(),
+                name: profile.name,
+                firstName: profile.firstName,
+                lastName: profile.lastName,
+            },
         };
         // TODO: handle error if profile id already exists (eg. a user starts multiple sessions)
         await this.sessionDao.createSession(session);
