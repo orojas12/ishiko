@@ -22,7 +22,7 @@ export const config: ProviderConfig = {
 };
 
 export const sessionConfig = {
-    maxAge: 10,
+    maxAge: 604800,
 };
 
 export const sessionManager = new DatabaseSessionManager(
