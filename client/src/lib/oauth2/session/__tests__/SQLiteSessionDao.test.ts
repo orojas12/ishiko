@@ -200,6 +200,7 @@ describe("updateSession()", () => {
                 value: "new_access",
                 expires: new Date(),
             },
+            idToken: "id_token",
         };
         session.profile.name = "James Wick";
         session.profile.firstName = "James";
@@ -234,7 +235,7 @@ describe("updateSession()", () => {
             session.tokens.accessToken.expires.toISOString(),
         );
         expect(tokenSetSchema.refresh_token).toBeNull();
-        expect(tokenSetSchema.id_token).toBeNull();
+        expect(tokenSetSchema.id_token).toEqual(session.tokens.idToken);
 
         const profileSchema = db
             .prepare(
@@ -260,6 +261,7 @@ describe("updateSession()", () => {
                     value: "access",
                     expires: new Date(),
                 },
+                idToken: "id_token",
             },
             profile: {
                 id: "john_1",

@@ -37,8 +37,8 @@ export class SQLiteSessionDao implements SessionDao {
                     value: result.access_token,
                     expires: new Date(result.access_token_expires),
                 },
-                refreshToken: result.refresh_token,
-                idToken: result.id_token,
+                refreshToken: result.refresh_token || undefined,
+                idToken: result.id_token as string,
             },
             profile: {
                 id: result.profile_id,

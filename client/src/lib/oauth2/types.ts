@@ -24,8 +24,8 @@ export type TokenSetSchema = {
     session_id: string;
     access_token: string;
     access_token_expires: string;
-    refresh_token?: string;
-    id_token?: string;
+    refresh_token: string | null;
+    id_token: string | null;
 };
 
 export type ProfileSchema = {
