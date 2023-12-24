@@ -3,7 +3,9 @@ export type ProviderConfig = {
     authorizationEndpoint: string;
     tokenEndpoint: string;
     userInfoEndpoint?: string;
+    logoutEndpoint?: string;
     redirectUri: string;
+    postLogoutRedirectUri?: string;
     client: {
         id: string;
         secret: string;
