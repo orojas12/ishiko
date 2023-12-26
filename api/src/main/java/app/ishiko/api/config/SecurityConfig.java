@@ -164,6 +164,7 @@ public class SecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://localhost:3000/oidc/code")
+                .postLogoutRedirectUri("http://localhost:3000/oidc/post-logout")
                 .scopes(scopes -> scopes.addAll(List.of(
                         OidcScopes.OPENID,
                         OidcScopes.PROFILE,
