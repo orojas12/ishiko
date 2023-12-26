@@ -7,14 +7,14 @@ export default async function Authenticated({
     children: React.ReactNode;
 }) {
     if (config.auth.disabled) {
-        return children;
+        return <>{children}</>;
     }
 
     const session = await sessionManager.validateSession();
     if (!session) {
         return <Unauthenticated />;
     } else {
-        return children;
+        return <>{children}</>;
     }
 }
 
