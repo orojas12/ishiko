@@ -4,7 +4,8 @@ export default function Home() {
     return (
         <main className="">
             <h1>Ishiko</h1>
-            <Link href="/issues">Table</Link>
+            <Link href="/issues">Go to issues</Link>
+            <a href="/oidc/logout">Sign out</a>
         </main>
     );
 }
