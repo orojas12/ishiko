@@ -35,6 +35,7 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -119,8 +120,14 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/assets/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/auth/signup", "/auth/signin").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults());
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/auth/signin")
+                        .loginProcessingUrl("/auth/signin")
+                );
         return http.build();
     }
 
@@ -137,9 +144,15 @@ public class SecurityConfig {
         return source;
     }
 
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        var encoder =  PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//        encoder.
+//    }
+
     @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-        var userDetailsManager = new JdbcUserDetailsManager(dataSource);
+    public UserDetailsManager userDetailsManager(DataSource dataSource) {
+        UserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
 
         // TODO: remove before deploying
         if (!userDetailsManager.userExists("oscar")) {
@@ -150,7 +163,11 @@ public class SecurityConfig {
                     .build();
             userDetailsManager.createUser(userDetails);
         }
+        return userDetailsManager;
+    }
 
+    @Bean
+    public UserDetailsService userDetailsService(UserDetailsManager userDetailsManager) {
         return userDetailsManager;
     }
 

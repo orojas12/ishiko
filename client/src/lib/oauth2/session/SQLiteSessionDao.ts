@@ -5,6 +5,7 @@ import type { Session, SessionSchema, SessionDao } from ".";
 import { TokenSetSchema, ProfileSchema } from "..";
 import { nanoid } from "nanoid";
 
+// TODO: add optional sql logging for debug purposes
 export class SQLiteSessionDao implements SessionDao {
     db: Database;
 
