@@ -1,0 +1,22 @@
+services:
+  api:
+    build:
+      context: .
+    ports:
+      - 127.0.0.1:8080:8080
+      - 127.0.0.1:5005:5005
+    volumes:
+      - ./:/usr/ishiko/api
+    networks:
+      - dev
+    environment:
+      - PUBLIC_KEY_PATH=/usr/ishiko/api/config/public.pem
+      - PRIVATE_KEY_PATH=/usr/ishiko/api/config/private.pem
+      - POSTGRES_URL=jdbc:postgresql://db-dev/dev
+      - POSTGRES_USER=ishiko
+      - POSTGRES_PASSWORD=ishiko
+      - BASE_URL=http://localhost:8000
+
+networks:
+  dev:
+    external: true

@@ -27,13 +27,13 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
             const page = await browser.newPage({ storageState: undefined });
 
             // Perform authentication steps. Replace these actions with your own.
-            await page.goto("http://localhost:3000/oidc/login");
+            await page.goto(`${process.env.BASE_URL}/oidc/login`);
             await page.getByPlaceholder("Username").click();
             await page.getByPlaceholder("Username").fill("oscar");
             await page.getByPlaceholder("Password").click();
             await page.getByPlaceholder("Password").fill("password");
             await page.getByRole("button", { name: "Sign in" }).click();
-            await page.waitForURL("http://localhost:3000/");
+            await page.waitForURL(`${process.env.BASE_URL}`);
             // End of authentication steps.
 
             await page.context().storageState({ path: fileName });

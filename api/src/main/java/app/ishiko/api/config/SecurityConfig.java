@@ -1,10 +1,15 @@
 package app.ishiko.api.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+
+import app.ishiko.api.auth.BadCredentialsExceptionHandler;
+import app.ishiko.api.auth.DefaultAuthenticationExceptionHandler;
+
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
@@ -16,12 +21,13 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -37,7 +43,10 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.DelegatingAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -54,6 +63,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Configuration
@@ -84,6 +94,12 @@ public class SecurityConfig {
         var authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
 
+        // TODO: if user navigates directly to /api/auth/signin, redirect
+        // to client oidc login endpoint
+        //
+        // TODO: if user navigates directly to client-side login page, redirect to
+        // client oidc login endpoint.
+
         http
                 .securityMatcher(new OrRequestMatcher(
                         new AntPathRequestMatcher(
@@ -105,7 +121,7 @@ public class SecurityConfig {
                 // authorization endpoint
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/login"),
+                                new LoginUrlAuthenticationEntryPoint("/api/auth/signin"),
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
                 // Accept access tokens for User Info and/or Client Registration
                 .oauth2ResourceServer((resourceServer) -> resourceServer
@@ -115,40 +131,50 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain defaultSecurityFilterChain1(HttpSecurity http)
+    public SecurityFilterChain defaultSecurityFilterChain1(HttpSecurity http,
+            @Value("${ishiko.base_url}") String baseUrl, ObjectMapper mapper)
             throws Exception {
         http
                 .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestHeaderHandler()))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/assets/**", "/favicon.ico").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/auth/signup", "/auth/signin").permitAll()
+                        .requestMatchers("/api/auth/signup", "/api/auth/signin").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
-                        .loginPage("/auth/signin")
-                        .loginProcessingUrl("/auth/signin")
-                );
+                        .loginPage("/api/auth/signin")
+                        .loginProcessingUrl("/api/auth/signin")
+                        .failureHandler(authenticationFailureHandler(mapper)));
         return http.build();
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public AuthenticationFailureHandler authenticationFailureHandler(ObjectMapper mapper) {
+        LinkedHashMap<Class<? extends AuthenticationException>, AuthenticationFailureHandler> handlers = new LinkedHashMap<>();
+        handlers.put(BadCredentialsException.class, new BadCredentialsExceptionHandler(mapper));
+        return new DelegatingAuthenticationFailureHandler(handlers, new DefaultAuthenticationExceptionHandler(mapper));
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(@Value("${ishiko.base_url}") String baseUrl) {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Arrays.asList(baseUrl));
+        configuration.setAllowedMethods(Arrays.asList("POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("X-XSRF-TOKEN"));
         configuration.setMaxAge(600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        var encoder =  PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//        encoder.
-//    }
+    // @Bean
+    // public PasswordEncoder passwordEncoder() {
+    // var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    // encoder.
+    // }
 
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource) {
@@ -166,13 +192,15 @@ public class SecurityConfig {
         return userDetailsManager;
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(UserDetailsManager userDetailsManager) {
-        return userDetailsManager;
-    }
+    // @Bean
+    // public UserDetailsService userDetailsService(UserDetailsManager
+    // userDetailsManager) {
+    // return userDetailsManager;
+    // }
 
     @Bean
-    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
+    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate,
+            @Value("${ishiko.base_url}") String baseUrl) {
         var registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
         RegisteredClient registeredClient = RegisteredClient.withId("client1")
                 .clientId("ishiko-client")
@@ -180,8 +208,8 @@ public class SecurityConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:3000/oidc/code")
-                .postLogoutRedirectUri("http://localhost:3000/oidc/post-logout")
+                .redirectUri(baseUrl + "/oidc/code")
+                .postLogoutRedirectUri(baseUrl + "/oidc/post-logout")
                 .scopes(scopes -> scopes.addAll(List.of(
                         OidcScopes.OPENID,
                         OidcScopes.PROFILE,
@@ -208,6 +236,7 @@ public class SecurityConfig {
                 .privateKey(privateKey)
                 .keyID(keyId)
                 .build();
+
         JWKSet jwkSet = new JWKSet(rsaKey);
         return new ImmutableJWKSet<>(jwkSet);
     }
@@ -218,9 +247,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthorizationServerSettings authorizationServerSettings() {
+    public AuthorizationServerSettings authorizationServerSettings(@Value("${ishiko.base_url}") String baseUrl) {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:8080")
+                .issuer(baseUrl)
                 .authorizationEndpoint("/oauth2/authorize")
                 .jwkSetEndpoint("/.well-known/jwks.json")
                 .tokenEndpoint("/oauth2/token")

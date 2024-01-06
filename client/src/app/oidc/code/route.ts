@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
         lastName: idToken.family_name,
     });
 
-    const response = NextResponse.redirect("http://localhost:3000/");
+    const response = NextResponse.redirect(`${process.env.BASE_URL}`);
     response.cookies.set("session", session.id);
     response.cookies.delete("codeVerifier");
     response.cookies.delete(`${oidc.config.providerId}-state`);

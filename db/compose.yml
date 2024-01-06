@@ -1,5 +1,5 @@
 services:
-  dev:
+  db-dev:
     image: postgres:alpine
     environment:
       POSTGRES_USER: ishiko
@@ -8,4 +8,13 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - type: bind
+        source: ./schema.sql
+        target: /docker-entrypoint-initdb.d/schema.sql
+        read_only: true
+    networks:
+      - dev
+
+networks:
+  dev:
+    external: true

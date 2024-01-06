@@ -1,0 +1,15 @@
+services:
+  server:
+    image: nginx:1.25.3-alpine
+    volumes:
+      - ./nginx:/etc/nginx:ro
+      - ./static:/static:ro
+      - ./logs:/logs
+    networks:
+      - dev
+    ports:
+      - "127.0.0.1:8000:80"
+
+networks:
+  dev:
+    external: true

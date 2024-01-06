@@ -1,15 +1,20 @@
 server:
   port: 8080
+  context-path: /api
+  forward-headers-strategy: FRAMEWORK
 
 logging:
   level:
-    org.springframework.security: trace
+    org:
+      springframework:
+        web: debug
+        security: trace
 
 spring:
   datasource:
-    url: jdbc:postgresql:dev
-    username: ishiko
-    password: ishiko
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: none
@@ -17,3 +22,6 @@ spring:
 oauth2:
   authorization-server:
     keyid: 216d75d6-1971-4ce7-9e90-89ed9080705c
+
+ishiko:
+  base_url: ${BASE_URL}

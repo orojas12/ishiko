@@ -1,4 +1,4 @@
-package app.ishiko.api.exceptions;
+package app.ishiko.api.exception;
 
 public class HttpErrorResponseBodyDto {
     private String message;

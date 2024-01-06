@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
     const session = await sessionManager.validateSession();
 
     if (!session) {
-        return NextResponse.redirect("http://localhost:3000/error");
+        return NextResponse.redirect(`${process.env.BASE_URL}/error`);
     }
 
     return oidc.oidcLogoutRedirect(session.tokens.idToken);

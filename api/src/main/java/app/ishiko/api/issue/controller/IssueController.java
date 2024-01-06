@@ -1,8 +1,8 @@
 package app.ishiko.api.issue.controller;
 
-import app.ishiko.api.exceptions.HttpErrorResponseBodyDto;
-import app.ishiko.api.exceptions.InvalidInputException;
-import app.ishiko.api.exceptions.NotFoundException;
+import app.ishiko.api.exception.HttpErrorResponseBodyDto;
+import app.ishiko.api.exception.InvalidInputException;
+import app.ishiko.api.exception.NotFoundException;
 import app.ishiko.api.issue.dto.CreateOrUpdateIssueDto;
 import app.ishiko.api.issue.dto.IssueDto;
 import app.ishiko.api.issue.service.IssueService;

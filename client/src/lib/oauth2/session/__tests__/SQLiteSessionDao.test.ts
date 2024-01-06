@@ -2,17 +2,13 @@
 import { SQLiteSessionDao } from "..";
 import { RowNotFoundError } from "../../error";
 import sqlite from "better-sqlite3";
-import { readFileSync } from "fs";
+import { schema } from "../..";
 
 import type { Database } from "better-sqlite3";
 import type { Session, SessionSchema } from "..";
 import { TokenSetSchema, ProfileSchema } from "../..";
 
 function setUp(db: Database) {
-    const schema = readFileSync(
-        "/home/oscar/projects/ishiko/client/src/lib/oauth2/db/schema.sql",
-        "utf8",
-    );
     db.exec(schema);
 }
 

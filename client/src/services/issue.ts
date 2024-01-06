@@ -11,7 +11,7 @@ import type {
 
 export async function getIssue(id: string): Promise<Issue> {
     try {
-        const res = await fetch(`http://localhost:8080/issue/${id}`);
+        const res = await fetch(`${process.env.API_URL}/issue/${id}`);
         const data = await res.json();
         if (res.ok) {
             return {
@@ -33,7 +33,7 @@ export async function getIssue(id: string): Promise<Issue> {
 
 export async function getIssues(): Promise<Issue[]> {
     console.log("Fetching issues...");
-    const res = await fetch("http://localhost:8080/issue", {
+    const res = await fetch(`${process.env.API_URL}/issue`, {
         cache: "no-store",
     });
     const data = await res.json();
@@ -49,7 +49,7 @@ export async function getIssues(): Promise<Issue[]> {
 }
 
 export async function getIssueStatuses() {
-    const res = await fetch(`http://localhost:8080/issue_status`);
+    const res = await fetch(`${process.env.API_URL}/issue_status`);
     const data = (await res.json()) as IssueStatus[];
     if (res.ok) {
         return data;
@@ -59,7 +59,7 @@ export async function getIssueStatuses() {
 }
 
 export async function getIssueLabels() {
-    const res = await fetch(`http://localhost:8080/issue_label`);
+    const res = await fetch(`${process.env.API_URL}/issue_label`);
     const data = (await res.json()) as IssueLabel[];
     if (res.ok) {
         return data;
@@ -68,7 +68,7 @@ export async function getIssueLabels() {
 }
 
 export async function createIssue(issue: CreateOrUpdateIssue) {
-    const res = await fetch("http://localhost:8080/issue", {
+    const res = await fetch(`${process.env.API_URL}/issue`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export async function updateIssue({
     id: number;
     issue: CreateOrUpdateIssue;
 }) {
-    const res = await fetch(`http://localhost:8080/issue/${id}`, {
+    const res = await fetch(`${process.env.API_URL}/issue/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -112,7 +112,7 @@ export async function updateIssue({
 }
 
 export async function deleteIssue(id: number) {
-    const res = await fetch(`http://localhost:8080/issue/${id}`, {
+    const res = await fetch(`${process.env.API_URL}/issue/${id}`, {
         method: "DELETE",
     });
     if (res.ok) {

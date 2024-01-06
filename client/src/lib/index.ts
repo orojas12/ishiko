@@ -9,11 +9,11 @@ export const db = initdb(":memory:");
 
 export const config: ProviderConfig = {
     providerId: "ishiko",
-    redirectUri: "http://localhost:3000/oidc/code",
-    authorizationEndpoint: "http://localhost:8080/oauth2/authorize",
-    tokenEndpoint: "http://localhost:8080/oauth2/token",
-    logoutEndpoint: "http://localhost:8080/oidc/logout",
-    postLogoutRedirectUri: "http://localhost:3000/oidc/post-logout",
+    redirectUri: `${process.env.BASE_URL}/oidc/code`,
+    authorizationEndpoint: `${process.env.BASE_URL}/api/oauth2/authorize`,
+    tokenEndpoint: `${process.env.BASE_URL}/api/oauth2/token`,
+    logoutEndpoint: `${process.env.BASE_URL}/api/oidc/logout`,
+    postLogoutRedirectUri: `${process.env.BASE_URL}/oidc/post-logout`,
     client: {
         id: "ishiko-client",
         secret: "secret",
