@@ -3,6 +3,8 @@ server:
   forward-headers-strategy: FRAMEWORK
   servlet:
     context-path: /api
+  thymeleaf:
+    cache: false
 
 logging:
   level:

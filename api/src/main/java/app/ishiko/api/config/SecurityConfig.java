@@ -1,15 +1,13 @@
 package app.ishiko.api.config;
 
+import app.ishiko.api.auth.BadCredentialsExceptionHandler;
+import app.ishiko.api.auth.DefaultAuthenticationExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-
-import app.ishiko.api.auth.BadCredentialsExceptionHandler;
-import app.ishiko.api.auth.DefaultAuthenticationExceptionHandler;
-
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
@@ -46,7 +44,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.DelegatingAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -131,31 +128,29 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain defaultSecurityFilterChain1(HttpSecurity http,
-            @Value("${ishiko.base_url}") String baseUrl, ObjectMapper mapper)
-            throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain1(
+            HttpSecurity http, @Value("${ishiko.base_url}") String baseUrl, ObjectMapper mapper
+    ) throws Exception {
         http
                 .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(new CsrfTokenRequestHeaderHandler()))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/css/**", "/favicon.ico").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/api/auth/signup", "/api/auth/signin").permitAll()
+                        .requestMatchers("/auth/signup", "/auth/signin").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
-                        .loginPage("/api/auth/signin")
+                        .loginPage("/auth/signin")
                         .loginProcessingUrl("/auth/signin")
-                        .failureHandler(authenticationFailureHandler(mapper)));
+                        .failureHandler(authenticationFailureHandler())
+                );
         return http.build();
     }
 
     @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler(ObjectMapper mapper) {
+    public AuthenticationFailureHandler authenticationFailureHandler() {
         LinkedHashMap<Class<? extends AuthenticationException>, AuthenticationFailureHandler> handlers = new LinkedHashMap<>();
-        handlers.put(BadCredentialsException.class, new BadCredentialsExceptionHandler(mapper));
-        return new DelegatingAuthenticationFailureHandler(handlers, new DefaultAuthenticationExceptionHandler(mapper));
+        handlers.put(BadCredentialsException.class, new BadCredentialsExceptionHandler());
+        return new DelegatingAuthenticationFailureHandler(handlers, new DefaultAuthenticationExceptionHandler());
     }
 
     @Bean
@@ -200,7 +195,7 @@ public class SecurityConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate,
-            @Value("${ishiko.base_url}") String baseUrl) {
+                                                                 @Value("${ishiko.base_url}") String baseUrl) {
         var registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
         RegisteredClient registeredClient = RegisteredClient.withId("client1")
                 .clientId("ishiko-client")

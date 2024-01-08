@@ -4,11 +4,51 @@
     <title>Sign In</title>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
   </head>
   <body>
-    <h1>Hello tailwind!</h1>
-    <p></p>
-    <input id="_csrf" th:value="${_csrfToken}" type="hidden" />
+    <div class="absolute left-0 top-0 h-full w-full flex flex-col items-center">
+      <div
+        class="w-full max-w-[25rem] p-6 sm:p-14 rounded-lg border border-gray-300 m-auto"
+      >
+        <form
+          class="flex flex-col"
+          method="post"
+          th:action="@{/auth/signin}"
+          aria-errormessage="error-message"
+        >
+          <h1 class="text-2xl mb-4">Sign in</h1>
+          <div
+            id="error-message"
+            class="bg-destructive-100 text-destructive-700 rounded mb-4 text-sm p-2"
+            th:text="${error}"
+            th:hidden="${error.isEmpty()}"
+          ></div>
+          <div class="form-item">
+            <label class="label" for="username">Username</label>
+            <input
+              class="input"
+              id="username"
+              name="username"
+              type="text"
+              required
+              autofocus
+            />
+          </div>
+          <div class="form-item">
+            <label class="label" for="password">Password</label>
+            <input
+              class="input"
+              id="password"
+              name="password"
+              required
+              type="password"
+            />
+          </div>
+          <input id="_csrf" th:value="${csrfToken}" type="hidden" />
+          <button class="btn btn--default mt-4">Sign In</button>
+        </form>
+      </div>
+    </div>
   </body>
 </html>

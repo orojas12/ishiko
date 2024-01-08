@@ -1,10 +1,9 @@
 package app.ishiko.api.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class BadCredentialsExceptionHandler extends DefaultAuthenticationExceptionHandler {
-    public BadCredentialsExceptionHandler(ObjectMapper mapper) {
-        super(mapper);
+
+    public BadCredentialsExceptionHandler() {
+        super();
         this.errorMessage = "Invalid username or password";
     }
 }

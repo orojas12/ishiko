@@ -1,11 +1,8 @@
 package app.ishiko.api.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -37,11 +34,13 @@ public class AuthController {
     }
 
     @GetMapping("/signin")
-    public String signInPage(HttpServletRequest request, Model model) {
+    public String signInPage(
+            HttpServletRequest request, Model model, @RequestParam(defaultValue = "") String error
+    ) {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-        csrfToken.getToken();
-        model.addAttribute("csrfToken", csrfToken);
-        return "signin";
+        model.addAttribute("csrfToken", csrfToken.getToken());
+        model.addAttribute("error", error);
+        return "auth/signin";
     }
 
     @PostMapping("signup")

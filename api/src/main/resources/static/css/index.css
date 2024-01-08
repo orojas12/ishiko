@@ -46,7 +46,7 @@ html,
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: Roboto, sans-serif;
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
@@ -444,6 +444,71 @@ video {
   display: none;
 }
 
+:root {
+  /* Tailwind colors */
+  --color-primary-50: 166 76% 97%;
+  --color-primary-100: 167 85% 89%;
+  --color-primary-200: 168 84% 78%;
+  --color-primary-300: 171 77% 64%;
+  --color-primary-400: 172 66% 50%;
+  --color-primary-500: 173 80% 40%;
+  --color-primary-600: 175 84% 32%;
+  --color-primary-700: 175 77% 26%;
+  --color-primary-800: 176 61% 19%;
+  --color-primary-900: 176 61% 19%;
+  --color-secondary-50: 214 100% 97%;
+  --color-secondary-100: 214 95% 93%;
+  --color-secondary-200: 213 97% 87%;
+  --color-secondary-300: 212 96% 78%;
+  --color-secondary-400: 213 94% 68%;
+  --color-secondary-500: 217 91% 60%;
+  --color-secondary-600: 221 83% 53%;
+  --color-secondary-700: 224 76% 48%;
+  --color-secondary-800: 226 71% 40%;
+  --color-secondary-900: 224 64% 33%;
+  --color-gray-50: 210 20% 98%;
+  --color-gray-100: 220 14% 96%;
+  --color-gray-200: 220 13% 91%;
+  --color-gray-300: 216 12% 84%;
+  --color-gray-400: 218 11% 65%;
+  --color-gray-500: 220 9% 46%;
+  --color-gray-600: 215 14% 34%;
+  --color-gray-700: 217 19% 27%;
+  --color-gray-800: 215 28% 17%;
+  --color-gray-900: 221 39% 11%;
+  --color-destructive-50: 0 86% 97%;
+  --color-destructive-100: 0 93% 94%;
+  --color-destructive-200: 0 96% 89%;
+  --color-destructive-300: 0 94% 82%;
+  --color-destructive-400: 0 91% 71%;
+  --color-destructive-500: 0 84% 60%;
+  --color-destructive-600: 0 72% 51%;
+  --color-destructive-700: 0 74% 42%;
+  --color-destructive-800: 0 70% 35%;
+  --color-destructive-900: 0 63% 31%;
+  --color-destructive-950: 0 75% 15%;
+  /* shadcn/ui theme */
+  --background: var(--color-gray-50);
+  --foreground: var(--color-gray-900);
+  --muted: var(--color-gray-200);
+  --muted-foreground: var(--color-gray-900);
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+  --border: var(--color-gray-200);
+  --input: var(--color-gray-300);
+  --primary: var(--color-primary-600);
+  --primary-foreground: var(--color-gray-50);
+  --secondary: var(--color-secondary-600);
+  --secondary-foreground: var(--color-gray-50);
+  --destructive: var(--color-destructive-500);
+  --destructive-foreground: var(--color-gray-50);
+  --accent: var(--color-gray-200);
+  --accent-foreground: var(--color-gray-900);
+  --ring: var(--color-secondary-400);
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -544,6 +609,212 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
+.form-item {
+  margin-bottom: 1rem;
+}
+
+.input {
+  margin-top: 0.25rem;
+  display: flex;
+  height: 2.5rem;
+  width: 100%;
+  border-radius: 0.375rem;
+  border-width: 1px;
+  border-color: hsl(var(--input));
+  background-color: hsl(var(--background));
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-ring-offset-color: hsl(var(--background));
+}
+
+.input::file-selector-button {
+  border-width: 0px;
+  background-color: transparent;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+}
+
+.input::-moz-placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+.input::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+.input:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  --tw-ring-color: hsl(var(--ring));
+  --tw-ring-offset-width: 2px;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.label {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.peer:disabled ~ .label {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn {
+  display: inline-flex;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 0.375rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  --tw-ring-offset-color: hsl(var(--background));
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.btn:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  --tw-ring-color: hsl(var(--ring));
+  --tw-ring-offset-width: 2px;
+}
+
+.btn:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.btn--default {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.btn--default:hover {
+  background-color: hsl(var(--color-primary-700));
+}
+
+.absolute {
+  position: absolute;
+}
+
+.left-0 {
+  left: 0px;
+}
+
+.top-0 {
+  top: 0px;
+}
+
+.m-auto {
+  margin: auto;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
 .hidden {
   display: none;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.max-w-\[25rem\] {
+  max-width: 25rem;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.rounded {
+  border-radius: 0.25rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.border {
+  border-width: 1px;
+}
+
+.border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity));
+}
+
+.bg-destructive-100 {
+  background-color: hsl(var(--color-destructive-100));
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-destructive-700 {
+  color: hsl(var(--color-destructive-700));
+}
+
+@media (min-width: 640px) {
+  .sm\:p-14 {
+    padding: 3.5rem;
+  }
 }
