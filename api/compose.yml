@@ -6,7 +6,7 @@ services:
       - 127.0.0.1:8080:8080
       - 127.0.0.1:5005:5005
     volumes:
-      - ./:/usr/ishiko/api
+      - ./:/usr/ishiko/api:consistent
     networks:
       - dev
     environment:

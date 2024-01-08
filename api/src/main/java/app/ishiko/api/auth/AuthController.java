@@ -18,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 @Controller
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
     UserDetailsManager userDetailsManager;
     String baseUrl;
@@ -37,11 +37,11 @@ public class AuthController {
     }
 
     @GetMapping("/signin")
-    public ModelAndView signInPage(HttpServletRequest request, @RequestParam(defaultValue = "false") boolean error) {
-        String redirectUrl = baseUrl + "/auth/signin" + (error ? "?error=true" : "");
+    public String signInPage(HttpServletRequest request, Model model) {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         csrfToken.getToken();
-        return new ModelAndView("redirect:" + redirectUrl);
+        model.addAttribute("csrfToken", csrfToken);
+        return "signin";
     }
 
     @PostMapping("signup")

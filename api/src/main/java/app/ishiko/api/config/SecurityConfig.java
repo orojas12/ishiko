@@ -121,7 +121,7 @@ public class SecurityConfig {
                 // authorization endpoint
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/api/auth/signin"),
+                                new LoginUrlAuthenticationEntryPoint("/auth/signin"),
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
                 // Accept access tokens for User Info and/or Client Registration
                 .oauth2ResourceServer((resourceServer) -> resourceServer
@@ -140,13 +140,13 @@ public class SecurityConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new CsrfTokenRequestHeaderHandler()))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/assets/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/css/**", "/favicon.ico").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/auth/signup", "/api/auth/signin").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/api/auth/signin")
-                        .loginProcessingUrl("/api/auth/signin")
+                        .loginProcessingUrl("/auth/signin")
                         .failureHandler(authenticationFailureHandler(mapper)));
         return http.build();
     }

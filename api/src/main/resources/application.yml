@@ -1,7 +1,8 @@
 server:
   port: 8080
-  context-path: /api
   forward-headers-strategy: FRAMEWORK
+  servlet:
+    context-path: /api
 
 logging:
   level:
