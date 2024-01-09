@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+  <head>
+    <title>Success</title>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/layout :: base_layout(~{::.content})}">
+      <div class="content m-auto card gap-4 text-center">
+        <h1 class="text-xl">Your account was created successfully!</h1>
+        <a class="btn btn--default self-center" th:href="${loginUrl}">Log In</a>
+      </div>
+    </div>
+  </body>
+</html>

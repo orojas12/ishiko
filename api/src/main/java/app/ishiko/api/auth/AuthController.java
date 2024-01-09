@@ -14,15 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
+import app.ishiko.api.exception.InvalidInputException;
+
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    UserDetailsManager userDetailsManager;
-    String baseUrl;
+    private String baseUrl;
+    private AuthService auth;
 
-    public AuthController(UserDetailsManager userDetailsManager, @Value("${ishiko.base_url}") String baseUrl) {
-        this.userDetailsManager = userDetailsManager;
+    public AuthController(@Value("${ishiko.base_url}") String baseUrl, AuthService auth) {
         this.baseUrl = baseUrl;
+        this.auth = auth;
     }
 
     @GetMapping("/signup")
@@ -43,12 +45,17 @@ public class AuthController {
         return "auth/signin";
     }
 
-    @PostMapping("signup")
-    public ModelAndView signUp(HttpServletRequest request, SignUpDto signUpDto) {
-        String redirectUrl = baseUrl + "/auth/signup";
-
-        // create user
-        request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.FOUND);
-        return new ModelAndView("redirect:" + redirectUrl);
+    @PostMapping("/signup")
+    public String signUp(HttpServletRequest request, SignUpDto signUpDto, Model model) {
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        try {
+            auth.signUpUser(signUpDto);
+        } catch (InvalidInputException e) {
+            model.addAttribute("csrfToken", csrfToken.getToken());
+            model.addAttribute("error", e.getMessage());
+            return "auth/signup";
+        } 
+        model.addAttribute("loginUrl", baseUrl + "/oidc/login");
+        return "auth/account-created";
     }
 }

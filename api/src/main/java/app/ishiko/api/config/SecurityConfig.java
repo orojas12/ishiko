@@ -26,6 +26,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -136,12 +138,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/css/**", "/js/**", "/favicon.ico").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/auth/signup", "/auth/signin").permitAll()
+                        .requestMatchers("/auth/*").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/auth/signin")
                         .loginProcessingUrl("/auth/signin")
                         .failureHandler(authenticationFailureHandler())
+                        .defaultSuccessUrl(baseUrl)
                 );
         return http.build();
     }
@@ -165,11 +168,11 @@ public class SecurityConfig {
         return source;
     }
 
-    // @Bean
-    // public PasswordEncoder passwordEncoder() {
-    // var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    // encoder.
-    // }
+//     @Bean
+//     public PasswordEncoder passwordEncoder() {
+//         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        
+//     }
 
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource) {
@@ -186,12 +189,6 @@ public class SecurityConfig {
         }
         return userDetailsManager;
     }
-
-    // @Bean
-    // public UserDetailsService userDetailsService(UserDetailsManager
-    // userDetailsManager) {
-    // return userDetailsManager;
-    // }
 
     @Bean
     public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate,

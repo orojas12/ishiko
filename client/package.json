@@ -7,7 +7,8 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "test": "jest --watch"
+        "test": "jest --watch",
+        "test:e2e": "playwright test --ui"
     },
     "dependencies": {
         "@hookform/resolvers": "^3.3.2",

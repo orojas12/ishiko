@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.thymeleaf.org">
+  <body>
+    <div
+      th:fragment="base_layout(content)"
+      class="absolute left-0 top-0 h-full w-full flex flex-col items-center"
+    >
+      <th:block th:replace="${content}" />
+    </div>
+  </body>
+</html>

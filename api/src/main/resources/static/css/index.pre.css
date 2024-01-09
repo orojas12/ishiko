@@ -115,4 +115,8 @@
   .btn--outline {
     @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
   }
+
+  .card {
+    @apply w-full max-w-[25rem] p-7 sm:p-14 rounded-lg border border-border flex flex-col; 
+  }
 }

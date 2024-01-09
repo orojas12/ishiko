@@ -16,8 +16,8 @@
           id="signup-form"
           class="flex flex-col"
           method="post"
-          th:action="@{/auth/signin}"
-          aria-errormessage="error-message"
+          th:action="@{/auth/signup}"
+          th:aria-errormessage="${error.isEmpty} ? '' : 'error-message'"
         >
           <h1 class="text-2xl mb-4">Sign up</h1>
           <div
