@@ -1,16 +1,71 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="www.thymeleaf.org">
-<head>
+  <head>
     <title>Sign Up</title>
-    <meta charset="UTF-8"/>
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <script crossorigin th:src="@{/assets/signup-2IWtO57t.js}" type="module"></script>
-    <link crossorigin rel="modulepreload" th:href="@{/assets/input-fYo5iGjU.js}">
-    <link crossorigin rel="stylesheet" th:href="@{/assets/input-stQvMKP5.css}">
-</head>
-<body>
-<input id="_csrf" th:value="${_csrfToken}" type="hidden"/>
-
-<div id="root"></div>
-</body>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <script defer th:src="@{/js/signup.js}"></script>
+  </head>
+  <body>
+    <div class="absolute left-0 top-0 h-full w-full flex flex-col items-center">
+      <div
+        class="w-full max-w-[25rem] p-6 sm:p-14 rounded-lg border border-gray-300 m-auto"
+      >
+        <form
+          id="signup-form"
+          class="flex flex-col"
+          method="post"
+          th:action="@{/auth/signin}"
+          aria-errormessage="error-message"
+        >
+          <h1 class="text-2xl mb-4">Sign up</h1>
+          <div
+            id="error-message"
+            class="bg-destructive-100 text-destructive-700 rounded mb-4 text-sm p-2"
+            th:text="${error}"
+            th:hidden="${error.isEmpty()}"
+          ></div>
+          <div class="form-item">
+            <label class="label" for="username">Username</label>
+            <input
+              class="input"
+              id="username"
+              name="username"
+              type="text"
+              required
+              autofocus
+            />
+          </div>
+          <div class="form-item">
+            <label class="label" for="password">Password</label>
+            <input
+              class="input"
+              id="password"
+              name="password"
+              required
+              type="password"
+            />
+          </div>
+          <div class="form-item">
+            <label class="label" for="confirm-password">Confirm password</label>
+            <input
+              class="input"
+              id="confirm-password"
+              required
+              type="password"
+            />
+            <div
+              id="confirm-password-error"
+              class="text-sm text-destructive-500 mt-2"
+              aria-atomic="true"
+              aria-live="polite"
+            ></div>
+          </div>
+          <input id="_csrf" th:value="${csrfToken}" type="hidden" />
+          <button class="btn btn--default mt-2">Sign Up</button>
+        </form>
+      </div>
+    </div>
+  </body>
 </html>

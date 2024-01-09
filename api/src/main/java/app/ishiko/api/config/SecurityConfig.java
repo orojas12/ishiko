@@ -134,7 +134,7 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/css/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/favicon.ico").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/auth/signup", "/auth/signin").permitAll()
                         .anyRequest().authenticated())

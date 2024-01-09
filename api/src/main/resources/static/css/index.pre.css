@@ -83,6 +83,10 @@
         focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
+  .input--error {
+    @apply focus-visible:ring-destructive-500;
+  }
+
   .label {
     @apply text-sm font-medium leading-none peer-disabled:cursor-not-allowed 
         peer-disabled:opacity-70;

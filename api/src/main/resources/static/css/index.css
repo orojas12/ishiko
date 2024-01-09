@@ -662,6 +662,10 @@ video {
   opacity: 0.5;
 }
 
+.input--error:focus-visible {
+  --tw-ring-color: hsl(var(--color-destructive-500));
+}
+
 .label {
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -738,8 +742,16 @@ video {
   margin-bottom: 1rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .mt-4 {
   margin-top: 1rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
 }
 
 .flex {
@@ -807,6 +819,10 @@ video {
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
+}
+
+.text-destructive-500 {
+  color: hsl(var(--color-destructive-500));
 }
 
 .text-destructive-700 {

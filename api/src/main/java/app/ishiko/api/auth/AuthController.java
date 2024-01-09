@@ -25,18 +25,18 @@ public class AuthController {
         this.baseUrl = baseUrl;
     }
 
-    @GetMapping("signup")
-    public ModelAndView signUpPage(HttpServletRequest request) {
+    @GetMapping("/signup")
+    public String signUpPage(
+            HttpServletRequest request, Model model, @RequestParam(defaultValue = "") String error) {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-        // Render the csrf token to a cookie by loading the deferred token
-        csrfToken.getToken();
-        return new ModelAndView("redirect:" + baseUrl + "/auth/signup");
+        model.addAttribute("csrfToken", csrfToken.getToken());
+        model.addAttribute("error", error);
+        return "auth/signup";
     }
 
     @GetMapping("/signin")
     public String signInPage(
-            HttpServletRequest request, Model model, @RequestParam(defaultValue = "") String error
-    ) {
+            HttpServletRequest request, Model model, @RequestParam(defaultValue = "") String error) {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         model.addAttribute("csrfToken", csrfToken.getToken());
         model.addAttribute("error", error);
