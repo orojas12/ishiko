@@ -16,7 +16,7 @@ export default async function RootLayout({
         <html lang="en">
             <body className="bg-background text-foreground">
                 <Providers>
-                    <div className="container">{children}</div>
+                    <div className="container absolute top-0 left-0 h-full w-full">{children}</div>
                 </Providers>
             </body>
         </html>

@@ -1,10 +1,12 @@
 import { Link } from "@/components/ui/link";
-import { sessionManager } from "@/lib";
+import { logger, sessionManager } from "@/lib";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
     const session = await sessionManager.validateSession();
     if (!session) {
+        logger.debug(`Unauthenticated user`)
+        logger.debug(`Redirecting to ${process.env.BASE_URL}/oidc/login`);
         redirect("/oidc/login");
     }
 

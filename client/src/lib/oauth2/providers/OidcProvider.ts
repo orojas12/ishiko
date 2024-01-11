@@ -6,23 +6,25 @@ import type { OidcTokenSet } from "../";
 import { NextResponse, type NextRequest } from "next/server";
 import { generateRandomString } from "../util";
 import { InvalidStateError } from "../error";
+import { logger } from "@/lib";
 
 export class OidcProvider extends OAuth2Provider {
     constructor(config: ProviderConfig) {
         if (!config.scope.includes("openid")) {
             throw new TypeError(
-                "'scope' must include 'openid' when using OpenID Connect 1.0",
+                "'scope' must include 'openid' when using OpenID Connect 1.0"
             );
         }
         super(config);
     }
 
     handleAuthorizationCodeRedirect = async (
-        request: NextRequest,
+        request: NextRequest
     ): Promise<OidcTokenSet> => {
         const [code, codeVerifier] =
             this.validateAuthorizationCodeRedirect(request);
 
+        logger.debug(`Fetching token set at ${this.config.tokenEndpoint}`);
         const data: OidcTokenResponse = await validateOAuth2AuthorizationCode(
             code,
             this.config.tokenEndpoint,
@@ -34,8 +36,10 @@ export class OidcProvider extends OAuth2Provider {
                     clientSecret: this.config.client.secret,
                     authenticateWith: this.config.client.authenticationMethod,
                 },
-            },
+            }
         );
+        logger.debug("Fetched token set");
+
         return {
             accessToken: {
                 value: data.access_token,
@@ -49,7 +53,7 @@ export class OidcProvider extends OAuth2Provider {
     oidcLogoutRedirect = (idToken: string) => {
         if (!this.config.logoutEndpoint) {
             throw TypeError(
-                "'logoutEndpoint' must be specified to use RP-Initiated Logout",
+                "'logoutEndpoint' must be specified to use RP-Initiated Logout"
             );
         }
 
@@ -63,7 +67,7 @@ export class OidcProvider extends OAuth2Provider {
         if (this.config.postLogoutRedirectUri) {
             url.searchParams.set(
                 "post_logout_redirect_uri",
-                this.config.postLogoutRedirectUri,
+                this.config.postLogoutRedirectUri
             );
         }
 
@@ -106,12 +110,12 @@ export class OidcProvider extends OAuth2Provider {
         }
         if (!storedState) {
             throw new InvalidStateError(
-                "'logout-state' cookie is empty or null",
+                "'logout-state' cookie is empty or null"
             );
         }
         if (state !== storedState) {
             throw new InvalidStateError(
-                "'state' parameter and 'logout-state' cookie do not match",
+                "'state' parameter and 'logout-state' cookie do not match"
             );
         }
     };

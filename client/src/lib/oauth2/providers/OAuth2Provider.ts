@@ -13,6 +13,7 @@ import {
     InvalidCodeVerifierError,
     InvalidStateError,
 } from "../error";
+import { logger } from "@/lib";
 
 export class OAuth2Provider {
     readonly config: ProviderConfig;
@@ -22,7 +23,7 @@ export class OAuth2Provider {
     }
 
     handleAuthorizationCodeRedirect = async (
-        request: NextRequest,
+        request: NextRequest
     ): Promise<OAuth2TokenSet> => {
         const [code, codeVerifier] =
             this.validateAuthorizationCodeRedirect(request);
@@ -38,7 +39,7 @@ export class OAuth2Provider {
                     clientSecret: this.config.client.secret,
                     authenticateWith: this.config.client.authenticationMethod,
                 },
-            },
+            }
         );
         return {
             accessToken: {
@@ -66,6 +67,7 @@ export class OAuth2Provider {
             path: "/",
             maxAge: 60 * 60 * 1000,
         });
+        logger.debug(`Set oauth2 state cookie`);
 
         if (codeVerifier) {
             response.cookies.set("codeVerifier", codeVerifier, {
@@ -74,6 +76,7 @@ export class OAuth2Provider {
                 path: "/",
                 maxAge: 60 * 60 * 1000,
             });
+            logger.debug(`Set oauth2 code-verifier cookie`);
         }
 
         return response;
@@ -81,10 +84,15 @@ export class OAuth2Provider {
 
     validateAuthorizationCodeRedirect = (request: NextRequest) => {
         const url = new URL(request.url);
+
+        logger.debug("Retrieving oauth2 state");
         const storedState = request.cookies.get(
-            `${this.config.providerId}-state`,
+            `${this.config.providerId}-state`
         )?.value;
+
+        logger.debug("Retrieving code verifier");
         const codeVerifier = request.cookies.get("codeVerifier")?.value;
+
         const state = url.searchParams.get("state");
         const code = url.searchParams.get("code");
 
@@ -102,13 +110,13 @@ export class OAuth2Provider {
 
         if (!codeVerifier) {
             throw new InvalidCodeVerifierError(
-                "'code_verifier' cookie is empty or null",
+                "'code_verifier' cookie is empty or null"
             );
         }
 
         if (storedState !== state) {
             throw new InvalidStateError(
-                "'state' cookie and 'state' parameter values do not match",
+                "'state' cookie and 'state' parameter values do not match"
             );
         }
 
@@ -130,8 +138,9 @@ export class OAuth2Provider {
                     scope: this.config.scope,
                     codeChallengeMethod: "S256",
                     redirectUri: this.config.redirectUri,
-                },
+                }
             );
+            logger.debug("Generated PKCE code verifier");
             return {
                 url: authUrl[0],
                 codeVerifier: authUrl[1],
@@ -144,7 +153,7 @@ export class OAuth2Provider {
                     clientId: this.config.client.id,
                     scope: this.config.scope,
                     redirectUri: this.config.redirectUri,
-                },
+                }
             );
             return {
                 url: authUrl[0],

@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 
 import type { Session, SessionConfig, SessionDao, SessionManager } from ".";
 import type { Profile, OidcTokenSet } from "..";
+import { logger } from "@/lib";
 
 export class DatabaseSessionManager implements SessionManager {
     config: SessionConfig;
@@ -33,7 +34,7 @@ export class DatabaseSessionManager implements SessionManager {
 
     createSession = async (
         tokens: OidcTokenSet,
-        profile: Profile,
+        profile: Profile
     ): Promise<Session> => {
         const sessionId = nanoid();
         const session = {
@@ -49,6 +50,7 @@ export class DatabaseSessionManager implements SessionManager {
         };
         // TODO: handle error if profile id already exists (eg. a user starts multiple sessions)
         await this.sessionDao.createSession(session);
+        logger.debug(`Created session ${sessionId}`);
         return this.sessionDao.getSession(sessionId) as Promise<Session>;
     };
 

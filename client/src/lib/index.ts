@@ -4,6 +4,7 @@ import { DatabaseSessionManager, SQLiteSessionDao } from "@/lib/oauth2/session";
 import type { ProviderConfig } from "./oauth2/providers";
 import { OidcProvider } from "./oauth2/providers/OidcProvider";
 import { initdb } from "./db";
+import pino from "pino";
 
 export const db = initdb(":memory:");
 
@@ -33,3 +34,7 @@ export const sessionManager = new DatabaseSessionManager(
 );
 
 export const oidc = new OidcProvider(config);
+
+export const logger = pino({
+    level: "debug",
+});
