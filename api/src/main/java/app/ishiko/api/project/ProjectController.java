@@ -7,11 +7,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import app.ishiko.api.exception.HttpErrorResponseBodyDto;
+import app.ishiko.api.exception.InvalidInputException;
 import app.ishiko.api.exception.NotFoundException;
+import app.ishiko.api.project.issue.dto.CreateIssueDto;
+import app.ishiko.api.project.issue.dto.CreateIssueRequest;
 import app.ishiko.api.project.issue.dto.IssueDto;
 import app.ishiko.api.project.issue.service.IssueService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,8 +50,10 @@ public class ProjectController {
 
     @GetMapping("/{projectId}/issues/{issueId}")
     public IssueDto getProjectIssue(Authentication auth,
-            @PathVariable String projectId, @PathVariable Integer issueId) throws NotFoundException {
-        Optional<Project> project = projectRepository.findByIdAndUser_Username(projectId, auth.getName());
+            @PathVariable String projectId, @PathVariable Integer issueId)
+            throws NotFoundException {
+        Optional<Project> project = projectRepository
+                .findByIdAndUser_Username(projectId, auth.getName());
 
         if (project.isEmpty()) {
             throw new NotFoundException("Project id " + projectId
@@ -54,6 +61,27 @@ public class ProjectController {
         }
 
         return issueService.getIssue(issueId);
+    }
+
+    @PostMapping("/{projectId}/issues")
+    @ResponseStatus(HttpStatus.CREATED)
+    public IssueDto createProjectIssue(Authentication auth,
+            @PathVariable String projectId,
+            @RequestBody CreateIssueRequest body)
+            throws NotFoundException, InvalidInputException {
+        Optional<Project> project = projectRepository
+                .findByIdAndUser_Username(projectId, auth.getName());
+
+        if (project.isEmpty()) {
+            throw new NotFoundException("Project id " + projectId
+                    + " not found for user " + auth.getName());
+        }
+
+        CreateIssueDto dto = new CreateIssueDto(body.getSubject(),
+                body.getDescription(), body.getDueDate(), project.get().getId(),
+                auth.getName(), body.getStatus(), body.getLabel());
+
+        return issueService.createIssue(dto);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
