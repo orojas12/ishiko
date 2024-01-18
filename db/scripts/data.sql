@@ -6,7 +6,7 @@ INSERT INTO authorities (username, authority)
 VALUES ('oscar', 'ROLE_USER'),
     ('angie', 'ROLE_USER'),
     ('ivan', 'ROLE_USER');
-INSERT INTO project (id, name)
+INSERT INTO project (id, name, owner)
 VALUES ('project_1', 'Project 1', 'oscar'),
     ('project_2', 'Project 2', 'oscar'),
     ('project_3', 'Project 3', 'oscar');
