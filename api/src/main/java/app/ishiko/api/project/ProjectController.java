@@ -23,28 +23,43 @@ public class ProjectController {
     private IssueService issueService;
     private ProjectRepository projectRepository;
 
-    public ProjectController(IssueService issueService, ProjectRepository projectRepository) {
+    public ProjectController(IssueService issueService,
+            ProjectRepository projectRepository) {
         this.issueService = issueService;
         this.projectRepository = projectRepository;
     }
 
     @GetMapping("/{projectId}/issues")
-    public List<IssueDto> getProjectIssues(Authentication auth, @PathVariable String projectId)
-            throws NotFoundException {
-        Optional<Project> project =
-                projectRepository.findByIdAndUser_Username(projectId, auth.getName());
+    public List<IssueDto> getProjectIssues(Authentication auth,
+            @PathVariable String projectId) throws NotFoundException {
+        Optional<Project> project = projectRepository
+                .findByIdAndUser_Username(projectId, auth.getName());
 
         if (project.isEmpty()) {
-            throw new NotFoundException(
-                    "Project id " + projectId + " not found for user " + auth.getName());
+            throw new NotFoundException("Project id " + projectId
+                    + " not found for user " + auth.getName());
         }
 
         return issueService.getIssues(projectId);
     }
 
+    @GetMapping("/{projectId}/issues/{issueId}")
+    public IssueDto getProjectIssue(Authentication auth,
+            @PathVariable String projectId, @PathVariable Integer issueId) throws NotFoundException {
+        Optional<Project> project = projectRepository.findByIdAndUser_Username(projectId, auth.getName());
+
+        if (project.isEmpty()) {
+            throw new NotFoundException("Project id " + projectId
+                    + " not found for user " + auth.getName());
+        }
+
+        return issueService.getIssue(issueId);
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    public HttpErrorResponseBodyDto notFound(HttpServletRequest req, Exception e) {
+    public HttpErrorResponseBodyDto notFound(HttpServletRequest req,
+            Exception e) {
         return new HttpErrorResponseBodyDto(e.getMessage());
     }
 }
