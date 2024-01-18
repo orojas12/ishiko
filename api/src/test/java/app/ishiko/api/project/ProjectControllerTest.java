@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import app.ishiko.api.exception.InvalidInputException;
 import app.ishiko.api.exception.NotFoundException;
 import app.ishiko.api.project.issue.dto.CreateIssueDto;
 import app.ishiko.api.project.issue.dto.CreateIssueRequest;
@@ -41,6 +43,20 @@ public class ProjectControllerTest {
     private ProjectRepository projectRepository;
     @MockBean
     private IssueService issueService;
+
+    static boolean isCreateIssueDtoEqual(CreateIssueDto dto1,
+            CreateIssueDto dto2) {
+        return dto1.getSubject().equals(dto2.getSubject())
+                && dto1.getDescription().equals(dto2.getDescription())
+                && dto1.getDueDate().orElseThrow()
+                        .equals(dto2.getDueDate().orElseThrow())
+                && dto1.getProject().equals(dto2.getProject())
+                && dto1.getAuthor().equals(dto2.getAuthor())
+                && dto1.getStatus().orElseThrow() == dto2.getStatus()
+                        .orElseThrow()
+                && dto1.getLabel().orElseThrow() == dto2.getLabel()
+                        .orElseThrow();
+    }
 
     @Test
     @WithMockUser(value = "john")
@@ -217,20 +233,66 @@ public class ProjectControllerTest {
 
         verify(issueService).createIssue(argThat(arg -> {
             CreateIssueDto argDto = (CreateIssueDto) arg;
-            if (!argDto.getSubject().equals(createIssueDto.getSubject())
-                    || !argDto.getDescription()
-                            .equals(createIssueDto.getDescription())
-                    || !argDto.getDueDate().orElseThrow()
-                            .equals(createIssueDto.getDueDate().orElseThrow())
-                    || !argDto.getProject().equals(createIssueDto.getProject())
-                    || !argDto.getAuthor().equals(createIssueDto.getAuthor())
-                    || argDto.getStatus().orElseThrow() != createIssueDto
-                            .getStatus().orElseThrow()
-                    || argDto.getLabel().orElseThrow() != createIssueDto
-                            .getLabel().orElseThrow()) {
-                return false;
-            }
-            return true;
+            return isCreateIssueDtoEqual(argDto, createIssueDto);
+        }));
+    }
+
+    @Test
+    @WithMockUser(value = "john")
+    void createIssue_CreateIssueDtoWithNonExistentProjectId_ReturnsHttp404AndErrorMsg()
+            throws Exception {
+        String username = "john";
+        Project project = new Project("project_1", "name", "desc");
+        CreateIssueRequest body = new CreateIssueRequest("subject", "desc",
+                Instant.now(), project.getId(), 2, 3);
+        IssueDto issueDto = new IssueDto(1, body.getSubject(),
+                body.getDescription(), Instant.now(), body.getDueDate(),
+                project.getId(), username,
+                new IssueStatusDto(body.getStatus(), "status"),
+                new IssueLabelDto(body.getLabel(), "label"));
+        String json = objectMapper.writeValueAsString(body);
+
+        when(projectRepository.findByIdAndUser_Username(project.getId(),
+                username)).thenReturn(Optional.empty());
+        when(issueService.createIssue(any())).thenReturn(issueDto);
+
+        mockMvc.perform(
+                post("/projects/{projectId}/issues", "project_1").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpectAll(status().isNotFound(),
+                        jsonPath("$.message", isA(String.class)));
+
+        verify(issueService, times(0)).createIssue(any());
+    }
+
+    @Test
+    @WithMockUser(value = "john")
+    void createIssue_InvalidCreateIssueDto_ReturnsHttp400AndErroMsg()
+            throws Exception {
+        String invalidMsg = "invalid";
+        String username = "john";
+        Project project = new Project("project_1", "name", "desc");
+        CreateIssueRequest body = new CreateIssueRequest("subject", "desc",
+                Instant.now(), project.getId(), 2, 3);
+        CreateIssueDto createIssueDto = new CreateIssueDto(body.getSubject(),
+                body.getDescription(), body.getDueDate(), project.getId(),
+                username, body.getStatus(), body.getLabel());
+        String json = objectMapper.writeValueAsString(body);
+
+        when(projectRepository.findByIdAndUser_Username(project.getId(),
+                username)).thenReturn(Optional.of(project));
+        when(issueService.createIssue(any()))
+                .thenThrow(new InvalidInputException(invalidMsg));
+
+        mockMvc.perform(
+                post("/projects/{projectId}/issues", "project_1").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpectAll(status().isBadRequest(),
+                        jsonPath("$.message", is(invalidMsg)));
+
+        verify(issueService).createIssue(argThat(arg -> {
+            CreateIssueDto argDto = (CreateIssueDto) arg;
+            return isCreateIssueDtoEqual(argDto, createIssueDto);
         }));
     }
 }

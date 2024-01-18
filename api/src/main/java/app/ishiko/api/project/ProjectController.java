@@ -90,4 +90,11 @@ public class ProjectController {
             Exception e) {
         return new HttpErrorResponseBodyDto(e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidInputException.class)
+    public HttpErrorResponseBodyDto invalidInput(HttpServletRequest req,
+            Exception e) {
+        return new HttpErrorResponseBodyDto(e.getMessage());
+    }
 }
