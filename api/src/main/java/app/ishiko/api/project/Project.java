@@ -17,7 +17,7 @@ public class Project {
     String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "owner", referencedColumnName = "username", nullable = false)
     User owner;
 
     public Project() {}

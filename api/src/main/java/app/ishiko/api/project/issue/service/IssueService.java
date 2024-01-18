@@ -129,7 +129,7 @@ public class IssueService {
                 issue.setStatus(statusOptional.get());
             } else {
                 throw new InvalidInputException(
-                        "Issue status '" + dto.getStatus() + "' is invalid");
+                        "Issue status '" + dto.getStatus().get().toString() + "' is invalid");
             }
         }
         if (dto.getLabel().isPresent()) {

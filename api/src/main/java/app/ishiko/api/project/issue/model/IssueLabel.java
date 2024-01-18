@@ -3,11 +3,11 @@ package app.ishiko.api.project.issue.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "issue_label")
+@Table(name = "label")
 public class IssueLabel {
     @Id
-    @SequenceGenerator(name = "issue_label_id_seq", sequenceName = "issue_label_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "issue_label_id_seq")
+    @SequenceGenerator(name = "label_id_seq", sequenceName = "label_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "label_id_seq")
     private Integer id = 1;
 
     @Column(nullable = false)

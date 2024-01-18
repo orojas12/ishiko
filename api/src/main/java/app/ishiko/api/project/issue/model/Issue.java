@@ -25,10 +25,10 @@ public class Issue {
     @Nullable
     private Instant dueDate;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "project", nullable = false)
     private Project project;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username", nullable = false)
+    @JoinColumn(name = "author", referencedColumnName = "username", nullable = false)
     private User author;
     @Nullable
     @ManyToOne
