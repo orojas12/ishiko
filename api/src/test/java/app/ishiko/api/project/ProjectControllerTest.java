@@ -67,7 +67,7 @@ public class ProjectControllerTest {
                 Instant.now(), "project_1", username,
                 new IssueStatusDto(2, "status"), new IssueLabelDto(3, "label"));
         List<IssueDto> issues = List.of(dto);
-        when(projectRepository.findByIdAndUser_Username(project.getId(),
+        when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 username)).thenReturn(Optional.of(project));
         when(issueService.getIssues(project.getId())).thenReturn(issues);
 
@@ -106,7 +106,7 @@ public class ProjectControllerTest {
                 Instant.now(), "project_1", username,
                 new IssueStatusDto(2, "status"), new IssueLabelDto(3, "label"));
         List<IssueDto> issues = List.of(dto);
-        when(projectRepository.findByIdAndUser_Username(project.getId(),
+        when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 username)).thenReturn(Optional.empty());
         when(issueService.getIssues(project.getId())).thenReturn(issues);
 
@@ -124,7 +124,7 @@ public class ProjectControllerTest {
         IssueDto dto = new IssueDto(1, "subject", "desc", Instant.now(),
                 Instant.now(), "project_1", username,
                 new IssueStatusDto(2, "status"), new IssueLabelDto(3, "label"));
-        when(projectRepository.findByIdAndUser_Username(project.getId(),
+        when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 username)).thenReturn(Optional.of(project));
         when(issueService.getIssue(dto.getId())).thenReturn(dto);
 
@@ -159,7 +159,7 @@ public class ProjectControllerTest {
         IssueDto dto = new IssueDto(1, "subject", "desc", Instant.now(),
                 Instant.now(), "project_1", username,
                 new IssueStatusDto(2, "status"), new IssueLabelDto(3, "label"));
-        when(projectRepository.findByIdAndUser_Username(project.getId(),
+        when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 username)).thenReturn(Optional.empty());
         when(issueService.getIssue(dto.getId())).thenReturn(dto);
         mockMvc.perform(get("/projects/{projectId}/issues/{issueId}",
@@ -176,7 +176,7 @@ public class ProjectControllerTest {
         IssueDto dto = new IssueDto(1, "subject", "desc", Instant.now(),
                 Instant.now(), "project_1", username,
                 new IssueStatusDto(2, "status"), new IssueLabelDto(3, "label"));
-        when(projectRepository.findByIdAndUser_Username(project.getId(),
+        when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 username)).thenReturn(Optional.of(project));
         when(issueService.getIssue(dto.getId()))
                 .thenThrow(new NotFoundException("not found"));
@@ -204,7 +204,7 @@ public class ProjectControllerTest {
                 new IssueLabelDto(body.getLabel(), "label"));
         String json = objectMapper.writeValueAsString(body);
 
-        when(projectRepository.findByIdAndUser_Username(project.getId(),
+        when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 username)).thenReturn(Optional.of(project));
         when(issueService.createIssue(any())).thenReturn(issueDto);
 
@@ -252,7 +252,7 @@ public class ProjectControllerTest {
                 new IssueLabelDto(body.getLabel(), "label"));
         String json = objectMapper.writeValueAsString(body);
 
-        when(projectRepository.findByIdAndUser_Username(project.getId(),
+        when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 username)).thenReturn(Optional.empty());
         when(issueService.createIssue(any())).thenReturn(issueDto);
 
@@ -279,7 +279,7 @@ public class ProjectControllerTest {
                 username, body.getStatus(), body.getLabel());
         String json = objectMapper.writeValueAsString(body);
 
-        when(projectRepository.findByIdAndUser_Username(project.getId(),
+        when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 username)).thenReturn(Optional.of(project));
         when(issueService.createIssue(any()))
                 .thenThrow(new InvalidInputException(invalidMsg));

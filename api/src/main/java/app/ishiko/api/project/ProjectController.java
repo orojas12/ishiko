@@ -38,7 +38,7 @@ public class ProjectController {
     public List<IssueDto> getProjectIssues(Authentication auth,
             @PathVariable String projectId) throws NotFoundException {
         Optional<Project> project = projectRepository
-                .findByIdAndUser_Username(projectId, auth.getName());
+                .findByIdAndOwner_Username(projectId, auth.getName());
 
         if (project.isEmpty()) {
             throw new NotFoundException("Project id " + projectId
@@ -53,7 +53,7 @@ public class ProjectController {
             @PathVariable String projectId, @PathVariable Integer issueId)
             throws NotFoundException {
         Optional<Project> project = projectRepository
-                .findByIdAndUser_Username(projectId, auth.getName());
+                .findByIdAndOwner_Username(projectId, auth.getName());
 
         if (project.isEmpty()) {
             throw new NotFoundException("Project id " + projectId
@@ -70,7 +70,7 @@ public class ProjectController {
             @RequestBody CreateIssueRequest body)
             throws NotFoundException, InvalidInputException {
         Optional<Project> project = projectRepository
-                .findByIdAndUser_Username(projectId, auth.getName());
+                .findByIdAndOwner_Username(projectId, auth.getName());
 
         if (project.isEmpty()) {
             throw new NotFoundException("Project id " + projectId
