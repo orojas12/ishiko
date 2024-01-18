@@ -198,10 +198,10 @@ public class IssueServiceTest {
                 var issue = new Issue(3, "subject", "desc", Instant.now(), null, user, project,
                                 status, label);
                 when(issueRepository.findById(dto.getId())).thenReturn(Optional.of(issue));
-                when(statusRepository.findById(dto.getStatus().orElseThrow()))
+                when(statusRepository.findById(dto.getStatus().get()))
                                 .thenReturn(Optional.empty());
                 IssueService service = getIssueService();
-                assertThatThrownBy(() -> service.updateIssue(dto, "john"))
+                assertThatThrownBy(() -> service.updateIssue(dto, user.getUsername()))
                                 .isInstanceOf(InvalidInputException.class);
         }
 
