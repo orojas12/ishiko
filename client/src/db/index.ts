@@ -6,3 +6,5 @@ export function initdb(uri: string) {
     db.exec(schema);
     return db;
 }
+
+export const db = initdb(":memory:");
