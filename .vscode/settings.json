@@ -17,5 +17,8 @@
   "[java]": {
     "editor.detectIndentation": false
   },
-  "java.debug.settings.onBuildFailureProceed": true
+  "java.debug.settings.onBuildFailureProceed": true,
+  "[typescript]": {
+    "editor.detectIndentation": false
+  }
 }
