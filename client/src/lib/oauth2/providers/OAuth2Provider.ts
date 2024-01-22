@@ -4,22 +4,28 @@ import {
     validateOAuth2AuthorizationCode,
 } from "@lucia-auth/oauth";
 import { NextResponse } from "next/server";
-
-import type { NextRequest } from "next/server";
-import type { OAuth2TokenResponse, ProviderConfig } from "./";
-import type { OAuth2TokenSet } from "..";
 import {
     InvalidCodeError,
     InvalidCodeVerifierError,
     InvalidStateError,
 } from "../error";
-import { logger } from "@/lib";
+import pino from "pino";
+import { Logger } from "pino";
+import { OAuth2TokenResponse } from "./types";
+
+import type { NextRequest } from "next/server";
+import type { ProviderConfig } from "./config";
+import type { OAuth2TokenSet } from "../types";
 
 export class OAuth2Provider {
     readonly config: ProviderConfig;
+    logger: Logger;
 
     constructor(config: ProviderConfig) {
         this.config = config;
+        this.logger = pino({
+            level: config.debug ? "debug" : "silent",
+        });
     }
 
     handleAuthorizationCodeRedirect = async (
@@ -67,7 +73,7 @@ export class OAuth2Provider {
             path: "/",
             maxAge: 60 * 60 * 1000,
         });
-        logger.debug(`Set oauth2 state cookie`);
+        this.logger.debug(`Set oauth2 state cookie`);
 
         if (codeVerifier) {
             response.cookies.set("codeVerifier", codeVerifier, {
@@ -76,7 +82,7 @@ export class OAuth2Provider {
                 path: "/",
                 maxAge: 60 * 60 * 1000,
             });
-            logger.debug(`Set oauth2 code-verifier cookie`);
+            this.logger.debug(`Set oauth2 code-verifier cookie`);
         }
 
         return response;
@@ -85,12 +91,12 @@ export class OAuth2Provider {
     validateAuthorizationCodeRedirect = (request: NextRequest) => {
         const url = new URL(request.url);
 
-        logger.debug("Retrieving oauth2 state");
+        this.logger.debug("Retrieving oauth2 state");
         const storedState = request.cookies.get(
             `${this.config.providerId}-state`
         )?.value;
 
-        logger.debug("Retrieving code verifier");
+        this.logger.debug("Retrieving code verifier");
         const codeVerifier = request.cookies.get("codeVerifier")?.value;
 
         const state = url.searchParams.get("state");
@@ -140,7 +146,7 @@ export class OAuth2Provider {
                     redirectUri: this.config.redirectUri,
                 }
             );
-            logger.debug("Generated PKCE code verifier");
+            this.logger.debug("Generated PKCE code verifier");
             return {
                 url: authUrl[0],
                 codeVerifier: authUrl[1],

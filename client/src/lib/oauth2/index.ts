@@ -1,2 +1,2 @@
 export type * from "./types";
-export * from "./db";
+export * from "./schema/sqlite";

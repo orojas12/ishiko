@@ -1,12 +1,13 @@
 import { validateOAuth2AuthorizationCode } from "@lucia-auth/oauth";
-
-import { OAuth2Provider, type ProviderConfig } from "./";
-import type { OidcTokenResponse } from "./";
-import type { OidcTokenSet } from "../";
-import { NextResponse, type NextRequest } from "next/server";
+import { OAuth2Provider } from "./OAuth2Provider";
+import { NextResponse } from "next/server";
 import { generateRandomString } from "../util";
 import { InvalidStateError } from "../error";
-import { logger } from "@/lib";
+
+import type { NextRequest } from "next/server";
+import type { ProviderConfig } from "./config";
+import type { OidcTokenSet } from "../types";
+import type { OidcTokenResponse } from "./types";
 
 export class OidcProvider extends OAuth2Provider {
     constructor(config: ProviderConfig) {
@@ -24,7 +25,7 @@ export class OidcProvider extends OAuth2Provider {
         const [code, codeVerifier] =
             this.validateAuthorizationCodeRedirect(request);
 
-        logger.debug(`Fetching token set at ${this.config.tokenEndpoint}`);
+        this.logger.debug(`Fetching token set at ${this.config.tokenEndpoint}`);
         const data: OidcTokenResponse = await validateOAuth2AuthorizationCode(
             code,
             this.config.tokenEndpoint,
@@ -38,7 +39,7 @@ export class OidcProvider extends OAuth2Provider {
                 },
             }
         );
-        logger.debug("Fetched token set");
+        this.logger.debug("Fetched token set");
 
         return {
             accessToken: {

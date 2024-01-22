@@ -13,6 +13,7 @@ export type ProviderConfig = {
     };
     scope: string[];
     usePKCE: boolean;
+    debug?: boolean;
 };
 
 export enum AuthenticationMethod {

@@ -1,0 +1,3 @@
+SELECT *
+FROM issue
+ORDER BY id ASC;

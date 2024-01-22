@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import type { OidcTokenSet, Profile } from "../";
+import type { OidcTokenSet, Profile } from "../types";
 
 export type Session = {
     id: string;
@@ -29,4 +29,5 @@ export type SessionDao = {
 
 export type SessionConfig = {
     maxAge: number;
+    debug?: boolean;
 };

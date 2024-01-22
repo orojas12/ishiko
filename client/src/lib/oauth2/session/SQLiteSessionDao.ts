@@ -1,9 +1,9 @@
+import { nanoid } from "nanoid";
 import { RowNotFoundError } from "../error";
 
 import type { Database } from "better-sqlite3";
-import type { Session, SessionSchema, SessionDao } from ".";
-import { TokenSetSchema, ProfileSchema } from "..";
-import { nanoid } from "nanoid";
+import type { Session, SessionSchema, SessionDao } from "./types";
+import type { TokenSetSchema, ProfileSchema } from "../types";
 
 // TODO: add optional sql logging for debug purposes
 export class SQLiteSessionDao implements SessionDao {
@@ -24,7 +24,7 @@ export class SQLiteSessionDao implements SessionDao {
                     INNER JOIN token_set t ON s.session_id = t.session_id
                     INNER JOIN profile u ON s.session_id = u.session_id
                 WHERE s.session_id = ?;
-                `,
+                `
             )
             .get(sessionId) as
             | (SessionSchema & TokenSetSchema & ProfileSchema)
@@ -57,7 +57,7 @@ export class SQLiteSessionDao implements SessionDao {
                     `
                     INSERT INTO session (session_id, expires)
                     VALUES (?, ?);
-                    `,
+                    `
                 )
                 .run(session.id, session.expires.toISOString());
             this.db
@@ -67,7 +67,7 @@ export class SQLiteSessionDao implements SessionDao {
                         access_token, access_token_expires,
                         refresh_token, id_token)
                     VALUES (?, ?, ?, ?, ?, ?);
-                    `,
+                    `
                 )
                 .run(
                     nanoid(),
@@ -75,7 +75,7 @@ export class SQLiteSessionDao implements SessionDao {
                     session.tokens.accessToken.value,
                     session.tokens.accessToken.expires.toISOString(),
                     session.tokens.refreshToken || null,
-                    session.tokens.idToken || null,
+                    session.tokens.idToken || null
                 );
             this.db
                 .prepare(
@@ -83,14 +83,14 @@ export class SQLiteSessionDao implements SessionDao {
                     INSERT INTO profile (profile_id, session_id,
                         name, first_name, last_name)
                     VALUES (?, ?, ?, ?, ?);
-                    `,
+                    `
                 )
                 .run(
                     session.profile.id,
                     session.id,
                     session.profile.name,
                     session.profile.firstName,
-                    session.profile.lastName,
+                    session.profile.lastName
                 );
         });
 
@@ -106,12 +106,12 @@ export class SQLiteSessionDao implements SessionDao {
                     SET
                         expires = ?
                     WHERE session_id = ?;
-                    `,
+                    `
                 )
                 .run(session.expires.toISOString(), session.id);
             if (info.changes === 0) {
                 throw new RowNotFoundError(
-                    `session id: ${session.id} not found`,
+                    `session id: ${session.id} not found`
                 );
             }
 
@@ -125,18 +125,18 @@ export class SQLiteSessionDao implements SessionDao {
                         refresh_token = ?,
                         id_token = ?
                     WHERE session_id = ?;
-                    `,
+                    `
                 )
                 .run(
                     session.tokens.accessToken.value,
                     session.tokens.accessToken.expires.toISOString(),
                     session.tokens.refreshToken || null,
                     session.tokens.idToken || null,
-                    session.id,
+                    session.id
                 );
             if (info.changes === 0) {
                 throw new RowNotFoundError(
-                    `token set for session id: ${session.id} not found`,
+                    `token set for session id: ${session.id} not found`
                 );
             }
 
@@ -148,17 +148,17 @@ export class SQLiteSessionDao implements SessionDao {
                         name = ?,
                         first_name = ?,
                         last_name = ?
-                    WHERE session_id = ?;`,
+                    WHERE session_id = ?;`
                 )
                 .run(
                     session.profile.name,
                     session.profile.firstName,
                     session.profile.lastName,
-                    session.id,
+                    session.id
                 );
             if (info.changes === 0) {
                 throw new RowNotFoundError(
-                    `user profile for session id: ${session.id} not found`,
+                    `user profile for session id: ${session.id} not found`
                 );
             }
         });
@@ -171,7 +171,7 @@ export class SQLiteSessionDao implements SessionDao {
             .prepare(
                 `
                 DELETE FROM session WHERE session_id = ?;
-                `,
+                `
             )
             .run(sessionId);
     };

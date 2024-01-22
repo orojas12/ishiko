@@ -1,3 +1,24 @@
 {
-  "java.compile.nullAnalysis.mode": "disabled"
+  "java.compile.nullAnalysis.mode": "disabled",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "ishiko",
+      "database": "dev",
+      "username": "ishiko"
+    }
+  ],
+  "java.format.settings.url": "./api/eclipse-java-google-style.xml",
+  "java.format.settings.profile": "GoogleStyle",
+  "[java]": {
+    "editor.detectIndentation": false
+  },
+  "java.debug.settings.onBuildFailureProceed": true,
+  "[typescript]": {
+    "editor.detectIndentation": false
+  }
 }
