@@ -1,11 +1,9 @@
-import { logger } from "@/lib";
-import type { JWTClaims } from "../";
+import type { JWTClaims } from "../types";
 
 const DEFAULT_CHARACTERS =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 export function decodeJwt(jwt: string): JWTClaims {
-    logger.debug("Decoding id token");
     return JSON.parse(Buffer.from(jwt.split(".")[1], "base64").toString());
 }
 

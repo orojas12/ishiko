@@ -1,32 +1,46 @@
 import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
+import pino from "pino";
 
-import type { Session, SessionConfig, SessionDao, SessionManager } from ".";
-import type { Profile, OidcTokenSet } from "..";
-import { logger } from "@/lib";
+import type { Profile, OidcTokenSet } from "../types";
+import type {
+    Session,
+    SessionConfig,
+    SessionDao,
+    SessionManager,
+} from "./types";
+import type { Logger } from "pino";
 
 export class DatabaseSessionManager implements SessionManager {
     config: SessionConfig;
     sessionDao: SessionDao;
+    logger: Logger;
 
     constructor(sessionDao: SessionDao, config: SessionConfig) {
         this.sessionDao = sessionDao;
         this.config = config;
+        this.logger = pino({
+            level: config.debug ? "debug" : "silent",
+        });
     }
 
     getSession = async (): Promise<Session | null> => {
         const sessionId = cookies().get("session")?.value;
+        this.logger.debug("Retrieved session cookie " + sessionId);
         return sessionId ? this.sessionDao.getSession(sessionId) : null;
     };
 
     validateSession = async (): Promise<Session | null> => {
         const session = await this.getSession();
+        this.logger.debug(`Validated session ${session}`);
         if (!session) {
             return null;
         }
         if (session.expires.getTime() > Date.now()) {
+            this.logger.debug(`Session not expired`);
             return session;
         } else {
+            this.logger.debug(`Session expired`);
             await this.sessionDao.deleteSession(session.id);
             return null;
         }
@@ -50,7 +64,6 @@ export class DatabaseSessionManager implements SessionManager {
         };
         // TODO: handle error if profile id already exists (eg. a user starts multiple sessions)
         await this.sessionDao.createSession(session);
-        logger.debug(`Created session ${sessionId}`);
         return this.sessionDao.getSession(sessionId) as Promise<Session>;
     };
 
