@@ -1,7 +1,7 @@
-/** @jest-environment node */
 import { SQLiteSessionDao } from "..";
 import { RowNotFoundError } from "../../error";
 import sqlite from "better-sqlite3";
+import { describe, expect, test, beforeAll } from "vitest";
 import { schema } from "../..";
 
 import type { Database } from "better-sqlite3";
@@ -54,7 +54,7 @@ function insertSessionData(db: Database): Session {
             '${session.profile.firstName}', 
             '${session.profile.lastName}'
         );
-        `,
+        `
     );
 
     return session;
@@ -75,15 +75,15 @@ describe("getSession()", () => {
         // compare session data
         expect(result.id).toEqual(session.id);
         expect(result.expires.toISOString()).toEqual(
-            session.expires.toISOString(),
+            session.expires.toISOString()
         );
 
         // compare token data
         expect(result.tokens.accessToken.value).toEqual(
-            session.tokens.accessToken.value,
+            session.tokens.accessToken.value
         );
         expect(result.tokens.accessToken.expires.toISOString()).toEqual(
-            session.tokens.accessToken.expires.toISOString(),
+            session.tokens.accessToken.expires.toISOString()
         );
         expect(result.tokens.refreshToken).toEqual(session.tokens.refreshToken);
         expect(result.tokens.idToken).toEqual(session.tokens.idToken);
@@ -136,7 +136,7 @@ describe("createSession()", () => {
                 `
                 SELECT session_id, expires 
                 FROM session WHERE session_id = ?;
-                `,
+                `
             )
             .get(session.id) as SessionSchema;
         expect(sessionSchema.session_id).toEqual(session.id);
@@ -148,18 +148,18 @@ describe("createSession()", () => {
                 SELECT session_id, access_token, access_token_expires,
                     refresh_token, id_token
                 FROM token_set WHERE session_id = ?;
-                `,
+                `
             )
             .get(session.id) as TokenSetSchema;
         expect(tokenSetSchema.session_id).toEqual(session.id);
         expect(tokenSetSchema.access_token).toEqual(
-            session.tokens.accessToken.value,
+            session.tokens.accessToken.value
         );
         expect(tokenSetSchema.access_token_expires).toEqual(
-            session.tokens.accessToken.expires.toISOString(),
+            session.tokens.accessToken.expires.toISOString()
         );
         expect(tokenSetSchema.refresh_token).toEqual(
-            session.tokens.refreshToken,
+            session.tokens.refreshToken
         );
         expect(tokenSetSchema.id_token).toEqual(session.tokens.idToken);
 
@@ -168,7 +168,7 @@ describe("createSession()", () => {
                 `
                 SELECT profile_id, session_id, name, first_name, last_name
                 FROM profile WHERE session_id = ?;
-                `,
+                `
             )
             .get(session.id) as ProfileSchema;
         expect(profileSchema.profile_id).toEqual(session.profile.id);
@@ -208,7 +208,7 @@ describe("updateSession()", () => {
                 `
                 SELECT session_id, expires 
                 FROM session WHERE session_id = ?;
-                `,
+                `
             )
             .get(session.id) as SessionSchema;
         expect(sessionSchema.session_id).toEqual(session.id);
@@ -220,15 +220,15 @@ describe("updateSession()", () => {
                 SELECT session_id, access_token, access_token_expires,
                     refresh_token, id_token
                 FROM token_set WHERE session_id = ?;
-                `,
+                `
             )
             .get(session.id) as TokenSetSchema;
         expect(tokenSetSchema.session_id).toEqual(session.id);
         expect(tokenSetSchema.access_token).toEqual(
-            session.tokens.accessToken.value,
+            session.tokens.accessToken.value
         );
         expect(tokenSetSchema.access_token_expires).toEqual(
-            session.tokens.accessToken.expires.toISOString(),
+            session.tokens.accessToken.expires.toISOString()
         );
         expect(tokenSetSchema.refresh_token).toBeNull();
         expect(tokenSetSchema.id_token).toEqual(session.tokens.idToken);
@@ -238,7 +238,7 @@ describe("updateSession()", () => {
                 `
                 SELECT profile_id, session_id, name, first_name, last_name
                 FROM profile WHERE session_id = ?;
-                `,
+                `
             )
             .get(session.id) as ProfileSchema;
         expect(profileSchema.profile_id).toEqual(session.profile.id);
@@ -267,7 +267,7 @@ describe("updateSession()", () => {
             },
         };
         expect(() => sessionDao.updateSession(session)).rejects.toThrow(
-            RowNotFoundError,
+            RowNotFoundError
         );
     });
 });
