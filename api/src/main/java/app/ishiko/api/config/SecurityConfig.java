@@ -207,8 +207,8 @@ public class SecurityConfig {
                         OidcScopes.PROFILE,
                         "messages")))
                 .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofSeconds(5))
-                        .refreshTokenTimeToLive(Duration.ofSeconds(5))
+                        .accessTokenTimeToLive(Duration.ofSeconds(1000))
+                        .refreshTokenTimeToLive(Duration.ofSeconds(1000))
                         .build())
                 .clientSettings(ClientSettings.builder()
                         .requireAuthorizationConsent(false).requireProofKey(true).build())
