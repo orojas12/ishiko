@@ -1,4 +1,5 @@
-import { logger, oidc, sessionManager } from "@/lib";
+import { oidc, sessionManager } from "@/auth";
+import { logger } from "@/log";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {

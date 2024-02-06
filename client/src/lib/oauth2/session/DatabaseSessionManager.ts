@@ -32,10 +32,11 @@ export class DatabaseSessionManager implements SessionManager {
 
     validateSession = async (): Promise<Session | null> => {
         const session = await this.getSession();
-        this.logger.debug(`Validated session ${session}`);
         if (!session) {
+            this.logger.debug("No session found");
             return null;
         }
+        this.logger.debug(`Validated session ${session}`);
         if (session.expires.getTime() > Date.now()) {
             this.logger.debug(`Session not expired`);
             return session;

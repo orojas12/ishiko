@@ -4,7 +4,7 @@ export const ishikoProviderConfig: ProviderConfig = {
     providerId: "ishiko",
     redirectUri: `${process.env.BASE_URL}/oidc/code`,
     authorizationEndpoint: `${process.env.BASE_URL}/api/oauth2/authorize`,
-    tokenEndpoint: `http://api:8080/api/oauth2/token`,
+    tokenEndpoint: `${process.env.API_URL}/api/oauth2/token`,
     logoutEndpoint: `${process.env.BASE_URL}/api/oidc/logout`,
     postLogoutRedirectUri: `${process.env.BASE_URL}/oidc/post-logout`,
     client: {
@@ -14,4 +14,5 @@ export const ishikoProviderConfig: ProviderConfig = {
     },
     scope: ["openid"],
     usePKCE: true,
+    debug: true,
 };

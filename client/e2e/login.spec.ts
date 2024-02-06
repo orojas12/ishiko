@@ -10,4 +10,7 @@ test("login", async ({ page }) => {
     await page.getByRole("button", { name: "Sign in" }).click();
     await page.waitForURL(`${process.env.BASE_URL}`);
     await expect(page.getByRole("heading", { name: "Ishiko" })).toBeVisible();
+
+    await page.goto(`${process.env.BASE_URL}/issues`);
+    await expect(page.getByRole("table")).toBeVisible();
 });

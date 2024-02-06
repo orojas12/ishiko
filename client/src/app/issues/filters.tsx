@@ -71,8 +71,8 @@ export function LabelFilter(props: LabelFilterProps) {
                     if (props.filteredLabels.includes(label)) {
                         props.setFilteredLabels(
                             props.filteredLabels.filter(
-                                (value) => value !== label,
-                            ),
+                                (value) => value !== label
+                            )
                         );
                     } else {
                         props.setFilteredLabels([
@@ -110,7 +110,7 @@ export function IssueFilters() {
     const params = useSearchParams();
     const [labels, setLabels] = useState(params.get("label")?.split(",") || []);
     const [priorities, setPriorities] = useState(
-        params.get("priority")?.split(",") || [],
+        params.get("priority")?.split(",") || []
     );
 
     useEffect(() => {
@@ -140,7 +140,7 @@ export function IssueFilters() {
             >
                 <div className="flex flex-col">
                     <LabelFilter
-                        labels={["bug", "feature", "docs", "other"]}
+                        labels={["1", "2", "3", "4"]}
                         filteredLabels={labels}
                         setFilteredLabels={(labels) => setLabels(labels)}
                     />

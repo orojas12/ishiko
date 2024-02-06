@@ -1,10 +1,10 @@
 export const schema = `
-    CREATE TABLE session (
+    CREATE TABLE IF NOT EXISTS session (
         session_id text PRIMARY KEY NOT NULL,
         expires text NOT NULL
     );
 
-    CREATE TABLE token_set (
+    CREATE TABLE IF NOT EXISTS token_set (
         token_set_id text PRIMARY KEY NOT NULL,
         session_id text NOT NULL,
         access_token text NOT NULL,
@@ -15,7 +15,7 @@ export const schema = `
             ON DELETE CASCADE ON UPDATE CASCADE
     );
 
-    CREATE TABLE profile (
+    CREATE TABLE IF NOT EXISTS profile (
         profile_id text PRIMARY KEY NOT NULL,
         session_id text NOT NULL,
         name text,

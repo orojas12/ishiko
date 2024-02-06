@@ -2,7 +2,7 @@ import { Link } from "@/components/ui/link";
 import { authenticate } from "./auth";
 
 export default async function Home() {
-    authenticate();
+    await authenticate();
 
     return (
         <main className="">
