@@ -1,24 +1,31 @@
 package app.ishiko.api.project.issue.model;
 
+import app.ishiko.api.project.Project;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "label")
 public class IssueLabel {
     @Id
-    @SequenceGenerator(name = "label_id_seq", sequenceName = "label_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "label_id_seq")
+    @SequenceGenerator(name = "label_id_seq", sequenceName = "label_id_seq",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "label_id_seq")
     private Integer id = 1;
 
     @Column(nullable = false)
     private String name = "";
 
-    public IssueLabel() {
-    }
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Project project;
 
-    public IssueLabel(Integer id, String name) {
+    public IssueLabel() {}
+
+    public IssueLabel(Integer id, String name, Project project) {
         this.id = id;
         this.name = name;
+        this.project = project;
     }
 
     public Integer getId() {
@@ -35,5 +42,13 @@ public class IssueLabel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

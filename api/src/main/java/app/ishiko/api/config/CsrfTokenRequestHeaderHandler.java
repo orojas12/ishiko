@@ -11,24 +11,27 @@ import org.springframework.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class CsrfTokenRequestHeaderHandler extends CsrfTokenRequestAttributeHandler {
-    private final CsrfTokenRequestHandler delegate = new XorCsrfTokenRequestAttributeHandler();
+public class CsrfTokenRequestHeaderHandler
+        extends CsrfTokenRequestAttributeHandler {
+    private final CsrfTokenRequestHandler delegate =
+            new XorCsrfTokenRequestAttributeHandler();
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, Supplier<CsrfToken> csrfToken) {
+    public void handle(HttpServletRequest request, HttpServletResponse response,
+            Supplier<CsrfToken> csrfToken) {
         /*
-         * Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection
-         * of the CsrfToken when it is rendered in the response body.
+         * Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection of the CsrfToken when
+         * it is rendered in the response body.
          */
         this.delegate.handle(request, response, csrfToken);
     }
 
     @Override
-    public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
+    public String resolveCsrfTokenValue(HttpServletRequest request,
+            CsrfToken csrfToken) {
         /*
-         * If the request contains a request header, use
-         * CsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies
-         * when a single-page application includes the header value automatically,
+         * If the request contains a request header, use CsrfTokenRequestAttributeHandler to resolve the
+         * CsrfToken. This applies when a single-page application includes the header value automatically,
          * which was obtained via a cookie containing the raw CsrfToken.
          */
         if (StringUtils.hasText(request.getHeader(csrfToken.getHeaderName()))) {
@@ -36,9 +39,8 @@ public class CsrfTokenRequestHeaderHandler extends CsrfTokenRequestAttributeHand
         }
         /*
          * In all other cases (e.g. if the request contains a request parameter), use
-         * XorCsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies
-         * when a server-side rendered form includes the _csrf request parameter as a
-         * hidden input.
+         * XorCsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies when a server-side
+         * rendered form includes the _csrf request parameter as a hidden input.
          */
         return this.delegate.resolveCsrfTokenValue(request, csrfToken);
     }

@@ -31,6 +31,7 @@ import app.ishiko.api.project.issue.dto.IssueDto;
 import app.ishiko.api.project.issue.dto.IssueLabelDto;
 import app.ishiko.api.project.issue.dto.IssueStatusDto;
 import app.ishiko.api.project.issue.service.IssueService;
+import app.ishiko.api.user.User;
 
 @WebMvcTest(ProjectController.class)
 public class ProjectControllerTest {
@@ -43,6 +44,10 @@ public class ProjectControllerTest {
     private ProjectRepository projectRepository;
     @MockBean
     private IssueService issueService;
+    @MockBean
+    private ProjectService projectService;
+
+    private final String BASE_URL = "/resource/projects";
 
     static boolean isCreateIssueDtoEqual(CreateIssueDto dto1,
             CreateIssueDto dto2) {
@@ -60,6 +65,39 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(value = "john")
+    void getProjectData_ProjectId_returnsHttp200AndProjectData()
+            throws Exception {
+        User user = new User("john");
+        Project project = new Project("project_1", "name", null, user);
+        List<IssueStatusDto> statuses =
+                List.of(new IssueStatusDto(1, "status_1"));
+        List<IssueLabelDto> labels = List.of(new IssueLabelDto(1, "label_1"));
+        ProjectDto result = new ProjectDto(project.getId(), project.getName(),
+                project.getDescription(), user.getUsername());
+        result.setStatuses(statuses);
+        result.setLabels(labels);
+        when(projectRepository.findByIdAndOwner_Username(project.getId(),
+                user.getUsername())).thenReturn(Optional.of(project));
+        when(projectService.getProjectData(project.getId(), user.getUsername()))
+                .thenReturn(result);
+
+        mockMvc.perform(get(BASE_URL + "/{projectId}", project.getId()))
+                .andExpectAll(status().isOk(),
+                        jsonPath("$.id", is(result.getId())),
+                        jsonPath("$.name", is(result.getName())),
+                        jsonPath("$.description", is(result.getDescription())),
+                        jsonPath("$.owner", is(user.getUsername())),
+                        jsonPath("$.statuses[0].id",
+                                is(statuses.get(0).getId())),
+                        jsonPath("$.statuses[0].name",
+                                is(statuses.get(0).getName())),
+                        jsonPath("$.labels[0].id", is(labels.get(0).getId())),
+                        jsonPath("$.labels[0].name",
+                                is(labels.get(0).getName())));
+    }
+
+    @Test
+    @WithMockUser(value = "john")
     void getProjectIssues_ProjectId_returnsHttp200AndIssues() throws Exception {
         String username = "john";
         Project project = new Project("project_1", "name", null);
@@ -71,7 +109,7 @@ public class ProjectControllerTest {
                 username)).thenReturn(Optional.of(project));
         when(issueService.getIssues(project.getId())).thenReturn(issues);
 
-        mockMvc.perform(get("/projects/{projectId}/issues", project.getId()))
+        mockMvc.perform(get(BASE_URL + "/{projectId}/issues", project.getId()))
                 .andExpectAll(status().isOk(),
                         jsonPath("$[0].id", is(issues.get(0).getId())),
                         jsonPath("$[0].subject",
@@ -110,7 +148,7 @@ public class ProjectControllerTest {
                 username)).thenReturn(Optional.empty());
         when(issueService.getIssues(project.getId())).thenReturn(issues);
 
-        mockMvc.perform(get("/projects/{projectId}/issues", project.getId()))
+        mockMvc.perform(get(BASE_URL + "/{projectId}/issues", project.getId()))
                 .andExpectAll(status().isNotFound(),
                         jsonPath("$.message", isA(String.class)));
     }
@@ -128,7 +166,7 @@ public class ProjectControllerTest {
                 username)).thenReturn(Optional.of(project));
         when(issueService.getIssue(dto.getId())).thenReturn(dto);
 
-        mockMvc.perform(get("/projects/{projectId}/issues/{issueId}",
+        mockMvc.perform(get(BASE_URL + "/{projectId}/issues/{issueId}",
                 project.getId(), dto.getId()))
                 .andExpectAll(jsonPath("$.id", is(dto.getId())),
                         jsonPath("$.subject", is(dto.getSubject())),
@@ -162,7 +200,7 @@ public class ProjectControllerTest {
         when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 username)).thenReturn(Optional.empty());
         when(issueService.getIssue(dto.getId())).thenReturn(dto);
-        mockMvc.perform(get("/projects/{projectId}/issues/{issueId}",
+        mockMvc.perform(get(BASE_URL + "/{projectId}/issues/{issueId}",
                 project.getId(), dto.getId()))
                 .andExpectAll(status().isNotFound(),
                         jsonPath("$.message", isA(String.class)));
@@ -180,7 +218,7 @@ public class ProjectControllerTest {
                 username)).thenReturn(Optional.of(project));
         when(issueService.getIssue(dto.getId()))
                 .thenThrow(new NotFoundException("not found"));
-        mockMvc.perform(get("/projects/{projectId}/issues/{issueId}",
+        mockMvc.perform(get(BASE_URL + "/{projectId}/issues/{issueId}",
                 project.getId(), dto.getId()))
                 .andExpectAll(status().isNotFound(),
                         jsonPath("$.message", is("not found")));
@@ -209,7 +247,7 @@ public class ProjectControllerTest {
         when(issueService.createIssue(any())).thenReturn(issueDto);
 
         mockMvc.perform(
-                post("/projects/{projectId}/issues", "project_1").with(csrf())
+                post(BASE_URL + "/{projectId}/issues", "project_1").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpectAll(status().isCreated(),
                         jsonPath("$.id", is(issueDto.getId())),
@@ -257,7 +295,7 @@ public class ProjectControllerTest {
         when(issueService.createIssue(any())).thenReturn(issueDto);
 
         mockMvc.perform(
-                post("/projects/{projectId}/issues", "project_1").with(csrf())
+                post(BASE_URL + "/{projectId}/issues", "project_1").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpectAll(status().isNotFound(),
                         jsonPath("$.message", isA(String.class)));
@@ -285,7 +323,7 @@ public class ProjectControllerTest {
                 .thenThrow(new InvalidInputException(invalidMsg));
 
         mockMvc.perform(
-                post("/projects/{projectId}/issues", "project_1").with(csrf())
+                post(BASE_URL + "/{projectId}/issues", "project_1").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpectAll(status().isBadRequest(),
                         jsonPath("$.message", is(invalidMsg)));

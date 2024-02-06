@@ -8,7 +8,9 @@ import jakarta.persistence.*;
 public class User {
 
     @Id
-    private final String username;
+    private String username;
+
+    public User() {}
 
     public User(String username) {
         this.username = username;
@@ -16,5 +18,9 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
