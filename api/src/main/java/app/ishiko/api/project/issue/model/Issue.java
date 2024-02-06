@@ -13,8 +13,10 @@ import java.util.Optional;
 @Table(name = "issue")
 public class Issue {
     @Id
-    @SequenceGenerator(name = "issue_id_seq", sequenceName = "issue_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "issue_id_seq")
+    @SequenceGenerator(name = "issue_id_seq", sequenceName = "issue_id_seq",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "issue_id_seq")
     private Integer id;
     @Column(nullable = false)
     private String subject;
@@ -28,7 +30,8 @@ public class Issue {
     @JoinColumn(name = "project", nullable = false)
     private Project project;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author", referencedColumnName = "username", nullable = false)
+    @JoinColumn(name = "author", referencedColumnName = "username",
+            nullable = false)
     private User author;
     @Nullable
     @ManyToOne
@@ -39,12 +42,11 @@ public class Issue {
     @JoinColumn(name = "label")
     private IssueLabel label = new IssueLabel();
 
-    public Issue() {
-    }
+    public Issue() {}
 
     public Issue(Integer id, String subject, @Nullable String description,
-                 Instant createDate, @Nullable Instant dueDate, User author,
-                 Project project) {
+            Instant createDate, @Nullable Instant dueDate, User author,
+            Project project) {
         this.id = id;
         this.subject = subject;
         this.description = description;
@@ -55,9 +57,9 @@ public class Issue {
     }
 
     public Issue(Integer id, String subject, @Nullable String description,
-                 Instant createDate, @Nullable Instant dueDate, User author,
-                 Project project, @Nullable IssueStatus status,
-                 @Nullable IssueLabel label) {
+            Instant createDate, @Nullable Instant dueDate, User author,
+            Project project, @Nullable IssueStatus status,
+            @Nullable IssueLabel label) {
         this.id = id;
         this.subject = subject;
         this.description = description;

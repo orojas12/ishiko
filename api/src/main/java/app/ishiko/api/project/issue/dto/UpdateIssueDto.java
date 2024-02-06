@@ -11,10 +11,12 @@ public class UpdateIssueDto {
     @NotNull
     private Integer id;
     @NotNull(message = "Subject cannot be null")
-    @Size(min = 1, max = 255, message = "Subject must be between 1 and 255 characters")
+    @Size(min = 1, max = 255,
+            message = "Subject must be between 1 and 255 characters")
     private String subject;
     @Nullable
-    @Size(max = 9000, message = "Description may be a maximum of 9000 characters")
+    @Size(max = 9000,
+            message = "Description may be a maximum of 9000 characters")
     private String description;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Nullable
@@ -26,8 +28,9 @@ public class UpdateIssueDto {
 
     public UpdateIssueDto() {}
 
-    public UpdateIssueDto(Integer id, String subject, @Nullable String description,
-            @Nullable Instant dueDate, @Nullable Integer status, @Nullable Integer label) {
+    public UpdateIssueDto(Integer id, String subject,
+            @Nullable String description, @Nullable Instant dueDate,
+            @Nullable Integer status, @Nullable Integer label) {
         this.id = id;
         this.subject = subject;
         this.description = description;

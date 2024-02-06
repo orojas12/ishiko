@@ -8,10 +8,12 @@ import jakarta.validation.constraints.Size;
 
 public class CreateIssueRequest {
     @NotNull(message = "Subject cannot be null")
-    @Size(min = 1, max = 255, message = "Subject must be between 1 and 255 characters")
+    @Size(min = 1, max = 255,
+            message = "Subject must be between 1 and 255 characters")
     private String subject;
     @Nullable
-    @Size(max = 9000, message = "Description may be a maximum of 9000 characters")
+    @Size(max = 9000,
+            message = "Description may be a maximum of 9000 characters")
     private String description;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Nullable
@@ -25,7 +27,8 @@ public class CreateIssueRequest {
     public CreateIssueRequest() {}
 
     public CreateIssueRequest(
-            @NotNull(message = "Subject cannot be null") @Size(min = 1, max = 255,
+            @NotNull(message = "Subject cannot be null") @Size(min = 1,
+                    max = 255,
                     message = "Subject must be between 1 and 255 characters") String subject,
             @Size(max = 9000,
                     message = "Description may be a maximum of 9000 characters") String description,

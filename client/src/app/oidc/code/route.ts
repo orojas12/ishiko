@@ -1,4 +1,5 @@
-import { logger, oidc, sessionManager } from "@/lib";
+import { oidc, sessionManager } from "@/auth";
+import { logger } from "@/log";
 import { NextRequest, NextResponse } from "next/server";
 
 import { decodeJwt } from "@/lib/oauth2/util";
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
     } catch (e) {
         logger.error(e);
         logger.debug(`Redirecting to /error`);
-        return NextResponse.redirect("/error");
+        return NextResponse.redirect(`${process.env.BASE_URL}/error`);
     }
 
     const idToken = decodeJwt(tokenSet.idToken);
@@ -24,6 +25,7 @@ export async function GET(request: NextRequest) {
         firstName: idToken.given_name,
         lastName: idToken.family_name,
     });
+    logger.debug(`Created session ${session.id}`);
 
     const response = NextResponse.redirect(`${process.env.BASE_URL}`);
     response.cookies.set("session", session.id);

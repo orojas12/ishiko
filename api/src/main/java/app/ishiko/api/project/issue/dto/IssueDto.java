@@ -24,11 +24,12 @@ public class IssueDto {
     @Nullable
     private IssueLabelDto label = new IssueLabelDto();
 
-    public IssueDto() {
-    }
+    public IssueDto() {}
 
-    public IssueDto(Integer id, String subject, @Nullable String description, Instant createDate, @Nullable Instant dueDate,
-                    String project, String author, @Nullable IssueStatusDto status, @Nullable IssueLabelDto label) {
+    public IssueDto(Integer id, String subject, @Nullable String description,
+            Instant createDate, @Nullable Instant dueDate, String project,
+            String author, @Nullable IssueStatusDto status,
+            @Nullable IssueLabelDto label) {
         this.id = id;
         this.subject = subject;
         this.description = description;

@@ -31,8 +31,10 @@ public class IssueService {
     private final UserRepository userRepository;
 
     public IssueService(IssueRepository issueRepository,
-            IssueStatusRepository issueStatusRepository, IssueLabelRepository issueLabelRepository,
-            ProjectRepository projectRepository, UserRepository userRepository) {
+            IssueStatusRepository issueStatusRepository,
+            IssueLabelRepository issueLabelRepository,
+            ProjectRepository projectRepository,
+            UserRepository userRepository) {
         this.issueRepository = issueRepository;
         this.issueStatusRepository = issueStatusRepository;
         this.issueLabelRepository = issueLabelRepository;
@@ -41,16 +43,19 @@ public class IssueService {
     }
 
     public List<IssueDto> getIssues(String projectId) {
-        List<Issue> issues = issueRepository.findAllByProject_IdOrderByCreateDateDesc(projectId);
+        List<Issue> issues = issueRepository
+                .findAllByProject_IdOrderByCreateDateDesc(projectId);
         return issues.stream().map(this::entityToDto).toList();
     }
 
     public List<IssueStatusDto> getIssueStatuses() {
-        return issueStatusRepository.findAll().stream().map(this::entityToDto).toList();
+        return issueStatusRepository.findAll().stream().map(this::entityToDto)
+                .toList();
     }
 
     public List<IssueLabelDto> getIssueLabels() {
-        return issueLabelRepository.findAll().stream().map(this::entityToDto).toList();
+        return issueLabelRepository.findAll().stream().map(this::entityToDto)
+                .toList();
     }
 
     public IssueDto getIssue(Integer id) throws NotFoundException {
@@ -63,7 +68,8 @@ public class IssueService {
         }
     }
 
-    public IssueDto createIssue(CreateIssueDto dto) throws InvalidInputException {
+    public IssueDto createIssue(CreateIssueDto dto)
+            throws InvalidInputException {
         Issue issue = new Issue();
         issue.setSubject(dto.getSubject());
         if (dto.getDescription().isPresent()) {
@@ -88,7 +94,8 @@ public class IssueService {
             if (labelOptional.isPresent()) {
                 issue.setLabel(labelOptional.get());
             } else
-                throw new InvalidInputException("Issue label '" + dto.getLabel() + "' is invalid");
+                throw new InvalidInputException(
+                        "Issue label '" + dto.getLabel() + "' is invalid");
         }
 
         issue.setProject(projectRepository.getReferenceById(dto.getProject()));
@@ -104,15 +111,16 @@ public class IssueService {
         Optional<Issue> optionalIssue = issueRepository.findById(dto.getId());
 
         if (optionalIssue.isEmpty()) {
-            throw new NotFoundException("Issue id '" + dto.getId() + "' not found");
+            throw new NotFoundException(
+                    "Issue id '" + dto.getId() + "' not found");
         }
 
         Issue issue = optionalIssue.get();
 
         // verify user is author of this issue
         if (issue.getAuthor().getUsername() != username) {
-            throw new InvalidInputException(
-                    "User " + username + " does not have permission" + " to edit this issue");
+            throw new InvalidInputException("User " + username
+                    + " does not have permission" + " to edit this issue");
         }
 
         issue.setSubject(dto.getSubject());
@@ -128,8 +136,8 @@ public class IssueService {
             if (statusOptional.isPresent()) {
                 issue.setStatus(statusOptional.get());
             } else {
-                throw new InvalidInputException(
-                        "Issue status '" + dto.getStatus().get().toString() + "' is invalid");
+                throw new InvalidInputException("Issue status '"
+                        + dto.getStatus().get().toString() + "' is invalid");
             }
         }
         if (dto.getLabel().isPresent()) {
@@ -138,7 +146,8 @@ public class IssueService {
             if (labelOptional.isPresent()) {
                 issue.setLabel(labelOptional.get());
             } else {
-                throw new InvalidInputException("Issue label '" + dto.getLabel() + "' is invalid");
+                throw new InvalidInputException(
+                        "Issue label '" + dto.getLabel() + "' is invalid");
             }
         } else {
             issue.setLabel(null);

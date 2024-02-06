@@ -1,0 +1,65 @@
+services:
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: ishiko
+      POSTGRES_PASSWORD: ishiko
+      POSTGRES_DB: dev
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./db/scripts:/docker-entrypoint-initdb.d/scripts:ro
+      - ./db/init-dev-db.sh:/docker-entrypoint-initdb.d/init-dev-db.sh
+    networks:
+      - dev
+  backend:
+    build:
+      context: ./api
+    depends_on:
+      - db
+    ports:
+      - 127.0.0.1:8080:8080
+      - 127.0.0.1:5005:5005
+      - 127.0.0.1:35729:35729
+    volumes:
+      - ./api:/usr/ishiko/api:consistent
+    networks:
+      - dev
+    environment:
+      - PUBLIC_KEY_PATH=/usr/ishiko/api/config/public.pem
+      - PRIVATE_KEY_PATH=/usr/ishiko/api/config/private.pem
+      - POSTGRES_URL=jdbc:postgresql://db/dev
+      - POSTGRES_USER=ishiko
+      - POSTGRES_PASSWORD=ishiko
+      - BASE_URL=http://localhost:8000
+  client:
+    build:
+      context: ./client
+    ports:
+      - 127.0.0.1:3000:3000
+    volumes:
+      - ./client:/usr/ishiko/client/
+    networks:
+      - dev
+    environment:
+      - BASE_URL=http://localhost:8000
+      - NEXT_PUBLIC_BASE_URL=http://localhost:8000
+      - API_URL=http://backend:8080
+      - NODE_ENV=development
+  gateway:
+    image: nginx:1.25.3-alpine
+    depends_on:
+      - db
+      - backend
+      - client
+    volumes:
+      - ./gateway/nginx:/etc/nginx:ro
+      - ./gateway/static:/static:ro
+      - ./gateway/logs:/logs
+    networks:
+      - dev
+    ports:
+      - "127.0.0.1:8000:80"
+
+networks:
+  dev:

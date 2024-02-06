@@ -10,10 +10,12 @@ import java.util.Optional;
 
 public class CreateIssueDto {
     @NotNull(message = "Subject cannot be null")
-    @Size(min = 1, max = 255, message = "Subject must be between 1 and 255 characters")
+    @Size(min = 1, max = 255,
+            message = "Subject must be between 1 and 255 characters")
     private String subject;
     @Nullable
-    @Size(max = 9000, message = "Description may be a maximum of 9000 characters")
+    @Size(max = 9000,
+            message = "Description may be a maximum of 9000 characters")
     private String description;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Nullable
@@ -27,8 +29,9 @@ public class CreateIssueDto {
 
     public CreateIssueDto() {}
 
-    public CreateIssueDto(String subject, @Nullable String description, @Nullable Instant dueDate,
-            String project, String author, @Nullable Integer status, @Nullable Integer label) {
+    public CreateIssueDto(String subject, @Nullable String description,
+            @Nullable Instant dueDate, String project, String author,
+            @Nullable Integer status, @Nullable Integer label) {
         this.subject = subject;
         this.description = description;
         this.dueDate = dueDate;

@@ -48,39 +48,39 @@ VALUES (nextval('status_id_seq'), 'Ready', 'project_1'),
     ),
     (nextval('status_id_seq'), 'Done', 'project_3');
 INSERT INTO label (id, name, project)
-VALUES (nextval('label_id_seq'), 'Ready', 'project_1'),
+VALUES (nextval('label_id_seq'), 'bug', 'project_1'),
     (
         nextval('label_id_seq'),
-        'In progress',
+        'enhancement',
         'project_1'
     ),
     (
         nextval('label_id_seq'),
-        'In review',
+        'docs',
         'project_1'
     ),
-    (nextval('label_id_seq'), 'Done', 'project_1'),
-    (nextval('label_id_seq'), 'Ready', 'project_2'),
+    (nextval('label_id_seq'), 'other', 'project_1'),
+    (nextval('label_id_seq'), 'bug', 'project_2'),
     (
         nextval('label_id_seq'),
-        'In progress',
+        'enhancement',
         'project_2'
     ),
     (
         nextval('label_id_seq'),
-        'In review',
+        'docs',
         'project_2'
     ),
-    (nextval('label_id_seq'), 'Done', 'project_2'),
-    (nextval('label_id_seq'), 'Ready', 'project_3'),
+    (nextval('label_id_seq'), 'other', 'project_2'),
+    (nextval('label_id_seq'), 'bug', 'project_3'),
     (
         nextval('label_id_seq'),
-        'In progress',
+        'enhancement',
         'project_3'
     ),
     (
         nextval('label_id_seq'),
-        'In review',
+        'docs',
         'project_3'
     ),
-    (nextval('label_id_seq'), 'Done', 'project_3');
+    (nextval('label_id_seq'), 'other', 'project_3');

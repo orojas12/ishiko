@@ -4,8 +4,7 @@ public class IssueStatusDto {
     private Integer id = 1;
     private String name = "";
 
-    public IssueStatusDto() {
-    }
+    public IssueStatusDto() {}
 
     public IssueStatusDto(Integer id, String name) {
         this.id = id;

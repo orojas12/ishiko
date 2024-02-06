@@ -2,8 +2,6 @@ package app.ishiko.api.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 
 import app.ishiko.api.exception.InvalidInputException;
 
@@ -22,14 +18,15 @@ public class AuthController {
     private String baseUrl;
     private AuthService auth;
 
-    public AuthController(@Value("${ishiko.base_url}") String baseUrl, AuthService auth) {
+    public AuthController(@Value("${ishiko.base_url}") String baseUrl,
+            AuthService auth) {
         this.baseUrl = baseUrl;
         this.auth = auth;
     }
 
     @GetMapping("/signup")
-    public String signUpPage(
-            HttpServletRequest request, Model model, @RequestParam(defaultValue = "") String error) {
+    public String signUpPage(HttpServletRequest request, Model model,
+            @RequestParam(defaultValue = "") String error) {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         model.addAttribute("csrfToken", csrfToken.getToken());
         model.addAttribute("error", error);
@@ -37,8 +34,8 @@ public class AuthController {
     }
 
     @GetMapping("/signin")
-    public String signInPage(
-            HttpServletRequest request, Model model, @RequestParam(defaultValue = "") String error) {
+    public String signInPage(HttpServletRequest request, Model model,
+            @RequestParam(defaultValue = "") String error) {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         model.addAttribute("csrfToken", csrfToken.getToken());
         model.addAttribute("error", error);
@@ -46,7 +43,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public String signUp(HttpServletRequest request, SignUpDto signUpDto, Model model) {
+    public String signUp(HttpServletRequest request, SignUpDto signUpDto,
+            Model model) {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         try {
             auth.signUpUser(signUpDto);
@@ -54,7 +52,7 @@ public class AuthController {
             model.addAttribute("csrfToken", csrfToken.getToken());
             model.addAttribute("error", e.getMessage());
             return "auth/signup";
-        } 
+        }
         model.addAttribute("loginUrl", baseUrl + "/oidc/login");
         return "auth/account-created";
     }

@@ -1,4 +1,5 @@
-import { logger, oidc, sessionManager } from "@/lib";
+import { oidc, sessionManager } from "@/auth";
+import { logger } from "@/log";
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 

@@ -4,6 +4,9 @@ import { Link } from "@/components/ui/link";
 import { IssueFilters } from "./filters";
 import { readFileSync } from "fs";
 import path from "path";
+import { authenticate } from "../auth";
+import { logger } from "@/log";
+import { Issue } from "@/types";
 
 function getIssues() {
     const data = readFileSync(path.resolve("./src/MOCK_DATA.json"));
@@ -11,7 +14,7 @@ function getIssues() {
     return issues;
 }
 
-export default function TablePage({
+export default async function TablePage({
     searchParams,
 }: {
     searchParams: {
@@ -20,9 +23,27 @@ export default function TablePage({
         page?: string;
     };
 }) {
+    const session = await authenticate();
+    if (!session) {
+        return null;
+    }
+    const response = await fetch(
+        `${process.env.API_URL}/api/resource/projects/project_1/issues`,
+        {
+            headers: {
+                Authorization: `Bearer ${session.tokens.accessToken.value}`,
+            },
+        }
+    );
+
+    logger.debug(response.status);
+
+    const issues: Issue[] = await response.json();
+
+    logger.debug(issues);
+
     const labels = searchParams.label?.split(",");
     const priorities = searchParams.priority?.split(",");
-    const issues = getIssues();
     const params = new URLSearchParams();
     if (labels) {
         const value = labels.join();
@@ -33,9 +54,9 @@ export default function TablePage({
         params.set("priority", value);
     }
     const page = parseInt(searchParams.page || "1");
-    const filteredIssues = issues.filter((issue: any) => {
+    const filteredIssues = issues.filter((issue: Issue) => {
         if (labels) {
-            return labels.includes(issue.label);
+            return labels.includes(issue.label.id.toString());
         } else {
             return true;
         }

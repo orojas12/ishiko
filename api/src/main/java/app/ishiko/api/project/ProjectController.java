@@ -22,21 +22,32 @@ import app.ishiko.api.project.issue.service.IssueService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/projects")
+@RequestMapping("/resource/projects")
 public class ProjectController {
 
-    private IssueService issueService;
-    private ProjectRepository projectRepository;
+    private final IssueService issueService;
+    private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
     public ProjectController(IssueService issueService,
-            ProjectRepository projectRepository) {
+            ProjectRepository projectRepository,
+            ProjectService projectService) {
         this.issueService = issueService;
         this.projectRepository = projectRepository;
+        this.projectService = projectService;
+    }
+
+    @GetMapping("/{projectId}")
+    public ProjectDto getProject(Authentication auth,
+            @PathVariable String projectId) throws NotFoundException {
+
+        return projectService.getProjectData(projectId, auth.getName());
     }
 
     @GetMapping("/{projectId}/issues")
     public List<IssueDto> getProjectIssues(Authentication auth,
             @PathVariable String projectId) throws NotFoundException {
+
         Optional<Project> project = projectRepository
                 .findByIdAndOwner_Username(projectId, auth.getName());
 

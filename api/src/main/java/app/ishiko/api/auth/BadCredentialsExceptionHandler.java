@@ -1,6 +1,7 @@
 package app.ishiko.api.auth;
 
-public class BadCredentialsExceptionHandler extends DefaultAuthenticationExceptionHandler {
+public class BadCredentialsExceptionHandler
+        extends DefaultAuthenticationExceptionHandler {
 
     public BadCredentialsExceptionHandler() {
         super();
