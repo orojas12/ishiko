@@ -1,6 +1,9 @@
 services:
   db:
     image: postgres:alpine
+    profiles:
+      - all
+      - backend
     environment:
       POSTGRES_USER: ishiko
       POSTGRES_PASSWORD: ishiko
@@ -15,6 +18,9 @@ services:
   backend:
     build:
       context: ./api
+    profiles:
+      - all
+      - backend
     depends_on:
       - db
     ports:
@@ -35,6 +41,9 @@ services:
   client:
     build:
       context: ./client
+    profiles:
+      - all
+      - frontend
     ports:
       - 127.0.0.1:3000:3000
     volumes:
@@ -48,6 +57,8 @@ services:
       - NODE_ENV=development
   gateway:
     image: nginx:1.25.3-alpine
+    profiles:
+      - all
     depends_on:
       - db
       - backend

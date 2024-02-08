@@ -39,9 +39,9 @@ public class ProjectServiceTest {
                 List.of(new IssueStatus(1, "status_1", project));
         List<IssueLabel> labels =
                 List.of(new IssueLabel(1, "label_1", project));
-        when(statusRepository.findAllByProject(project.getId()))
+        when(statusRepository.findAllByProjectId(project.getId()))
                 .thenReturn(statuses);
-        when(labelRepository.findAllByProject(project.getId()))
+        when(labelRepository.findAllByProjectId(project.getId()))
                 .thenReturn(labels);
         when(projectRepository.findByIdAndOwner_Username(project.getId(),
                 user.getUsername())).thenReturn(Optional.of(project));

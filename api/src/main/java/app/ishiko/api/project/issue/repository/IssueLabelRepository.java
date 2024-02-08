@@ -6,5 +6,5 @@ import app.ishiko.api.project.issue.model.IssueLabel;
 
 public interface IssueLabelRepository
         extends JpaRepository<IssueLabel, Integer> {
-    List<IssueLabel> findAllByProject(String project);
+    List<IssueLabel> findAllByProjectId(String projectId);
 }

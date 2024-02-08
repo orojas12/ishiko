@@ -7,9 +7,10 @@
   },
   "java.debug.settings.onBuildFailureProceed": true,
   "[typescript]": {
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4
   },
   "[nginx]": {
     "editor.formatOnSave": false
-  },
+  }
 }

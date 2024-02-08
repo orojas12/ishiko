@@ -41,8 +41,8 @@ public class ProjectService {
                 project.getDescription(), project.getOwner().getUsername());
 
         List<IssueStatus> statuses =
-                statusRepository.findAllByProject(projectId);
-        List<IssueLabel> labels = labelRepository.findAllByProject(projectId);
+                statusRepository.findAllByProjectId(projectId);
+        List<IssueLabel> labels = labelRepository.findAllByProjectId(projectId);
 
         dto.setStatuses(statuses.stream()
                 .map((status -> new IssueStatusDto(status.getId(),

@@ -6,5 +6,5 @@ import app.ishiko.api.project.issue.model.IssueStatus;
 
 public interface IssueStatusRepository
         extends JpaRepository<IssueStatus, Integer> {
-    List<IssueStatus> findAllByProject(String project);
+    List<IssueStatus> findAllByProjectId(String projectId);
 }

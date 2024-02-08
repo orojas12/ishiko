@@ -16,7 +16,8 @@ public class IssueStatus {
     @Column(nullable = false)
     private String name = "";
 
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project", nullable = false)
     private Project project;
 
     public IssueStatus() {}

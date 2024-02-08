@@ -1,3 +1,11 @@
+export type Project = {
+    id: string;
+    name: string;
+    description: string;
+    issueStatuses: IssueStatus[];
+    issueLabels: IssueLabel[];
+};
+
 export type Issue = {
     id: number;
     subject: string;

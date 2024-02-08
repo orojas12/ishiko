@@ -6,12 +6,30 @@ import { readFileSync } from "fs";
 import path from "path";
 import { authenticate } from "../auth";
 import { logger } from "@/log";
-import { Issue } from "@/types";
+import { Issue, Project } from "@/types";
 
-function getIssues() {
-    const data = readFileSync(path.resolve("./src/MOCK_DATA.json"));
-    const issues = JSON.parse(data.toString());
-    return issues;
+async function getIssues(accessToken: string): Promise<Issue[]> {
+    const response = await fetch(
+        `${process.env.API_URL}/api/resource/projects/project_1/issues`,
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }
+    );
+    return response.json();
+}
+
+async function getProjectData(accessToken: string): Promise<Project> {
+    const response = await fetch(
+        `${process.env.API_URL}/api/resource/projects/project_1`,
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }
+    );
+    return response.json();
 }
 
 export default async function TablePage({
@@ -27,21 +45,13 @@ export default async function TablePage({
     if (!session) {
         return null;
     }
-    const response = await fetch(
-        `${process.env.API_URL}/api/resource/projects/project_1/issues`,
-        {
-            headers: {
-                Authorization: `Bearer ${session.tokens.accessToken.value}`,
-            },
-        }
-    );
-
-    logger.debug(response.status);
-
-    const issues: Issue[] = await response.json();
-
-    logger.debug(issues);
-
+    const accessToken = session.tokens.accessToken.value;
+    const [issues, project] = await Promise.all([
+        getIssues(accessToken),
+        getProjectData(accessToken),
+    ]);
+    // TODO: server returning undefined labels
+    console.log("labels: " + project.issueLabels.toString());
     const labels = searchParams.label?.split(",");
     const priorities = searchParams.priority?.split(",");
     const params = new URLSearchParams();
@@ -65,7 +75,10 @@ export default async function TablePage({
     return (
         <div className="flex justify-center items-center py-8">
             <div className="w-full max-w-screen-sm flex flex-col items-start gap-4">
-                <IssueFilters />
+                <IssueFilters
+                    labels={project.issueLabels}
+                    statuses={project.issueStatuses}
+                />
                 <IssuesTable issues={filteredIssues} />
                 <div className="flex gap-2">
                     {page > 1 ? (
