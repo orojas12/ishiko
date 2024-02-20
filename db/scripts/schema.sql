@@ -65,23 +65,24 @@ CREATE TABLE authorities (
     username varchar(50) NOT NULL,
     authority varchar(50) NOT NULL,
     CONSTRAINT fk_authorities_users FOREIGN KEY (username) REFERENCES users (username)
+        ON DELETE CASCADE
 );
 CREATE UNIQUE index ix_auth_username ON authorities (username, authority);
 CREATE TABLE project (
     id varchar(100) PRIMARY KEY,
     name varchar(50) NOT NULL,
     description varchar(1000),
-    owner varchar(50) REFERENCES users (username) NOT NULL
+    owner varchar(50) REFERENCES users ON DELETE CASCADE NOT NULL
 );
 CREATE TABLE status (
     id serial PRIMARY KEY,
     name varchar(50) NOT NULL,
-    project varchar(100) REFERENCES project (id) NOT NULL
+    project varchar(100) REFERENCES project ON DELETE CASCADE NOT NULL
 );
 CREATE TABLE label (
     id serial PRIMARY KEY,
     name varchar(50) NOT NULL,
-    project varchar(100) REFERENCES project (id) NOT NULL
+    project varchar(100) REFERENCES project ON DELETE CASCADE NOT NULL
 );
 CREATE TABLE issue (
     id serial PRIMARY KEY,
@@ -89,8 +90,8 @@ CREATE TABLE issue (
     description varchar(9000),
     create_date timestamp(0) NOT NULL,
     due_date timestamp(0),
-    author varchar(50) REFERENCES users (username) NOT NULL,
-    project varchar(100) REFERENCES project (id) NOT NULL,
-    status integer REFERENCES status (id),
-    label integer REFERENCES label (id)
+    author varchar(50) REFERENCES users ON DELETE CASCADE NOT NULL,
+    project varchar(100) REFERENCES project ON DELETE CASCADE NOT NULL,
+    status integer REFERENCES status ON DELETE SET NULL,
+    label integer REFERENCES label ON DELETE SET NULL 
 );

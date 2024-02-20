@@ -1,0 +1,20 @@
+server:
+  port: 8080
+  forward-headers-strategy: FRAMEWORK
+  servlet:
+    context-path: /api
+  thymeleaf:
+    cache: false
+
+spring:
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+oauth2:
+  authorization-server:
+    keyid: 216d75d6-1971-4ce7-9e90-89ed9080705c

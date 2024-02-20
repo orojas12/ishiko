@@ -3,7 +3,7 @@ package app.ishiko.api.project;
 import java.util.List;
 import app.ishiko.api.project.issue.model.IssueLabel;
 import app.ishiko.api.project.issue.model.IssueStatus;
-import app.ishiko.api.user.User;
+import app.ishiko.api.user.AppUser;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
@@ -22,12 +22,12 @@ public class Project {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner", referencedColumnName = "username",
             nullable = false)
-    User owner;
+    AppUser owner;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project", cascade = CascadeType.ALL)
     private List<IssueStatus> issueStatuses;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project", cascade = CascadeType.ALL)
     private List<IssueLabel> issueLabels;
 
     public Project() {}
@@ -39,7 +39,7 @@ public class Project {
     }
 
     public Project(String id, String name, @Nullable String description,
-            User owner) {
+            AppUser owner) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -71,11 +71,11 @@ public class Project {
         this.description = description;
     }
 
-    public User getOwner() {
+    public AppUser getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(AppUser owner) {
         this.owner = owner;
     }
 

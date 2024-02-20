@@ -11,16 +11,21 @@ public class IssueLabel {
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "label_id_seq")
-    private Integer id = 1;
+    private Integer id;
 
     @Column(nullable = false)
-    private String name = "";
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project", nullable = false)
     private Project project;
 
     public IssueLabel() {}
+
+    public IssueLabel(String name, Project project) {
+        this.name = name;
+        this.project = project;
+    }
 
     public IssueLabel(Integer id, String name, Project project) {
         this.id = id;

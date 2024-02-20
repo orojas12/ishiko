@@ -5,14 +5,14 @@ import jakarta.persistence.*;
 @Entity
 @EntityListeners(PreventWrite.class)
 @Table(name = "users")
-public class User {
+public class AppUser {
 
     @Id
     private String username;
 
-    public User() {}
+    public AppUser() {}
 
-    public User(String username) {
+    public AppUser(String username) {
         this.username = username;
     }
 

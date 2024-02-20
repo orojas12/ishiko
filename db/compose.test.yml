@@ -1,17 +1,12 @@
 services:
-  db-dev:
+  test:
     image: postgres:alpine
     environment:
       POSTGRES_USER: ishiko
       POSTGRES_PASSWORD: ishiko
-      POSTGRES_DB: dev
+      POSTGRES_DB: test
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d/scripts:ro
-      - ./init-dev-db.sh:/docker-entrypoint-initdb.d/init-dev-db.sh
-    networks:
-      - dev
-
-networks:
-  dev:
+      - ./init-test-db.sh:/docker-entrypoint-initdb.d/init-test-db.sh

@@ -12,5 +12,21 @@
   },
   "[nginx]": {
     "editor.formatOnSave": false
-  }
+  },
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.test.config": [
+    {
+      "name": "integration-test",
+      "vmArgs": ["-Dspring.profiles.active=test"],
+      "env": {
+        "PUBLIC_KEY_PATH": "/home/oscar/projects/ishiko/api/config/public.pem",
+        "PRIVATE_KEY_PATH": "//home/oscar/projects/ishiko/api/config/private.pem",
+        "POSTGRES_URL": "jdbc:postgresql://localhost/test",
+        "POSTGRES_USER": "ishiko",
+        "POSTGRES_PASSWORD": "ishiko",
+        "BASE_URL": "http://localhost:8000"
+      },
+      "workingDirectory": "${workspaceFolder}/api"
+    }
+  ]
 }

@@ -1,7 +1,7 @@
 package app.ishiko.api.project.issue.model;
 
 import app.ishiko.api.project.Project;
-import app.ishiko.api.user.User;
+import app.ishiko.api.user.AppUser;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -32,7 +32,7 @@ public class Issue {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author", referencedColumnName = "username",
             nullable = false)
-    private User author;
+    private AppUser author;
     @Nullable
     @ManyToOne
     @JoinColumn(name = "status")
@@ -45,7 +45,7 @@ public class Issue {
     public Issue() {}
 
     public Issue(Integer id, String subject, @Nullable String description,
-            Instant createDate, @Nullable Instant dueDate, User author,
+            Instant createDate, @Nullable Instant dueDate, AppUser author,
             Project project) {
         this.id = id;
         this.subject = subject;
@@ -57,7 +57,7 @@ public class Issue {
     }
 
     public Issue(Integer id, String subject, @Nullable String description,
-            Instant createDate, @Nullable Instant dueDate, User author,
+            Instant createDate, @Nullable Instant dueDate, AppUser author,
             Project project, @Nullable IssueStatus status,
             @Nullable IssueLabel label) {
         this.id = id;
@@ -119,11 +119,11 @@ public class Issue {
         this.project = project;
     }
 
-    public User getAuthor() {
+    public AppUser getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(AppUser author) {
         this.author = author;
     }
 

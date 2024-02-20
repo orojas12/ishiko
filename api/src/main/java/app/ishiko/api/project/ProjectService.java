@@ -40,15 +40,15 @@ public class ProjectService {
         ProjectDto dto = new ProjectDto(project.getId(), project.getName(),
                 project.getDescription(), project.getOwner().getUsername());
 
-        List<IssueStatus> statuses =
-                statusRepository.findAllByProjectId(projectId);
-        List<IssueLabel> labels = labelRepository.findAllByProjectId(projectId);
+        // List<IssueStatus> statuses =
+                // statusRepository.findAllByProjectId(projectId);
+        // List<IssueLabel> labels = labelRepository.findAllByProjectId(projectId);
 
-        dto.setStatuses(statuses.stream()
+        dto.setStatuses(project.getIssueStatuses().stream()
                 .map((status -> new IssueStatusDto(status.getId(),
                         status.getName())))
                 .toList());
-        dto.setLabels(labels.stream()
+        dto.setLabels(project.getIssueLabels().stream()
                 .map(label -> new IssueLabelDto(label.getId(), label.getName()))
                 .toList());
 

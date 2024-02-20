@@ -14,7 +14,7 @@ import app.ishiko.api.project.issue.model.IssueStatus;
 import app.ishiko.api.project.issue.repository.IssueLabelRepository;
 import app.ishiko.api.project.issue.repository.IssueRepository;
 import app.ishiko.api.project.issue.repository.IssueStatusRepository;
-import app.ishiko.api.user.UserRepository;
+import app.ishiko.api.user.AppUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -28,13 +28,13 @@ public class IssueService {
     private final IssueStatusRepository issueStatusRepository;
     private final IssueLabelRepository issueLabelRepository;
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final AppUserRepository userRepository;
 
     public IssueService(IssueRepository issueRepository,
             IssueStatusRepository issueStatusRepository,
             IssueLabelRepository issueLabelRepository,
             ProjectRepository projectRepository,
-            UserRepository userRepository) {
+            AppUserRepository userRepository) {
         this.issueRepository = issueRepository;
         this.issueStatusRepository = issueStatusRepository;
         this.issueLabelRepository = issueLabelRepository;

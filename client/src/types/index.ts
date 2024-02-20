@@ -2,8 +2,9 @@ export type Project = {
     id: string;
     name: string;
     description: string;
-    issueStatuses: IssueStatus[];
-    issueLabels: IssueLabel[];
+    statuses: IssueStatus[];
+    labels: IssueLabel[];
+    owner: string;
 };
 
 export type Issue = {
@@ -14,6 +15,7 @@ export type Issue = {
     dueDate?: string;
     status: IssueStatus;
     label: IssueLabel;
+    author: string;
 };
 
 export type IssueStatus = {

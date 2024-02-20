@@ -61,7 +61,6 @@ services:
       - all
     depends_on:
       - db
-      - backend
       - client
     volumes:
       - ./gateway/nginx:/etc/nginx:ro

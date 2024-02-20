@@ -14,8 +14,8 @@ import app.ishiko.api.project.issue.repository.IssueLabelRepository;
 import app.ishiko.api.project.issue.repository.IssueRepository;
 import app.ishiko.api.project.issue.repository.IssueStatusRepository;
 import app.ishiko.api.project.issue.service.IssueService;
-import app.ishiko.api.user.User;
-import app.ishiko.api.user.UserRepository;
+import app.ishiko.api.user.AppUser;
+import app.ishiko.api.user.AppUserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -43,7 +43,7 @@ public class IssueServiceTest {
     @Mock
     private ProjectRepository projectRepository;
     @Mock
-    private UserRepository userRepository;
+    private AppUserRepository userRepository;
 
     IssueService getIssueService() {
         return new IssueService(issueRepository, statusRepository,
@@ -92,7 +92,7 @@ public class IssueServiceTest {
     void createIssue_CreateIssueDto_createsIssue()
             throws InvalidInputException {
         var project = new Project("project_1", "project 1", null);
-        var user = new User("oscar");
+        var user = new AppUser("oscar");
         var dto = new CreateIssueDto("subject", "desc", null, project.getId(),
                 user.getUsername(), 1, 2);
         var status =
@@ -124,7 +124,7 @@ public class IssueServiceTest {
     @Test
     void createIssue_CreateIssueDtoWithInvalidStatus_throwsInvalidInputException() {
         var project = new Project("project_1", "project 1", null);
-        var user = new User("oscar");
+        var user = new AppUser("oscar");
         var dto = new CreateIssueDto("subject", "desc", null, project.getId(),
                 user.getUsername(), 1, 2);
         when(statusRepository.findById(dto.getStatus().orElseThrow()))
@@ -137,7 +137,7 @@ public class IssueServiceTest {
     @Test
     void createIssue_CreateIssueDtoWithInvalidLabel_throwsInvalidInputException() {
         var project = new Project("project_1", "project 1", null);
-        var user = new User("oscar");
+        var user = new AppUser("oscar");
         var dto = new CreateIssueDto("subject", "desc", null, project.getId(),
                 user.getUsername(), 1, 2);
         var status =
@@ -155,7 +155,7 @@ public class IssueServiceTest {
     void updateIssue_UpdateIssueDto_updatesIssue()
             throws NotFoundException, InvalidInputException {
         var dto = new UpdateIssueDto(1, "subject", "desc", null, 1, 2);
-        var user = new User("oscar");
+        var user = new AppUser("oscar");
         var project = new Project("project_1", "name", null);
         var status = new IssueStatus(1, "status", project);
         var label = new IssueLabel(2, "label", project);
@@ -185,7 +185,7 @@ public class IssueServiceTest {
     @Test
     void updateIssue_NotFoundId_throwsNotFoundException() {
         var dto = new UpdateIssueDto(1, "subject", "desc", null, 1, 2);
-        var user = new User("oscar");
+        var user = new AppUser("oscar");
         var project = new Project("project_1", "name", null);
         var status = new IssueStatus(1, "status", project);
         var label = new IssueLabel(2, "label", project);
@@ -201,7 +201,7 @@ public class IssueServiceTest {
     @Test
     void updateIssue_UpdateIssueDtoWithInvalidStatus_throwsInvalidInputException() {
         var dto = new UpdateIssueDto(1, "subject", "desc", null, 1, 2);
-        var user = new User("oscar");
+        var user = new AppUser("oscar");
         var project = new Project("project_1", "name", null);
         var status = new IssueStatus(1, "status", project);
         var label = new IssueLabel(2, "label", project);
@@ -219,7 +219,7 @@ public class IssueServiceTest {
     @Test
     void updateIssue_UpdateIssueDtoWithInvalidLabel_throwsInvalidInputException() {
         var dto = new UpdateIssueDto(1, "subject", "desc", null, 1, 2);
-        var user = new User("oscar");
+        var user = new AppUser("oscar");
         var project = new Project("project_1", "name", null);
         var status = new IssueStatus(1, "status", project);
         var label = new IssueLabel(2, "label", project);
@@ -238,7 +238,7 @@ public class IssueServiceTest {
 
     @Test
     void deleteIssue_IssueId_deletesIssue() throws NotFoundException {
-        var user = new User("oscar");
+        var user = new AppUser("oscar");
         var project = new Project("project_1", "name", null);
         var status = new IssueStatus(1, "status", project);
         var label = new IssueLabel(2, "label", project);
@@ -262,7 +262,7 @@ public class IssueServiceTest {
 
     @Test
     void entityToDto_Issue_returnsDtoWithSameData() {
-        var user = new User("oscar");
+        var user = new AppUser("oscar");
         var project = new Project("project_1", "name", null);
         var status = new IssueStatus(1, "status", project);
         var label = new IssueLabel(2, "label", project);

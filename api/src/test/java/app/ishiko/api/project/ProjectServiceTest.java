@@ -13,7 +13,7 @@ import app.ishiko.api.project.issue.model.IssueLabel;
 import app.ishiko.api.project.issue.model.IssueStatus;
 import app.ishiko.api.project.issue.repository.IssueLabelRepository;
 import app.ishiko.api.project.issue.repository.IssueStatusRepository;
-import app.ishiko.api.user.User;
+import app.ishiko.api.user.AppUser;
 
 @ExtendWith(MockitoExtension.class)
 public class ProjectServiceTest {
@@ -33,7 +33,7 @@ public class ProjectServiceTest {
     @Test
     void getProjectData_ProjectIdAndUsername_returnsProjectDto()
             throws NotFoundException {
-        User user = new User("john");
+        AppUser user = new AppUser("john");
         Project project = new Project("project_1", "name", "description", user);
         List<IssueStatus> statuses =
                 List.of(new IssueStatus(1, "status_1", project));

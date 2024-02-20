@@ -31,7 +31,7 @@ import app.ishiko.api.project.issue.dto.IssueDto;
 import app.ishiko.api.project.issue.dto.IssueLabelDto;
 import app.ishiko.api.project.issue.dto.IssueStatusDto;
 import app.ishiko.api.project.issue.service.IssueService;
-import app.ishiko.api.user.User;
+import app.ishiko.api.user.AppUser;
 
 @WebMvcTest(ProjectController.class)
 public class ProjectControllerTest {
@@ -67,7 +67,7 @@ public class ProjectControllerTest {
     @WithMockUser(value = "john")
     void getProjectData_ProjectId_returnsHttp200AndProjectData()
             throws Exception {
-        User user = new User("john");
+        AppUser user = new AppUser("john");
         Project project = new Project("project_1", "name", null, user);
         List<IssueStatusDto> statuses =
                 List.of(new IssueStatusDto(1, "status_1"));

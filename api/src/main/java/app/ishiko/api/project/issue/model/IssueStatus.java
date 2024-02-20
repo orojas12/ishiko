@@ -11,16 +11,21 @@ public class IssueStatus {
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "status_id_seq")
-    private Integer id = 1;
+    private Integer id;
 
     @Column(nullable = false)
-    private String name = "";
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project", nullable = false)
     private Project project;
 
     public IssueStatus() {}
+
+    public IssueStatus(String name, Project project) {
+        this.name = name;
+        this.project = project;
+    }
 
     public IssueStatus(Integer id, String name, Project project) {
         this.id = id;

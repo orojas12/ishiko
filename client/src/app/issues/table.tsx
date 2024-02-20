@@ -8,16 +8,6 @@ import {
 } from "@/components/ui/table";
 import { Issue } from "@/types";
 
-// type Issue = {
-//     id: string;
-//     subject: string;
-//     description: string;
-//     status: string;
-//     label: string;
-//     createdDate: string;
-//     dueDate: string;
-// };
-
 export function IssuesTable(props: { issues: Issue[] }) {
     return (
         <>
